@@ -1,17 +1,17 @@
 import { Button, Modal, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import uuid from 'react-native-uuid';
-import { useCategoriesStore } from '@/store/categoriesStore';
-import { usePaymentMethodsStore } from '@/store/paymentMethodsStore'
+import { useExpensesStore } from '@/store/expensesStore';
 
 
 export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOptionVisible }) => {
 
     const [newOption, setNewOption] = useState({ name: '', description: '' })
-    const addCategory = useCategoriesStore(state => state.addCategory)
-    const updateCategory = useCategoriesStore(state => state.updateCategory)
-    const addPaymentMethod = usePaymentMethodsStore(state => state.addPaymentMethod)
-    const updatePaymentMethod = usePaymentMethodsStore(state => state.updatePaymentMethod)
+
+    const addPaymentMethod = useExpensesStore(state => state.addPaymentMethod)
+    const updatePaymentMethod = useExpensesStore(state => state.updatePaymentMethod)
+    const updateCategory = useExpensesStore(state => state.updateCategory)
+    const addCategory = useExpensesStore(state => state.addCategory)
 
     useEffect(() => {
         if (modalNewOptionVisible && modalNewOptionVisible.type === 'edit') {
@@ -23,12 +23,10 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
     const closeModal = () => setModalNewOptionVisible(state => ({ ...state, show: false }))
 
     const onPress = () => {
-        // ! Name obligatorio
         if (!newOption || !newOption.name) {
             console.error('newOption requiered and name is required');
             return
         }
-
         const newOptionyObj = {
             ...newOption,
             id: uuid.v4(),
@@ -82,7 +80,6 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
                         placeholder='Descripcion: '
                         style={{ padding: 3, borderWidth: 1 }}
                     />
-
                     <Button title='Agregar' color={'green'} onPress={onPress} />
                     <Button title='Cerrar' color={'red'} onPress={() => setModalNewOptionVisible(state => ({ ...state, show: false }))} />
                 </View>

@@ -10,36 +10,34 @@ export const AllExpenses = ({ modalAllExpensesVisible, setModalAllExpensesVisibl
     const expenses = useExpensesStore(state => state.expenses)
 
     return (
-        <>
+        <Modal
+            animationType="fade"
+            transparent={false}
+            visible={modalAllExpensesVisible}
+            onRequestClose={() => {
+                setModalAllExpensesVisible((state) => !state);
+            }}>
             <Modal
                 animationType="fade"
                 transparent={false}
-                visible={modalAllExpensesVisible}
+                visible={detailExpenseVisible}
                 onRequestClose={() => {
-                    setModalAllExpensesVisible((state) => !state);
+                    setDetailExpenseVisible(false);
                 }}>
-                <Modal
-                    animationType="fade"
-                    transparent={false}
-                    visible={detailExpenseVisible}
-                    onRequestClose={() => {
-                        setDetailExpenseVisible(false);
-                    }}>
-                    <View style={{}}>
-                        {expenseSelect && <DetailExpense expense={expenseSelect} setDetailExpenseVisible={setDetailExpenseVisible} />}
-                    </View>
-                </Modal>
-                <ScrollView style={{ padding: 30 }}>
-                    <Text style={{ fontSize: 20, marginBottom: 20 }}>Todos los gastos</Text>
-                    {expenses && expenses.map(expense => (
-                        <ExpensesSmallCard key={expense.id} expense={expense} onPress={() => {
-                            setExpenseSelect(expense)
-                            setDetailExpenseVisible(true)
-                        }} />
-                    ))}
-                    <Button title='Cerrar' onPress={() => setModalAllExpensesVisible(false)} />
-                </ScrollView>
+                <View style={{}}>
+                    {expenseSelect && <DetailExpense expense={expenseSelect} setDetailExpenseVisible={setDetailExpenseVisible}  />}
+                </View>
             </Modal>
-        </>
+            <ScrollView style={{ padding: 30 }}>
+                <Text style={{ fontSize: 20, marginBottom: 20 }}>Todos los gastos</Text>
+                {expenses && expenses.map(expense => (
+                    <ExpensesSmallCard key={expense.id} expense={expense} onPress={() => {
+                        setExpenseSelect(expense)
+                        setDetailExpenseVisible(true)
+                    }} />
+                ))}
+                <Button title='Cerrar' onPress={() => setModalAllExpensesVisible(false)} />
+            </ScrollView>
+        </Modal>
     )
 }

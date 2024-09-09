@@ -2,16 +2,11 @@ import { View, Text, Modal, Button, TextInput } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
 import DatePicker from 'react-native-date-picker'
 import { useExpensesStore } from '@/store/expensesStore'
-import { NewCategoryForm } from '@/components/NewCategoryForm'
-import { NewPaymentMethodForm } from '@/components/NewPaymentMethodForm'
 import { UpdateCreateOptionExpense } from '@/components/UpdateCreateOptionExpense'
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
 
 export const UpdateCreateExpenseModal = () => {
-  // modalUpdateCreateExpense, setModalUpdateCreateExpense
-  const [modalCategoryCrudVisible, setModalCategoryCrudVisible] = useState(false)
-  const [modalPaymentMethodCrudVisible, setModalPaymentMethodCrudVisible] = useState(false)
   const [modalNewOptionVisible, setModalNewOptionVisible] = useState({ show: false })
 
   const [modalCategoriesVisible, setModalCategoriesVisible] = useState(false)
@@ -42,7 +37,6 @@ export const UpdateCreateExpenseModal = () => {
   useEffect(() => {
     if (modalUpdateCreateExpense.show === false) return
     if (modalUpdateCreateExpense && modalUpdateCreateExpense.type === 'edit') {
-      console.log(modalUpdateCreateExpense.optionSelect);
       setNewExpense(modalUpdateCreateExpense.optionSelect)
       setCategory(modalUpdateCreateExpense.optionSelect.category)
       setpaymentMethod(modalUpdateCreateExpense.optionSelect.paymentMethod)
@@ -52,8 +46,6 @@ export const UpdateCreateExpenseModal = () => {
   const onChangeNewExpenseProp = (key, value) => { setNewExpense(prevState => ({ ...prevState, [key]: value })) }
 
   const createNewExpense = () => {
-    console.log(modalUpdateCreateExpense);
-
     if (modalUpdateCreateExpense.type === 'edit') {
       const newExpenseEdited = {
         ...newExpense,
@@ -98,8 +90,6 @@ export const UpdateCreateExpenseModal = () => {
 
   return (
     <>
-      <NewCategoryForm modalCategoryCrudVisible={modalCategoryCrudVisible} setModalCategoryCrudVisible={setModalCategoryCrudVisible} />
-      <NewPaymentMethodForm modalPaymentMethodCrudVisible={modalPaymentMethodCrudVisible} setModalPaymentMethodCrudVisible={setModalPaymentMethodCrudVisible} />
       <UpdateCreateOptionExpense modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} />
 
       <Modal

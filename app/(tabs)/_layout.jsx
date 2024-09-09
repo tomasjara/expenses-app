@@ -13,11 +13,13 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
+        tabBarShowLabel: false
       }}>
       <Tabs.Screen
         name="graphics"
         options={{
           title: 'Graficos',
+          tabBarItemStyle: { paddingBottom: 5 },
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon size={20} name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),
@@ -28,6 +30,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Inicio',
+          tabBarItemStyle: { paddingBottom: 5 },
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon size={20} name={focused ? 'home' : 'home-outline'} color={color} />
           ),
@@ -37,6 +40,7 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Configuraciones',
+          tabBarItemStyle: { paddingBottom: 5 },
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon size={20} name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),

@@ -28,7 +28,7 @@ export default function HomeScreen() {
 
           <ContainerWidget backgroundColor={'white'}>
             <Text style={{ fontSize: 20, marginBottom: 10 }}>Ultimos gastos</Text>
-            {expenses && expenses.map(expense => (
+            {expenses && expenses.map((expense) => (
               <ExpensesSmallCard key={expense.id} expense={expense} />
             ))}
             <View style={{ gap: 10 }}>
@@ -45,7 +45,7 @@ export default function HomeScreen() {
       </ScrollView >
       <Pressable onPress={() => setModalUpdateCreateExpense({ show: true, type: 'create' })} style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 20, borderRadius: 20, shadowRadius: 10, elevation: 4 }}>
         {/* <View style={{ backgroundColor: 'white', borderRadius: 15, width: 45, height: 45, justifyContent: 'center', alignItems: 'center' }}> */}
-        <Ionicons name="add-circle-sharp" size={45} color="black" />
+        <Ionicons name="add-circle-sharp" size={50} color="black" />
         {/* </View> */}
       </Pressable>
       <UpdateCreateExpenseModal />

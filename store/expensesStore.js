@@ -71,8 +71,14 @@ export const useExpensesStore = create(
           const newCategories = state.categories.map((category) =>
             category.id === newObject.id ? newObject : category
           );
+          const newExpenses = state.expenses.map((expense) => {
+            expense.category.id === newObject.id
+              ? { ...expense, category: newObject }
+              : expense;
+          });
           return {
             categories: newCategories,
+            expenses: newExpenses,
           };
         }),
       updatePaymentMethod: (newObject) =>
@@ -80,8 +86,14 @@ export const useExpensesStore = create(
           const newPaymentMethods = state.paymentMethods.map((paymentMetohd) =>
             paymentMetohd.id === newObject.id ? newObject : paymentMetohd
           );
+          const newExpenses = state.expenses.map((expense) => {
+            expense.paymentMethod.id === newObject.id
+              ? { ...expense, paymentMethod: newObject }
+              : expense;
+          });
           return {
             paymentMethods: newPaymentMethods,
+            expenses: newExpenses,
           };
         }),
       setHasHydrated: (state) =>
@@ -91,7 +103,7 @@ export const useExpensesStore = create(
         })),
     }),
     {
-      name: "expenses-storagev2",
+      name: "expenses-storage",
       storage: createJSONStorage(() => AsyncStorage),
     }
   )

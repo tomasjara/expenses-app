@@ -6,26 +6,146 @@ import { UpdateCreateOptionExpense } from '@/components/UpdateCreateOptionExpens
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
 
+
+const ModalDisabledOption = ({ optionName, visible = false, setVisible }) => {
+  const { categories, paymentMethods, expenses, removeCategory, removePaymentMethod, updateCategory, updatePaymentMethod, setExpenses } = useExpensesStore(state => state)
+  if (!visible) return
+
+  const optionNamesInExpenses = {
+    categories: categories,
+    paymentMethods: paymentMethods
+  }
+
+  const updateFuntions = {
+    categories: updateCategory,
+    paymentMethods: updatePaymentMethod
+  }
+
+  const optionsFilter = optionNamesInExpenses[optionName].filter(option => option.disabled)
+
+  const onActive = (optionId) => {
+    updateFuntions[optionName]({ id: optionId, disabled: false })
+  }
+
+  return (
+    <Modal
+      animationType="fade"
+      transparent={false}
+      visible={visible}
+      onRequestClose={() => {
+        setVisible(false)
+      }}>
+      <View style={{ padding: 30, gap: 10 }}>
+        <Text>Opciones desabilidatadas</Text>
+        {optionNamesInExpenses && optionsFilter.map(option => (
+          <View style={{ flexDirection: 'row', gap: 5 }} key={option.id}>
+            <View style={{ flexDirection: 'row', gap: 6 }}>
+              <Button
+                title={'Activar'}
+                color={'blue'}
+                onPress={() => {
+                  onActive(option.id)
+                }} />
+            </View>
+            <View style={{ flex: 1, marginStart: 6 }}>
+              <Button
+                key={option.id}
+                title={option.name}
+                onPress={() => {
+                  // setCategory(category)
+                  // setModalCategoriesVisible(false)
+                }} />
+            </View>
+          </View>
+        ))}
+        <Button onPress={() => setVisible(false)} title='Cerrar' color={'red'} />
+      </View>
+    </Modal>
+  )
+}
+
+const ModalConfirmOptionDelete = ({ optionId, visible = false, setVisible }) => {
+  const { categories, paymentMethods, expenses, removeCategory, removePaymentMethod, updateCategory, updatePaymentMethod, setExpenses } = useExpensesStore(state => state)
+  const [relatedOption, setRelatedOption] = useState(null)
+
+  const searchArrays = {
+    categories,
+    paymentMethods
+  }
+  const optionNamesInExpenses = {
+    categories: 'categoryId',
+    paymentMethods: 'paymentMethodId'
+  }
+  const removeFuntions = {
+    categories: removeCategory,
+    paymentMethods: removePaymentMethod
+  }
+  const updateFuntions = {
+    categories: updateCategory,
+    paymentMethods: updatePaymentMethod
+  }
+
+  const onDelete = () => {
+    const newExpenses = expenses.filter(expense => expense[optionNamesInExpenses[relatedOption.key]] != relatedOption.option.id)
+    setExpenses(newExpenses)
+  }
+
+  const onDisable = () => {
+    updateFuntions[relatedOption.key]({ id: relatedOption.option.id, disabled: true })
+  }
+
+  useEffect(() => {
+    if (!optionId) return
+    Object.keys(searchArrays).forEach((key) => {
+      const optionResult = searchArrays[key].find(item => item.id === optionId)
+      if (optionResult) {
+        const expenseResult = expenses.find(expense => expense[optionNamesInExpenses[key]] === optionId)
+        if (!expenseResult) {
+          setRelatedOption(null)
+          return
+        }
+        setRelatedOption({ key: key, option: optionResult })
+      }
+    })
+  }, [optionId])
+
+  return (
+    <Modal
+      animationType="fade"
+      transparent={false}
+      visible={visible}
+      onRequestClose={() => {
+        setVisible(false)
+      }}>
+      {relatedOption
+        ? <View>
+          <Text>Esta categoria/Este metodo de pago esta relacionado con un gasto </Text>
+          <Button onPress={onDisable} title='Conservar los todos los gastos relacionados, desactivando la categoria/el metodo de pago' color={'green'} />
+          <Button onPress={onDelete} title='Eliminar todas los gastos relaciondos' color={'red'} />
+        </View>
+        : <Text>Opcion no relacionada</Text>
+      }
+      <Button
+        title='Cerrar'
+        onPress={() => setVisible(false)} />
+    </Modal>
+  )
+}
+
 export const UpdateCreateExpenseModal = () => {
   const [modalNewOptionVisible, setModalNewOptionVisible] = useState({ show: false })
-
   const [modalCategoriesVisible, setModalCategoriesVisible] = useState(false)
+  const [modalDisabledOptionsVisible, setModalDisabledOptionsVisible] = useState(false)
+  const [optionNameDisabled, setOptionNameDisabled] = useState()
   const [modalPaymentMethodVisible, setModalPaymentMethodVisible] = useState(false)
   const [datePickerVisible, setDatePickerVisible] = useState(false)
   const [dateValue, setDateValue] = useState(new Date())
   const [newExpense, setNewExpense] = useState({ value: '', description: '' })
   const [category, setCategory] = useState()
   const [paymentMethod, setpaymentMethod] = useState()
-
-  const modalUpdateCreateExpense = useExpensesStore(state => state.modalUpdateCreateExpense)
-  const setModalUpdateCreateExpense = useExpensesStore(state => state.setModalUpdateCreateExpense)
-  const removePaymentMethod = useExpensesStore(state => state.removePaymentMethod)
-  const paymentMethods = useExpensesStore(state => state.paymentMethods)
-  const categories = useExpensesStore(state => state.categories)
-  const removeCategory = useExpensesStore(state => state.removeCategory)
-  const addExpense = useExpensesStore(state => state.addExpense)
-  const updateExpense = useExpensesStore(state => state.updateExpense)
-
+  const [optionIdDelete, setOptionIdDelete] = useState()
+  const [modalDeleteOptionVisible, setModalDeleteOptionVisible] = useState()
+  const { modalUpdateCreateExpense, setModalUpdateCreateExpense, removePaymentMethod, paymentMethods, categories, removeCategory, addExpense, updateExpense } = useExpensesStore(state => state)
   const inputValueRef = useRef(null);
 
   useEffect(() => {
@@ -54,14 +174,11 @@ export const UpdateCreateExpenseModal = () => {
         paymentMethod: paymentMethod || paymentMethods[0],
         category: category || categories[0]
       }
-
       updateExpense(newExpenseEdited);
-
       Toast.show({
         type: 'success',
         text1: 'Gasto editado satisfactoriamente 👋'
       });
-      // setModalUpdateCreateExpense(state => ({ ...state, show: false }))
       setModalUpdateCreateExpense({ show: false })
     }
 
@@ -73,8 +190,10 @@ export const UpdateCreateExpenseModal = () => {
           paymentDate: dateValue,
           creationDate: new Date(),
           lastModificationDate: new Date(),
-          paymentMethod: paymentMethod || paymentMethods[0],
-          category: category || categories[0]
+          paymentMethod: {},
+          category: {},
+          paymentMethodId: paymentMethod?.id || paymentMethods[0].id,
+          categoryId: category?.id || categories[0].id
         }
 
         addExpense(newExpenseObj)
@@ -82,7 +201,6 @@ export const UpdateCreateExpenseModal = () => {
           type: 'success',
           text1: 'Nuevo gasto registrado 👋'
         });
-        // setModalUpdateCreateExpense(state => ({ ...state, show: false }))
         setModalUpdateCreateExpense({ show: false })
       }
     }
@@ -91,13 +209,14 @@ export const UpdateCreateExpenseModal = () => {
   return (
     <>
       <UpdateCreateOptionExpense modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} />
+      <ModalConfirmOptionDelete optionId={optionIdDelete} setVisible={setModalDeleteOptionVisible} visible={modalDeleteOptionVisible} />
+      <ModalDisabledOption optionName={optionNameDisabled} visible={modalDisabledOptionsVisible} setVisible={setModalDisabledOptionsVisible} />
 
       <Modal
         animationType="fade"
         transparent={false}
         visible={modalUpdateCreateExpense.show}
         onRequestClose={() => {
-          // setModalUpdateCreateExpense(state => ({ ...state, show: false }));
           setModalUpdateCreateExpense({ show: false });
           setNewExpense({ name: '', description: '' })
         }}>
@@ -126,6 +245,7 @@ export const UpdateCreateExpenseModal = () => {
             <View style={{ backgroundColor: paymentMethod?.color || paymentMethods[0].color, height: 10, width: 260 }}></View>
           </View>
 
+          {/* Modal modalCategoriesVisible */}
           <Modal
             animationType="slide"
             transparent={false}
@@ -133,43 +253,54 @@ export const UpdateCreateExpenseModal = () => {
             onRequestClose={() => {
               setModalCategoriesVisible((state) => !state);
             }}>
+
             <View style={{ gap: 20, paddingHorizontal: 20, marginVertical: 30 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Text style={{ fontSize: 20 }}>Seleccion de categorias</Text>
                 <Button title='  +  ' color={'red'} onPress={() => setModalNewOptionVisible(state => ({ ...state, type: 'create', optionName: 'category', show: true }))} />
               </View>
-              {categories && categories.map(category => (
-                <View style={{ flexDirection: 'row' }} key={category.id}>
-                  <View style={{ flexDirection: 'row', gap: 6 }}>
-                    <Button
-                      title={'Editar'}
-                      color={'blue'}
-                      onPress={() => {
-                        setModalNewOptionVisible(state => ({ ...state, type: 'edit', optionName: 'category', show: true, optionSelect: category }))
-                      }} />
-                    <Button
-                      title={'Eliminar'}
-                      color={'red'}
-                      onPress={() => {
-                        removeCategory(category.id)
-                      }} />
+              {categories && categories.map(category => {
+                if (category.disabled) return
+                return (
+                  <View style={{ flexDirection: 'row' }} key={category.id}>
+                    <View style={{ flexDirection: 'row', gap: 6 }}>
+                      <Button
+                        title={'Editar'}
+                        color={'blue'}
+                        onPress={() => {
+                          setModalNewOptionVisible(state => ({ ...state, type: 'edit', optionName: 'category', show: true, optionSelect: category }))
+                        }} />
+                      <Button
+                        title={'Eliminar'}
+                        color={'red'}
+                        onPress={() => {
+                          // removeCategory(category.id)
+                          setModalDeleteOptionVisible(true)
+                          setOptionIdDelete(category.id)
+                        }} />
+                    </View>
+                    <View style={{ flex: 1, marginStart: 6 }}>
+                      <Button
+                        key={category.id}
+                        title={category.name || ''}
+                        color={category.color || ''}
+                        onPress={() => {
+                          setCategory(category)
+                          setModalCategoriesVisible(false)
+                        }} />
+                    </View>
                   </View>
-                  <View style={{ flex: 1, marginStart: 6 }}>
-                    <Button
-                      key={category.id}
-                      title={category.name || ''}
-                      color={category.color || ''}
-                      onPress={() => {
-                        setCategory(category)
-                        setModalCategoriesVisible(false)
-                      }} />
-                  </View>
-                </View>
-              ))}
+                )
+              })}
               <Button title='Cerrar' color={'red'} onPress={() => setModalCategoriesVisible(false)} />
+              <Button title='Ver categorias desactivadas' color={'blue'} onPress={() => {
+                setOptionNameDisabled('categories')
+                setModalDisabledOptionsVisible(true)
+              }} />
             </View>
           </Modal>
 
+          {/* Modal modalPaymentMethodVisible */}
           <Modal
             animationType="slide"
             transparent={false}
@@ -195,7 +326,9 @@ export const UpdateCreateExpenseModal = () => {
                       title={'Eliminar'}
                       color={'red'}
                       onPress={() => {
-                        removePaymentMethod(paymentMethod.id)
+                        // removePaymentMethod(paymentMethod.id)
+                        setModalDeleteOptionVisible(true)
+                        setOptionIdDelete(paymentMethod.id)
                       }} />
                   </View>
                   <View style={{ flex: 1, marginStart: 6 }}>
@@ -210,8 +343,13 @@ export const UpdateCreateExpenseModal = () => {
                 </View>
               ))}
               <Button title='Cerrar' color={'red'} onPress={() => setModalPaymentMethodVisible(false)} />
+              <Button title='Ver metodos de pago desactivados' color={'blue'} onPress={() => {
+                setOptionNameDisabled('paymentMethods')
+                setModalDisabledOptionsVisible(true)
+              }} />
             </View>
           </Modal>
+
           <View style={{ marginTop: 22, gap: 20 }}>
             <Button title="Fecha" onPress={() => setDatePickerVisible(true)} />
             <DatePicker
@@ -233,7 +371,6 @@ export const UpdateCreateExpenseModal = () => {
           <View style={{ marginTop: 100, gap: 20 }}>
             <Button title='Añadir expense' color={'green'} onPress={createNewExpense} />
             <Button title='Cerrar' color={'red'} onPress={() => {
-              // setModalUpdateCreateExpense(state => ({ ...state, show: false }))
               setModalUpdateCreateExpense({ show: false })
               setNewExpense({ name: '', description: '' })
             }} />

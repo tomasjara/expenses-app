@@ -7,7 +7,7 @@ import { ExpensesSmallCard } from './ExpensesSmallCard'
 export const AllExpenses = ({ modalAllExpensesVisible, setModalAllExpensesVisible }) => {
     const [detailExpenseVisible, setDetailExpenseVisible] = useState(false)
     const [expenseSelect, setExpenseSelect] = useState()
-    const expenses = useExpensesStore(state => state.expenses)
+    const { expensesWithRelations } = useExpensesStore(state => state)
 
     return (
         <Modal
@@ -25,17 +25,19 @@ export const AllExpenses = ({ modalAllExpensesVisible, setModalAllExpensesVisibl
                     setDetailExpenseVisible(false);
                 }}>
                 <View style={{}}>
-                    {expenseSelect && <DetailExpense expense={expenseSelect} setDetailExpenseVisible={setDetailExpenseVisible}  />}
+                    {expenseSelect && <DetailExpense expense={expenseSelect} setDetailExpenseVisible={setDetailExpenseVisible} />}
                 </View>
             </Modal>
             <ScrollView style={{ padding: 30 }}>
                 <Text style={{ fontSize: 20, marginBottom: 20 }}>Todos los gastos</Text>
-                {expenses && expenses.map(expense => (
+
+                {expensesWithRelations && expensesWithRelations.map(expense => (
                     <ExpensesSmallCard key={expense.id} expense={expense} onPress={() => {
                         setExpenseSelect(expense)
                         setDetailExpenseVisible(true)
                     }} />
                 ))}
+
                 <Button title='Cerrar' onPress={() => setModalAllExpensesVisible(false)} />
             </ScrollView>
         </Modal>

@@ -1,11 +1,21 @@
-import { StyleSheet, Text } from 'react-native';
-import { ContainerScreen } from '@/components/ContainerScreen';
+import { Button, StyleSheet, Text } from 'react-native';
+import { ContainerScreen } from './../../components/ContainerScreen';
+import { useExpensesStore } from './../../store/expensesStore';
 
 export default function SettingsScreen() {
+
+  const { cleanExpensesState } = useExpensesStore(state => state)
+
   return (
     <ContainerScreen>
       <Text style={{ color: 'white', fontSize: 30 }}>Configuraciones</Text>
-      <Text style={{ color: 'white', fontSize: 15 }}>Version funcional</Text>
+      <Button
+        title='Limpiar state de expenses'
+        color={'red'}
+        onPress={() => {
+          cleanExpensesState(true)
+        }}
+      />
     </ContainerScreen>
   );
 }

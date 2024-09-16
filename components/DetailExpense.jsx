@@ -15,11 +15,15 @@ const KeyValue = ({ keyValue, value }) => {
 
 export const DetailExpense = ({ expense, setDetailExpenseVisible }) => {
     const [currentExpense, setCurrentExpense] = useState()
-    const { id, value, description, category, paymentMethod, creationDate, paymentDate, lastModificationDate } = currentExpense || expense || {}
-
+    const getExpense = useExpensesStore(state => state.getExpense)
     const removeExpense = useExpensesStore(state => state.removeExpense)
     const expenses = useExpensesStore(state => state.expenses)
     const setModalUpdateCreateExpense = useExpensesStore(state => state.setModalUpdateCreateExpense)
+
+    const expenseFind = getExpense(expense.id)
+
+    // const { id, value, description, category, paymentMethod, creationDate, paymentDate, lastModificationDate } = currentExpense || expense || {}
+    const { id, value, description, creationDate, paymentDate, lastModificationDate } = expenseFind || {}
 
     const onDelete = () => {
         removeExpense(id)
@@ -37,8 +41,8 @@ export const DetailExpense = ({ expense, setDetailExpenseVisible }) => {
                 <KeyValue keyValue={'id:'} value={id} />
                 <KeyValue keyValue={'value:'} value={value} />
                 <KeyValue keyValue={'description:'} value={description} />
-                <KeyValue keyValue={'category:'} value={category.name} />
-                <KeyValue keyValue={'metodo de pago:'} value={paymentMethod.name} />
+                {/* <KeyValue keyValue={'category:'} value={category?.name} /> */}
+                {/* <KeyValue keyValue={'metodo de pago:'} value={paymentMethod?.name} /> */}
                 <KeyValue keyValue={'payment date:'} value={dayjs(paymentDate).format('DD/mm/YYYY')} />
                 <KeyValue keyValue={'creation date:'} value={dayjs(creationDate).format('DD/mm/YYYY')} />
                 <KeyValue keyValue={'last modification date:'} value={dayjs(lastModificationDate).format('DD/mm/YYYY')} />

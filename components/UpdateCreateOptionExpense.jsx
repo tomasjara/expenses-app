@@ -31,6 +31,7 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
             ...newOption,
             id: uuid.v4(),
             color: "green",
+            disabled: false
         }
         if (modalNewOptionVisible.type === 'edit') {
             if (modalNewOptionVisible.optionName === 'category') {

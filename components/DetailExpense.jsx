@@ -1,6 +1,5 @@
 import { useExpensesStore } from '@/store/expensesStore'
 import dayjs from 'dayjs'
-import { useEffect, useState } from 'react'
 import { View, Text, Button } from 'react-native'
 import Toast from 'react-native-toast-message'
 
@@ -14,25 +13,13 @@ const KeyValue = ({ keyValue, value }) => {
 }
 
 export const DetailExpense = ({ expense, setDetailExpenseVisible }) => {
-    const [currentExpense, setCurrentExpense] = useState()
-    const getExpense = useExpensesStore(state => state.getExpense)
-    const removeExpense = useExpensesStore(state => state.removeExpense)
-    const expenses = useExpensesStore(state => state.expenses)
-    const setModalUpdateCreateExpense = useExpensesStore(state => state.setModalUpdateCreateExpense)
-
-    const expenseFind = getExpense(expense.id)
-
-    // const { id, value, description, category, paymentMethod, creationDate, paymentDate, lastModificationDate } = currentExpense || expense || {}
-    const { id, value, description, creationDate, paymentDate, lastModificationDate } = expenseFind || {}
+    const { removeExpense, setModalUpdateCreateExpense } = useExpensesStore(state => state)
+    const { id, value, description, category, paymentMethod, creationDate, paymentDate, lastModificationDate } = expense || {}
 
     const onDelete = () => {
         removeExpense(id)
         setDetailExpenseVisible(false)
     }
-
-    useEffect(() => {
-        setCurrentExpense(expenses.find(expenseCurrent => expenseCurrent.id === expense.id));
-    }, [expenses])
 
     return (
         <View style={{ padding: 30 }}>
@@ -41,11 +28,11 @@ export const DetailExpense = ({ expense, setDetailExpenseVisible }) => {
                 <KeyValue keyValue={'id:'} value={id} />
                 <KeyValue keyValue={'value:'} value={value} />
                 <KeyValue keyValue={'description:'} value={description} />
-                {/* <KeyValue keyValue={'category:'} value={category?.name} /> */}
-                {/* <KeyValue keyValue={'metodo de pago:'} value={paymentMethod?.name} /> */}
-                <KeyValue keyValue={'payment date:'} value={dayjs(paymentDate).format('DD/mm/YYYY')} />
-                <KeyValue keyValue={'creation date:'} value={dayjs(creationDate).format('DD/mm/YYYY')} />
-                <KeyValue keyValue={'last modification date:'} value={dayjs(lastModificationDate).format('DD/mm/YYYY')} />
+                <KeyValue keyValue={'category:'} value={category?.name} />
+                <KeyValue keyValue={'metodo de pago:'} value={paymentMethod?.name} />
+                <KeyValue keyValue={'payment date:'} value={dayjs(paymentDate).format('DD/MM/YYYY')} />
+                <KeyValue keyValue={'creation date:'} value={dayjs(creationDate).format('DD/MM/YYYY')} />
+                <KeyValue keyValue={'last modification date:'} value={dayjs(lastModificationDate).format('DD/MM/YYYY')} />
                 <Button title='editar' color={'blue'} onPress={() => setModalUpdateCreateExpense({ type: 'edit', show: true, optionSelect: expense })} />
                 <Button title='Eliminar' color={'red'} onPress={onDelete} />
                 <View style={{ marginTop: 10 }}>

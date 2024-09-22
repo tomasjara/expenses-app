@@ -67,6 +67,12 @@ const ModalDisabledOption = ({ optionName, visible = false, setVisible }) => {
 const ModalConfirmOptionDelete = ({ optionId, visible = false, setVisible }) => {
   const { categories, paymentMethods, expenses, removeCategory, removePaymentMethod, updateCategory, updatePaymentMethod, setExpenses } = useExpensesStore(state => state)
   const [relatedOption, setRelatedOption] = useState(null)
+  const [lengthArray, setLengthArray] = useState()
+
+  useEffect(() => {
+    if (!relatedOption) return
+    setLengthArray(searchArrays[relatedOption.key].filter(item => !item.disabled).length);
+  }, [relatedOption])
 
   const searchArrays = {
     categories,
@@ -85,10 +91,16 @@ const ModalConfirmOptionDelete = ({ optionId, visible = false, setVisible }) => 
     paymentMethods: updatePaymentMethod
   }
 
+  const onDeleteOption = () => {
+    removeFuntions[relatedOption.key](relatedOption.option.id)
+  }
+
   const onDelete = () => {
     const newExpenses = expenses.filter(expense => expense[optionNamesInExpenses[relatedOption.key]] != relatedOption.option.id)
+    onDeleteOption()
     setExpenses(newExpenses)
   }
+
 
   const onDisable = () => {
     updateFuntions[relatedOption.key]({ id: relatedOption.option.id, disabled: true })
@@ -101,10 +113,10 @@ const ModalConfirmOptionDelete = ({ optionId, visible = false, setVisible }) => 
       if (optionResult) {
         const expenseResult = expenses.find(expense => expense[optionNamesInExpenses[key]] === optionId)
         if (!expenseResult) {
-          setRelatedOption(null)
+          setRelatedOption({ key: key, option: optionResult, relations: false })
           return
         }
-        setRelatedOption({ key: key, option: optionResult })
+        setRelatedOption({ key: key, option: optionResult, relations: true })
       }
     })
   }, [optionId])
@@ -117,14 +129,25 @@ const ModalConfirmOptionDelete = ({ optionId, visible = false, setVisible }) => 
       onRequestClose={() => {
         setVisible(false)
       }}>
-      {relatedOption
-        ? <View>
+
+      {lengthArray <= 1 && <View>
+        <Text>Debe haber mas de un elemento activado para poder eliminar una opcion</Text>
+      </View>}
+
+      {relatedOption?.relations && lengthArray > 1 &&
+        <View>
           <Text>Esta categoria/Este metodo de pago esta relacionado con un gasto </Text>
           <Button onPress={onDisable} title='Conservar los todos los gastos relacionados, desactivando la categoria/el metodo de pago' color={'green'} />
           <Button onPress={onDelete} title='Eliminar todas los gastos relaciondos' color={'red'} />
+        </View>}
+
+      {!relatedOption?.relations && lengthArray > 1 &&
+        <View>
+          <Button onPress={onDeleteOption} title='Eliminar categoria/metodo de pago' color={'red'} />
+          <Text>Opcion no relacionada</Text>
         </View>
-        : <Text>Opcion no relacionada</Text>
       }
+
       <Button
         title='Cerrar'
         onPress={() => setVisible(false)} />
@@ -313,35 +336,39 @@ export const UpdateCreateExpenseModal = () => {
                 <Text style={{ fontSize: 20 }}>Seleccion de metodo de pago</Text>
                 <Button title='  +  ' color={'red'} onPress={() => setModalNewOptionVisible(state => ({ ...state, type: 'create', optionName: 'paymentMethod', show: true }))} />
               </View>
-              {paymentMethods && paymentMethods.map(paymentMethod => (
-                <View style={{ flexDirection: 'row', }} key={paymentMethod.id}>
-                  <View style={{ flexDirection: 'row', gap: 6 }}>
-                    <Button
-                      title={'Editar'}
-                      color={'blue'}
-                      onPress={() => {
-                        setModalNewOptionVisible(state => ({ ...state, type: 'edit', optionName: 'paymentMethod', show: true, optionSelect: paymentMethod }))
-                      }} />
-                    <Button
-                      title={'Eliminar'}
-                      color={'red'}
-                      onPress={() => {
-                        // removePaymentMethod(paymentMethod.id)
-                        setModalDeleteOptionVisible(true)
-                        setOptionIdDelete(paymentMethod.id)
-                      }} />
+              {paymentMethods && paymentMethods.map(paymentMethod => {
+                if (paymentMethod.disabled) return
+                return (
+
+                  <View style={{ flexDirection: 'row', }} key={paymentMethod.id}>
+                    <View style={{ flexDirection: 'row', gap: 6 }}>
+                      <Button
+                        title={'Editar'}
+                        color={'blue'}
+                        onPress={() => {
+                          setModalNewOptionVisible(state => ({ ...state, type: 'edit', optionName: 'paymentMethod', show: true, optionSelect: paymentMethod }))
+                        }} />
+                      <Button
+                        title={'Eliminar'}
+                        color={'red'}
+                        onPress={() => {
+                          // removePaymentMethod(paymentMethod.id)
+                          setModalDeleteOptionVisible(true)
+                          setOptionIdDelete(paymentMethod.id)
+                        }} />
+                    </View>
+                    <View style={{ flex: 1, marginStart: 6 }}>
+                      <Button
+                        title={paymentMethod.name || ''}
+                        color={paymentMethod.color || ''}
+                        onPress={() => {
+                          setpaymentMethod(paymentMethod)
+                          setModalPaymentMethodVisible(false)
+                        }} />
+                    </View>
                   </View>
-                  <View style={{ flex: 1, marginStart: 6 }}>
-                    <Button
-                      title={paymentMethod.name || ''}
-                      color={paymentMethod.color || ''}
-                      onPress={() => {
-                        setpaymentMethod(paymentMethod)
-                        setModalPaymentMethodVisible(false)
-                      }} />
-                  </View>
-                </View>
-              ))}
+                )
+              })}
               <Button title='Cerrar' color={'red'} onPress={() => setModalPaymentMethodVisible(false)} />
               <Button title='Ver metodos de pago desactivados' color={'blue'} onPress={() => {
                 setOptionNameDisabled('paymentMethods')

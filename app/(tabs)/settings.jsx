@@ -1,5 +1,6 @@
 import { Button, StyleSheet, Text } from 'react-native';
 import { ContainerScreen } from './../../components/ContainerScreen';
+import { ExportFiles } from './../../components/ExportFiles';
 import { useExpensesStore } from './../../store/expensesStore';
 
 export default function SettingsScreen() {
@@ -16,6 +17,7 @@ export default function SettingsScreen() {
           cleanExpensesState(true)
         }}
       />
+      <ExportFiles />
     </ContainerScreen>
   );
 }

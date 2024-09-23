@@ -1,19 +1,21 @@
 import { View, StyleSheet } from 'react-native'
 import React from 'react'
 
-export const ContainerWidget = ({ children, backgroundColor }) => {
+export const ContainerWidget = ({ children }) => {
   return (
-    <View style={styles.container(backgroundColor)}>
+    <View style={styles.container()}>
       {children}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: (backgroundColor) => ({
+  container: () => ({
     borderRadius: 10,
-    backgroundColor: backgroundColor,
+    backgroundColor: 'white',
     // height: 150,
+    gap: 10,
+    alignItems: 'center',
     padding: 20
   })
 });

@@ -20,10 +20,10 @@ export default function HomeScreen() {
       <ScrollView>
         <ContainerScreen>
           <AllExpenses modalAllExpensesVisible={modalAllExpensesVisible} setModalAllExpensesVisible={setModalAllExpensesVisible} />
-          <ContainerWidget backgroundColor={'white'}>
+          <ContainerWidget >
             <TotalExpenseValue />
           </ContainerWidget>
-          <ContainerWidget backgroundColor={'white'}>
+          <ContainerWidget>
             <Text style={{ fontSize: 20, marginBottom: 10 }}>Ultimos gastos</Text>
             {expensesWithRelations && expensesWithRelations.slice(0, 3).map((expense) => {
               return (

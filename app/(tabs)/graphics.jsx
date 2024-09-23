@@ -126,16 +126,16 @@ export default function GraphicsScreen() {
             }}
           />
         </ContainerWidget> */}
-        <ContainerWidget>
+        <ContainerWidget customStyle={{ alignItems: 'center' }}>
           <Text style={{ color: 'black', fontSize: 25, alignSelf: 'flex-start' }}>Gastos por categorias</Text>
           <PieChart
             data={expensesPieChart}
-            width={350}
+            width={340}
             height={220}
             chartConfig={chartConfig}
             accessor={"value"}
             backgroundColor={"transparent"}
-            center={[15, 0]}
+            center={[12, 0]}
           // absolute
           />
         </ContainerWidget>

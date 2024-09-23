@@ -4,6 +4,7 @@ import React from 'react';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -21,7 +22,7 @@ export default function TabLayout() {
           title: 'Graficos',
           tabBarItemStyle: { paddingBottom: 5 },
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon size={20} name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <Ionicons name={focused ? 'bar-chart' : 'bar-chart-outline'} size={20} color={color} />
           ),
         }}
       />
@@ -42,7 +43,7 @@ export default function TabLayout() {
           title: 'Configuraciones',
           tabBarItemStyle: { paddingBottom: 5 },
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon size={20} name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <Ionicons name={focused ? 'settings' : 'settings-outline'} size={20} color={color} />
           ),
         }}
       />

@@ -6,18 +6,19 @@ App para registrar los gastos cotidianos de manera intuitiva y rapida.
 
 * [X] Data local persistente
 * [X] Exportacion de datos (Android)
-* [ ] Importacion de datos
 * [X] CRUD Expenses
 * [X] CRUD Categorias
 * [X] CRUD Metodos de pago
-* [ ] Test IOS
 * [X] Generar reportes (tablas, graficos)
 * [X] Seccion para ver todos los gastos
 * [X] App icon y splash screen
 * [X] Selector de color en formulario para añadir gasto
+* [ ] Importacion de datos
+* [ ] Test IOS
 * [ ] Estilizar aplicacion
 * [ ] Auth opcional con firebase para guardar sus datos en servidor
 * [ ] Opciones de personalizacion en pantalla de inicio
 * [ ] Widgets
+* [ ] Agrupar la generacion de repotes (objetos para la creacion de graficos o tablas)
 * [ ] Multi idoma
 * [ ] Temas (ligth, dark, etc...)

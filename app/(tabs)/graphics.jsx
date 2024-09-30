@@ -105,7 +105,6 @@ export default function GraphicsScreen() {
     }
     return acc;
   }, [])
-
   return (
     <ScrollView>
       <ContainerScreen>
@@ -126,7 +125,7 @@ export default function GraphicsScreen() {
             }}
           />
         </ContainerWidget> */}
-        <ContainerWidget customStyle={{ alignItems: 'center' }}>
+        {expensesPieChart.length != 0 && <ContainerWidget customStyle={{ alignItems: 'center' }}>
           <Text style={{ color: 'black', fontSize: 25, alignSelf: 'flex-start' }}>Gastos por categorias</Text>
           <PieChart
             data={expensesPieChart}
@@ -138,7 +137,8 @@ export default function GraphicsScreen() {
             center={[12, 0]}
           // absolute
           />
-        </ContainerWidget>
+        </ContainerWidget>}
+
         {/* <ContainerWidget>
           <Text style={{ color: 'black', fontSize: 25, alignSelf: 'flex-start' }}>Grafico 2</Text>
           <ContributionGraph

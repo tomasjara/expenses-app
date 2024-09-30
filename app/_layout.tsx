@@ -12,7 +12,6 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
-  const expenses = useExpensesStore(state => state.expenses)
   const hasHydrated = useExpensesStore(state => state._hasHydrated)
 
   const [loaded] = useFonts({
@@ -20,7 +19,7 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (loaded || !hasHydrated) {
+    if (loaded) {
       SplashScreen.hideAsync();
     }
   }, [loaded, hasHydrated]);

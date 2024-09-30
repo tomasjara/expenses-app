@@ -30,14 +30,12 @@ export const AllExpenses = ({ modalAllExpensesVisible, setModalAllExpensesVisibl
             </Modal>
             <ScrollView style={{ padding: 30 }}>
                 <Text style={{ fontSize: 20, marginBottom: 20 }}>Todos los gastos</Text>
-
                 {expensesWithRelations && expensesWithRelations.map(expense => (
                     <ExpensesSmallCard key={expense.id} expense={expense} onPress={() => {
                         setExpenseSelect(expense)
                         setDetailExpenseVisible(true)
                     }} />
                 ))}
-
                 <Button title='Cerrar' onPress={() => setModalAllExpensesVisible(false)} />
             </ScrollView>
         </Modal>

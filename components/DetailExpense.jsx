@@ -14,7 +14,7 @@ const KeyValue = ({ keyValue, value }) => {
 
 export const DetailExpense = ({ expense, setDetailExpenseVisible }) => {
     const { removeExpense, setModalUpdateCreateExpense } = useExpensesStore(state => state)
-    const { id, value, description, category, paymentMethod, creationDate, paymentDate, lastModificationDate } = expense || {}
+    const { id, value, description, category, paymentMethod, creationDate, paymentDate, lastModificationDate, color } = expense || {}
 
     const onDelete = () => {
         removeExpense(id)
@@ -33,6 +33,10 @@ export const DetailExpense = ({ expense, setDetailExpenseVisible }) => {
                 <KeyValue keyValue={'payment date:'} value={dayjs(paymentDate).format('DD/MM/YYYY')} />
                 <KeyValue keyValue={'creation date:'} value={dayjs(creationDate).format('DD/MM/YYYY')} />
                 <KeyValue keyValue={'last modification date:'} value={dayjs(lastModificationDate).format('DD/MM/YYYY')} />
+                {color && <>
+                    <KeyValue keyValue={'Color:'} value={color} />
+                    <View style={{ backgroundColor: color, width: 300, height: 100, borderRadius: 10 }}></View>
+                </>}
                 <Button title='editar' color={'blue'} onPress={() => setModalUpdateCreateExpense({ type: 'edit', show: true, optionSelect: expense })} />
                 <Button title='Eliminar' color={'red'} onPress={onDelete} />
                 <View style={{ marginTop: 10 }}>

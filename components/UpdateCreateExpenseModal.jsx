@@ -1,11 +1,11 @@
-import { View, Text, Modal, Button, TextInput } from 'react-native'
+import { View, Text, Modal, Button, TextInput, ActivityIndicator } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
 import DatePicker from 'react-native-date-picker'
 import { useExpensesStore } from '@/store/expensesStore'
 import { UpdateCreateOptionExpense } from '@/components/UpdateCreateOptionExpense'
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
-
+import ColorPicker from 'react-native-wheel-color-picker'
 
 const ModalDisabledOption = ({ optionName, visible = false, setVisible }) => {
   const { categories, paymentMethods, expenses, removeCategory, removePaymentMethod, updateCategory, updatePaymentMethod, setExpenses } = useExpensesStore(state => state)
@@ -158,6 +158,7 @@ const ModalConfirmOptionDelete = ({ optionId, visible = false, setVisible }) => 
 export const UpdateCreateExpenseModal = () => {
   const [modalNewOptionVisible, setModalNewOptionVisible] = useState({ show: false })
   const [modalCategoriesVisible, setModalCategoriesVisible] = useState(false)
+  const [modalColorPickerVisible, setModalColorPickerVisible] = useState(false)
   const [modalDisabledOptionsVisible, setModalDisabledOptionsVisible] = useState(false)
   const [optionNameDisabled, setOptionNameDisabled] = useState()
   const [modalPaymentMethodVisible, setModalPaymentMethodVisible] = useState(false)
@@ -167,6 +168,7 @@ export const UpdateCreateExpenseModal = () => {
   const [category, setCategory] = useState()
   const [paymentMethod, setpaymentMethod] = useState()
   const [optionIdDelete, setOptionIdDelete] = useState()
+  const [colorValue, setColorValue] = useState("#ffff");
   const [modalDeleteOptionVisible, setModalDeleteOptionVisible] = useState()
   const { modalUpdateCreateExpense, setModalUpdateCreateExpense, removePaymentMethod, paymentMethods, categories, removeCategory, addExpense, updateExpense } = useExpensesStore(state => state)
   const inputValueRef = useRef(null);
@@ -183,6 +185,7 @@ export const UpdateCreateExpenseModal = () => {
       setNewExpense(modalUpdateCreateExpense.optionSelect)
       setCategory(modalUpdateCreateExpense.optionSelect.category)
       setpaymentMethod(modalUpdateCreateExpense.optionSelect.paymentMethod)
+      setColorValue(modalUpdateCreateExpense.optionSelect.paymentMethod || colorValue)
     }
   }, [modalUpdateCreateExpense])
 
@@ -195,7 +198,8 @@ export const UpdateCreateExpenseModal = () => {
         paymentDate: dateValue,
         lastModificationDate: new Date(),
         paymentMethod: paymentMethod || paymentMethods[0],
-        category: category || categories[0]
+        category: category || categories[0],
+        color: colorValue
       }
       updateExpense(newExpenseEdited);
       Toast.show({
@@ -216,7 +220,8 @@ export const UpdateCreateExpenseModal = () => {
           paymentMethod: {},
           category: {},
           paymentMethodId: paymentMethod?.id || paymentMethods[0].id,
-          categoryId: category?.id || categories[0].id
+          categoryId: category?.id || categories[0].id,
+          color: colorValue
         }
 
         addExpense(newExpenseObj)
@@ -267,7 +272,10 @@ export const UpdateCreateExpenseModal = () => {
             <Text >Metodo de pago seleccionado: {paymentMethod?.name || paymentMethods[0].name}</Text>
             <View style={{ backgroundColor: paymentMethod?.color || paymentMethods[0].color, height: 10, width: 260 }}></View>
           </View>
-
+          <View>
+            <Text >Color: {colorValue}</Text>
+            <View style={{ backgroundColor: colorValue, height: 60, borderRadius: 10, }}></View>
+          </View>
           {/* Modal modalCategoriesVisible */}
           <Modal
             animationType="slide"
@@ -322,7 +330,6 @@ export const UpdateCreateExpenseModal = () => {
               }} />
             </View>
           </Modal>
-
           {/* Modal modalPaymentMethodVisible */}
           <Modal
             animationType="slide"
@@ -377,6 +384,46 @@ export const UpdateCreateExpenseModal = () => {
             </View>
           </Modal>
 
+          <Modal
+            animationType="slide"
+            transparent={false}
+            visible={modalColorPickerVisible}
+            onRequestClose={() => {
+              setModalColorPickerVisible(false)
+            }}>
+            <View>
+              <Button
+                onPress={() => setModalColorPickerVisible(false)}
+                color={'red'}
+                title='Cerrar' />
+              <Text>Color seleccionado: {colorValue}</Text>
+              <View style={{ backgroundColor: colorValue, width: 200, height: 100, borderRadius: 10 }}>
+              </View>
+            </View>
+
+            <View style={{ padding: 20, gap: 20 }}>
+              <ColorPicker
+                // ref={r => { this.picker = r }}
+                color={colorValue}
+                // swatchesOnly={this.state.swatchesOnly}
+                onColorChange={color => setColorValue(color)}
+                // onColorChangeComplete={this.onColorChangeComplete}
+                thumbSize={40}
+                sliderSize={40}
+                noSnap={true}
+                row={false}
+                // swatchesLast={this.state.swatchesLast}
+                // swatches={this.state.swatchesEnabled}
+                // discrete={this.state.disc}
+                wheelLodingIndicator={<ActivityIndicator size={40} />}
+                sliderLodingIndicator={<ActivityIndicator size={20} />}
+                useNativeDriver={false}
+                useNativeLayout={false}
+              />
+            </View>
+
+          </Modal>
+
           <View style={{ marginTop: 22, gap: 20 }}>
             <Button title="Fecha" onPress={() => setDatePickerVisible(true)} />
             <DatePicker
@@ -394,8 +441,7 @@ export const UpdateCreateExpenseModal = () => {
             />
             <Button title='Categorias' onPress={() => setModalCategoriesVisible(true)} />
             <Button title='Metodo de pago' onPress={() => setModalPaymentMethodVisible(true)} />
-          </View>
-          <View style={{ marginTop: 100, gap: 20 }}>
+            <Button title='Selecciona un color' onPress={() => setModalColorPickerVisible(true)} />
             <Button title='Añadir expense' color={'green'} onPress={createNewExpense} />
             <Button title='Cerrar' color={'red'} onPress={() => {
               setModalUpdateCreateExpense({ show: false })

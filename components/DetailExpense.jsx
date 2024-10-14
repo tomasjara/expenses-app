@@ -1,7 +1,46 @@
 import { useExpensesStore } from '@/store/expensesStore'
 import dayjs from 'dayjs'
-import { View, Text, Button } from 'react-native'
+import { View, Text, Button, Pressable } from 'react-native'
 import Toast from 'react-native-toast-message'
+import { UpdateCreateExpenseModal } from './UpdateCreateExpenseModal';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useEffect, useRef, useState } from 'react';
+
+function BottomSheetModal({ expense }) {
+    const refRBSheet = useRef();
+    const { setModalUpdateCreateExpense, expensesWithRelations } = useExpensesStore(state => state)
+
+    return (
+        <View >
+            <RBSheet
+                ref={refRBSheet}
+                draggable
+                height={400}
+                customModalProps={{
+                    animationType: 'fade',
+                    statusBarTranslucent: true,
+                }}
+                customStyles={{
+                    container: {
+                        borderTopLeftRadius: 10,
+                        borderTopRightRadius: 10,
+                    },
+                    draggableIcon: {
+                        width: 80,
+                    },
+                }}>
+                <UpdateCreateExpenseModal refRBSheet={refRBSheet} />
+            </RBSheet>
+
+            <Button title='editar' color={'blue'} onPress={() => {
+                refRBSheet.current.open()
+                setModalUpdateCreateExpense({ type: 'edit', show: true, optionSelect: expense }
+                )
+            }} />
+        </View>
+    );
+}
 
 const KeyValue = ({ keyValue, value }) => {
     return (
@@ -12,9 +51,15 @@ const KeyValue = ({ keyValue, value }) => {
     )
 }
 
-export const DetailExpense = ({ expense, setDetailExpenseVisible }) => {
-    const { removeExpense, setModalUpdateCreateExpense } = useExpensesStore(state => state)
+export const DetailExpense = ({ expenseSelect, setDetailExpenseVisible }) => {
+    const [expense, setExpense] = useState(expenseSelect)
+    const { removeExpense, expensesWithRelations } = useExpensesStore(state => state)
     const { id, value, description, category, paymentMethod, creationDate, paymentDate, lastModificationDate, color } = expense || {}
+
+    useEffect(() => {
+        const expenseFind = expensesWithRelations.find(item => item.id === expense.id)
+        setExpense(expenseFind)
+    }, [expensesWithRelations])
 
     const onDelete = () => {
         removeExpense(id)
@@ -37,7 +82,9 @@ export const DetailExpense = ({ expense, setDetailExpenseVisible }) => {
                     <KeyValue keyValue={'Color:'} value={color} />
                     <View style={{ backgroundColor: color, width: 300, height: 100, borderRadius: 10 }}></View>
                 </>}
-                <Button title='editar' color={'blue'} onPress={() => setModalUpdateCreateExpense({ type: 'edit', show: true, optionSelect: expense })} />
+                <BottomSheetModal expense={expense} />
+                {/* <Button title='editar' color={'blue'} onPress={() => setModalUpdateCreateExpense({ type: 'edit', show: true, optionSelect: expense })} /> */}
+
                 <Button title='Eliminar' color={'red'} onPress={onDelete} />
                 <View style={{ marginTop: 10 }}>
                     <Button title='Cerrar' onPress={() => setDetailExpenseVisible(false)} />

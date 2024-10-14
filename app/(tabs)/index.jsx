@@ -3,16 +3,57 @@ import { Button, ScrollView, Text, View } from 'react-native';
 import { ContainerWidget } from './../../components/ContainerWidget'
 import { ContainerScreen } from './../../components/ContainerScreen'
 import { AllExpenses } from './../../components/AllExpenses'
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import { useExpensesStore } from '@/store/expensesStore'
 import { ExpensesSmallCard } from '@/components/ExpensesSmallCard'
 import { TotalExpenseValue } from '@/components/TotalExpenseValue'
+import { UpdateCreateExpenseModal } from './../../components/UpdateCreateExpenseModal';
 import Toast from 'react-native-toast-message';
-import { UpdateCreateExpenseModal } from '@/components/UpdateCreateExpenseModal';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
+import RBSheet from 'react-native-raw-bottom-sheet';
+
+function Example({ }) {
+  const refRBSheet = useRef();
+  const { setModalUpdateCreateExpense, expensesWithRelations } = useExpensesStore(state => state)
+
+  return (
+    <View style={{ flex: 1 }}>
+      <RBSheet
+        ref={refRBSheet}
+        draggable
+        height={400}
+        customModalProps={{
+          animationType: 'fade',
+          statusBarTranslucent: true,
+        }}
+        customStyles={{
+          container: {
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+          },
+          draggableIcon: {
+            width: 80,
+          },
+        }}>
+        <UpdateCreateExpenseModal refRBSheet={refRBSheet}/>
+      </RBSheet>
+      <Pressable
+        onPress={() => {
+          refRBSheet.current.open()
+          setModalUpdateCreateExpense({ 
+            // show: true, 
+            type: 'create' })
+        }}
+        style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 20, borderRadius: 20, shadowRadius: 10, elevation: 4 }}>
+        <Ionicons name="add-circle-sharp" size={45} color="black" />
+      </Pressable>
+    </View>
+  );
+}
+
 export default function HomeScreen() {
-  const { setModalUpdateCreateExpense, cleanExpensesState, expensesWithRelations } = useExpensesStore(state => state)
+  const { setModalUpdateCreateExpense, expensesWithRelations } = useExpensesStore(state => state)
   const [modalAllExpensesVisible, setModalAllExpensesVisible] = useState(false)
 
   return (
@@ -41,10 +82,16 @@ export default function HomeScreen() {
           </ContainerWidget>
         </ContainerScreen>
       </ScrollView >
-      <Pressable onPress={() => setModalUpdateCreateExpense({ show: true, type: 'create' })} style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 20, borderRadius: 20, shadowRadius: 10, elevation: 4 }}>
+      <Example />
+      {/* <Pressable
+        onPress={() => {
+          console.log('Hola');
+          setModalUpdateCreateExpense({ show: true, type: 'create' })
+        }}
+        style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 20, borderRadius: 20, shadowRadius: 10, elevation: 4 }}>
         <Ionicons name="add-circle-sharp" size={45} color="black" />
-      </Pressable>
-      <UpdateCreateExpenseModal />
+      </Pressable> */}
+      {/* <UpdateCreateExpenseModal /> */}
       <Toast />
     </>
   );

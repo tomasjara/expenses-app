@@ -25,7 +25,7 @@ export const AllExpenses = ({ modalAllExpensesVisible, setModalAllExpensesVisibl
                     setDetailExpenseVisible(false);
                 }}>
                 <View style={{}}>
-                    {expenseSelect && <DetailExpense expense={expenseSelect} setDetailExpenseVisible={setDetailExpenseVisible} />}
+                    {expenseSelect && <DetailExpense expenseSelect={expenseSelect} setDetailExpenseVisible={setDetailExpenseVisible} />}
                 </View>
             </Modal>
             <ScrollView >

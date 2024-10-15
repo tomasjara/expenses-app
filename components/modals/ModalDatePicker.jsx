@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import DateTimePicker from 'react-native-ui-datepicker';
 import dayjs from 'dayjs';
 
-export const ModalDatePicker = ({dateValue, setDateValue}) => {
+export const ModalDatePicker = ({ dateValue, setDateValue }) => {
     const [modalDatePickerVisible, setModalDatePickerVisible] = useState(false)
     return (
         <View>
@@ -37,7 +37,17 @@ export const ModalDatePicker = ({dateValue, setDateValue}) => {
                     </Pressable>
                 </Pressable>
             </Modal>
-            <Button title="Fecha" onPress={() => setModalDatePickerVisible(true)} />
+            <Pressable style={{
+                borderRadius: 10,
+                padding: 10,
+                borderWidth: 1,
+                marginBottom: 10, height: 45, flexDirection: 'row'
+            }} onPress={() => setModalDatePickerVisible(true)}>
+                <Text style={{ opacity: 0.6 }}>Fecha: </Text>
+                <Text>{dayjs(dateValue).format('DD/MM/YYYY')} </Text>
+                <Text style={{ opacity: 0.6 }}>{dayjs(dateValue).format('DD/MM/YYYY') === dayjs(new Date()).format('DD/MM/YYYY') && <Text style={{ opacity: 0.6 }}>- Hoy</Text>}</Text>
+            </Pressable>
+            {/* <Button title="Fecha" onPress={() => setModalDatePickerVisible(true)} /> */}
         </View>
     )
 }

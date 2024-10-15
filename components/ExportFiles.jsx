@@ -1,4 +1,4 @@
-import { Button, StyleSheet, Text, View } from 'react-native'
+import { Button, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { useExpensesStore } from './../store/expensesStore'
 import * as FileSystem from 'expo-file-system'
@@ -93,9 +93,12 @@ export const ExportFiles = () => {
     };
 
     return (
-        <View style={{ padding: 20 }}>
-            <Text>Exportar datos en varios formatos</Text>
-            <Button title="Exportar CSV" onPress={exportData} />
+        <View >
+            {/* <Text>Exportar datos en varios formatos</Text> */}
+            {/* <Button title="Exportar CSV" onPress={exportData} /> */}
+            <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10 }} onPress={exportData}>
+                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Exportar datos en CSV</Text>
+            </Pressable>
         </View>
     );
 

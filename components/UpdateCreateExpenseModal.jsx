@@ -11,21 +11,23 @@ import { ModalDatePicker } from '@/components/modals/ModalDatePicker'
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
 import dayjs from 'dayjs'
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
+  const { modalUpdateCreateExpense, setModalUpdateCreateExpense, paymentMethods, categories, addExpense, updateExpense } = useExpensesStore(state => state)
   const [modalNewOptionVisible, setModalNewOptionVisible] = useState({ show: false })
   const [modalDisabledOptionsVisible, setModalDisabledOptionsVisible] = useState(false)
   const [optionNameDisabled, setOptionNameDisabled] = useState()
   const [dateValue, setDateValue] = useState(new Date())
   const [newExpense, setNewExpense] = useState({ value: '', description: '' })
-  const [category, setCategory] = useState()
-  const [paymentMethod, setpaymentMethod] = useState()
+  const [category, setCategory] = useState(categories[0])
+  const [paymentMethod, setpaymentMethod] = useState(paymentMethods[0])
   const [optionIdDelete, setOptionIdDelete] = useState()
   const [modalDeleteOptionVisible, setModalDeleteOptionVisible] = useState()
-  const { modalUpdateCreateExpense, setModalUpdateCreateExpense, paymentMethods, categories, addExpense, updateExpense } = useExpensesStore(state => state)
   const inputValueRef = useRef(null);
 
   useEffect(() => {
+    console.log(dayjs(dateValue).format('DD/MM/YYYY') === dayjs(new Date()).format('DD/MM/YYYY'));
     if (!inputValueRef) return
     inputValueRef.current.focus();
   }, [inputValueRef])
@@ -49,8 +51,8 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
         lastModificationDate: new Date(),
         paymentMethod: {},
         category: {},
-        paymentMethodId: paymentMethod?.id || paymentMethods[0].id,
-        categoryId: category?.id || categories[0].id
+        paymentMethodId: paymentMethod?.id,
+        categoryId: category?.id
       }
       updateExpense(newExpenseEdited);
       Toast.show({
@@ -71,8 +73,8 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
           lastModificationDate: new Date(),
           paymentMethod: {},
           category: {},
-          paymentMethodId: paymentMethod?.id || paymentMethods[0].id,
-          categoryId: category?.id || categories[0].id
+          paymentMethodId: paymentMethod?.id,
+          categoryId: category?.id
         }
 
         addExpense(newExpenseObj)
@@ -91,11 +93,11 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
       <UpdateCreateOptionExpense modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} />
       <ModalConfirmOptionDelete optionId={optionIdDelete} setVisible={setModalDeleteOptionVisible} visible={modalDeleteOptionVisible} />
       <ModalDisabledOption optionName={optionNameDisabled} visible={modalDisabledOptionsVisible} setVisible={setModalDisabledOptionsVisible} />
-      <View>
+      <View >
         <ScrollView>
-          <View style={{ gap: 5, paddingHorizontal: 20, marginVertical: 30 }}>
+          <View style={{ gap: 5, paddingHorizontal: 20, marginTop: 10, marginBottom: 40 }}>
             {/* Info gasto || fecha || categoria || metodo de pago */}
-            <View style={{ flexDirection: 'row', alignItems: 'start', marginBottom: 0, gap: 10 }}>
+            {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 0, gap: 10 }}>
               <View style={{ borderRadius: 10, padding: 5 }}>
                 <Text style={{ opacity: 0.4, fontSize: 10 }}>Fecha:</Text>
                 <Text>{dayjs(dateValue).format('DD/MM/YYYY')}</Text>
@@ -114,8 +116,8 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
                   <View style={{ backgroundColor: paymentMethod?.color || paymentMethods[0].color, height: 20, width: 30, borderRadius: 5 }}></View>
                 </View>
               </View>
-            </View>
-
+            </View> */}
+            <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, marginBottom: 10 }}>Nuevo gasto 💸</Text>
             {/* FORMULARIO */}
             <TextInput
               keyboardType='numeric'
@@ -132,9 +134,10 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
               onChangeText={(e) => onChangeNewExpenseProp('description', e)}
               style={styles.input}
             />
-            <View style={{ marginTop: 22,marginBottom: 30, gap: 20 }}>
-              <ModalDatePicker dateValue={dateValue} setDateValue={setDateValue} />
+            <ModalDatePicker dateValue={dateValue} setDateValue={setDateValue} />
+            <View style={{ marginBottom: 30, gap: 20 }}>
               <ModalSeleccionarCatergoria
+                categorySelected={category}
                 setModalNewOptionVisible={setModalNewOptionVisible}
                 setModalDeleteOptionVisible={setModalDeleteOptionVisible}
                 setCategory={setCategory}
@@ -142,6 +145,7 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
                 setOptionNameDisabled={setOptionNameDisabled}
                 setOptionIdDelete={setOptionIdDelete} />
               <ModalSeleccionarMetodoDePago
+                paymentMethodSelected={paymentMethod}
                 setModalNewOptionVisible={setModalNewOptionVisible}
                 setModalDeleteOptionVisible={setModalDeleteOptionVisible}
                 setModalDisabledOptionsVisible={setModalDisabledOptionsVisible}
@@ -149,11 +153,10 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
                 setOptionIdDelete={setOptionIdDelete}
                 paymentMethods={paymentMethods}
                 setpaymentMethod={setpaymentMethod} />
-              <Button title='Añadir expense' color={'green'} onPress={createNewExpense} />
-              {/* <Button title='Cerrar' color={'red'} onPress={() => {
-                setModalUpdateCreateExpense({ show: false })
-                setNewExpense({ name: '', description: '' })
-              }} /> */}
+              <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={createNewExpense}>
+                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Añadir nuevo gasto</Text> 
+              </Pressable>
+              {/* <Button title='Añadir expense' color={'green'} onPress={createNewExpense} /> */}
             </View>
           </View>
         </ScrollView>

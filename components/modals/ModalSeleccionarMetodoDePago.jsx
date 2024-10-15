@@ -1,7 +1,8 @@
-import { View, Text, Modal, Button } from 'react-native'
+import { View, Text, Modal, Button, Pressable } from 'react-native'
 import React, { useState } from 'react'
+import { Ionicons } from '@expo/vector-icons'
 
-export const ModalSeleccionarMetodoDePago = ({setModalNewOptionVisible, setModalDeleteOptionVisible, setModalDisabledOptionsVisible, setOptionNameDisabled, setOptionIdDelete, paymentMethods, setpaymentMethod }) => {
+export const ModalSeleccionarMetodoDePago = ({ setModalNewOptionVisible, setModalDeleteOptionVisible, setModalDisabledOptionsVisible, setOptionNameDisabled, setOptionIdDelete, paymentMethods, setpaymentMethod, paymentMethodSelected }) => {
 
     const [modalPaymentMethodVisible, setModalPaymentMethodVisible] = useState(false)
 
@@ -51,6 +52,7 @@ export const ModalSeleccionarMetodoDePago = ({setModalNewOptionVisible, setModal
                             </View>
                         )
                     })}
+
                     <Button title='Cerrar' color={'red'} onPress={() => setModalPaymentMethodVisible(false)} />
                     <Button title='Ver metodos de pago desactivados' color={'blue'} onPress={() => {
                         setOptionNameDisabled('paymentMethods')
@@ -58,7 +60,36 @@ export const ModalSeleccionarMetodoDePago = ({setModalNewOptionVisible, setModal
                     }} />
                 </View>
             </Modal>
-            <Button title='Metodo de pago' onPress={() => setModalPaymentMethodVisible(true)} />
+            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, opacity: 0.6 }} onPress={() => setModalPaymentMethodVisible(true)}>
+                <Text>Metodo de pago:</Text>
+                <Ionicons name="settings-outline" size={24} color="black" />
+            </Pressable>
+            <View style={{ flexWrap: 'wrap', gap: 10, paddingHorizontal: 10, marginTop: 10 }}>
+                {paymentMethods && paymentMethods.map(paymentMethod => {
+                    if (paymentMethod.disabled) return
+                    return (
+                        <View key={paymentMethod.id} style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                            <Pressable style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'start',
+                                borderWidth: 0.5,
+                                borderRadius: 10,
+                                padding: 5,
+                                gap: 5,
+                                backgroundColor: paymentMethodSelected.id == paymentMethod.id ? '#f9f9f9' : 'white'
+                            }} onPress={() => {
+                                setpaymentMethod(paymentMethod)
+                            }} >
+                                <View style={{ height: 20, width: 20, borderRadius: 20, backgroundColor: paymentMethod.color || '' }}></View>
+                                <Text >{paymentMethod.name || ''}</Text>
+                            </Pressable>
+                            {paymentMethodSelected.id == paymentMethod.id ? <View style={{ backgroundColor: 'black', width: 20, height: 20, borderRadius: 10 }}></View> : null}
+                        </View>
+                    )
+                })}
+            </View>
+            {/* <Button title='Metodo de pago' onPress={() => setModalPaymentMethodVisible(true)} /> */}
         </View>
     )
 }

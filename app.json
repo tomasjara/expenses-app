@@ -10,6 +10,11 @@
     "ios": {
       "supportsTablet": true
     },
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#E4E4E4"
+    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -23,12 +28,8 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      ["expo-router"],
       [
-        "react-native-bootsplash",
-        {
-          "assetsDir": "assets/bootsplash"
-        }
+        "expo-router"
       ]
     ],
     "experiments": {

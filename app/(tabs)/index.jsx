@@ -22,7 +22,7 @@ function Example({ }) {
       <RBSheet
         ref={refRBSheet}
         draggable
-        height={400}
+        height={600}
         customModalProps={{
           animationType: 'fade',
           statusBarTranslucent: true,
@@ -36,14 +36,15 @@ function Example({ }) {
             width: 80,
           },
         }}>
-        <UpdateCreateExpenseModal refRBSheet={refRBSheet}/>
+        <UpdateCreateExpenseModal refRBSheet={refRBSheet} />
       </RBSheet>
       <Pressable
         onPress={() => {
           refRBSheet.current.open()
-          setModalUpdateCreateExpense({ 
+          setModalUpdateCreateExpense({
             // show: true, 
-            type: 'create' })
+            type: 'create'
+          })
         }}
         style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 20, borderRadius: 20, shadowRadius: 10, elevation: 4 }}>
         <Ionicons name="add-circle-sharp" size={45} color="black" />
@@ -65,33 +66,21 @@ export default function HomeScreen() {
             <TotalExpenseValue />
           </ContainerWidget>
           <ContainerWidget>
-            <Text style={{ fontSize: 20, marginBottom: 10 }}>Ultimos gastos</Text>
+            <Text style={{ fontSize: 17, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text>
             {expensesWithRelations && expensesWithRelations.slice(0, 3).map((expense) => {
               return (
                 <ExpensesSmallCard key={expense.id} expense={expense} />
               )
             })}
             <View style={{ gap: 10 }}>
-              <Button
-                title='Ver todos los gastos'
-                onPress={() => {
-                  setModalAllExpensesVisible(true)
-                }}
-              />
+              <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={() => { setModalAllExpensesVisible(true) }}>
+                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Ver todos los gastos</Text>
+              </Pressable>
             </View>
           </ContainerWidget>
         </ContainerScreen>
       </ScrollView >
       <Example />
-      {/* <Pressable
-        onPress={() => {
-          console.log('Hola');
-          setModalUpdateCreateExpense({ show: true, type: 'create' })
-        }}
-        style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 20, borderRadius: 20, shadowRadius: 10, elevation: 4 }}>
-        <Ionicons name="add-circle-sharp" size={45} color="black" />
-      </Pressable> */}
-      {/* <UpdateCreateExpenseModal /> */}
       <Toast />
     </>
   );

@@ -12,6 +12,7 @@ import Toast from 'react-native-toast-message';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
+import { GatosTabla } from '@/components/graphics/GatosTabla';
 
 function Example({ }) {
   const refRBSheet = useRef();
@@ -74,8 +75,9 @@ export default function HomeScreen() {
             })}
             <View style={{ gap: 10 }}>
               <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={() => { setModalAllExpensesVisible(true) }}>
-                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Ver todos los gastos</Text>
+                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Lista de todos los gastos</Text>
               </Pressable>
+              <GatosTabla />
             </View>
           </ContainerWidget>
         </ContainerScreen>

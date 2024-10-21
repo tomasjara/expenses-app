@@ -84,7 +84,9 @@ export const useExpensesStore = create(
       updateCategory: (newObject) =>
         set((state) => {
           const newCategories = state.categories.map((category) =>
-            category.id === newObject.id ? {...category, ...newObject} : category
+            category.id === newObject.id
+              ? { ...category, ...newObject }
+              : category
           );
           return {
             categories: newCategories,
@@ -130,7 +132,7 @@ export const useExpensesStore = create(
         })),
       removePaymentMethod: (idPaymentMethod) =>
         set((state) => {
-          console.log('object');
+          console.log("object");
           const newPaymentMethods = state.paymentMethods.filter(
             (paymentMethod) => paymentMethod.id !== idPaymentMethod
           );
@@ -139,11 +141,13 @@ export const useExpensesStore = create(
         }),
       updatePaymentMethod: (newObject) =>
         set((state) => {
-          console.log({newObject});
+          console.log({ newObject });
           const newPaymentMethods = state.paymentMethods.map((paymentMethod) =>
-            paymentMethod.id === newObject.id ? {...paymentMethod, ...newObject} : paymentMethod
+            paymentMethod.id === newObject.id
+              ? { ...paymentMethod, ...newObject }
+              : paymentMethod
           );
-          console.log({newPaymentMethods});
+          console.log({ newPaymentMethods });
           return {
             paymentMethods: newPaymentMethods,
           };
@@ -163,6 +167,22 @@ export const useExpensesStore = create(
 
 useExpensesStore.subscribe(
   (state) => state.expenses,
+  () => {
+    const setExpensesWithRelations =
+      useExpensesStore.getState().setExpensesWithRelations;
+    setExpensesWithRelations();
+  }
+);
+useExpensesStore.subscribe(
+  (state) => state.categories,
+  () => {
+    const setExpensesWithRelations =
+      useExpensesStore.getState().setExpensesWithRelations;
+    setExpensesWithRelations();
+  }
+);
+useExpensesStore.subscribe(
+  (state) => state.paymentMethods,
   () => {
     const setExpensesWithRelations =
       useExpensesStore.getState().setExpensesWithRelations;

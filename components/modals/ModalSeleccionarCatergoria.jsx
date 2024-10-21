@@ -1,7 +1,8 @@
-import { Button, Modal, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Button, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { useExpensesStore } from '@/store/expensesStore'
-import { Ionicons } from '@expo/vector-icons'
+import { Feather, Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+import ButtonBase from '../ButtonBase'
 
 export const ModalSeleccionarCatergoria = ({ setModalNewOptionVisible, setModalDeleteOptionVisible, setCategory, categorySelected, setModalDisabledOptionsVisible, setOptionNameDisabled, setOptionIdDelete }) => {
     const [modalCategoriesVisible, setModalCategoriesVisible] = useState(false)
@@ -12,56 +13,60 @@ export const ModalSeleccionarCatergoria = ({ setModalNewOptionVisible, setModalD
             {/* Modal SELECCIONAR CATEGORIA: modalCategoriesVisible */}
             <Modal
                 animationType="slide"
-                transparent={false}
+                transparent={true}
                 visible={modalCategoriesVisible}
                 onRequestClose={() => {
-                    setModalCategoriesVisible((state) => !state);
+                    setModalCategoriesVisible(false);
                 }}>
-
-                <View style={{ gap: 20, paddingHorizontal: 20, marginVertical: 30 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 20 }}>Seleccion de categorias</Text>
-                        <Button title='  +  ' color={'red'} onPress={() => setModalNewOptionVisible(state => ({ ...state, type: 'create', optionName: 'category', show: true }))} />
-                    </View>
-                    {categories && categories.map(category => {
-                        if (category.disabled) return
-                        return (
-                            <View style={{ flexDirection: 'row' }} key={category.id}>
-                                <View style={{ flexDirection: 'row', gap: 6 }}>
-                                    <Button
-                                        title={'Editar'}
-                                        color={'blue'}
-                                        onPress={() => {
-                                            setModalNewOptionVisible(state => ({ ...state, type: 'edit', optionName: 'category', show: true, optionSelect: category }))
-                                        }} />
-                                    <Button
-                                        title={'Eliminar'}
-                                        color={'red'}
-                                        onPress={() => {
-                                            // removeCategory(category.id)
-                                            setModalDeleteOptionVisible(true)
-                                            setOptionIdDelete(category.id)
-                                        }} />
-                                </View>
-                                <View style={{ flex: 1, marginStart: 6 }}>
-                                    <Button
-                                        key={category.id}
-                                        title={category.name || ''}
-                                        color={category.color || ''}
-                                        onPress={() => {
-                                            setCategory(category)
-                                            setModalCategoriesVisible(false)
-                                        }} />
-                                </View>
+                <Pressable style={{ alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.6)' }} onPress={() => setModalCategoriesVisible(false)}>
+                    <Pressable style={{ backgroundColor: 'white', borderRadius: 10, height: '80%', width: '95%' }} onPress={() => { }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20 }}>
+                            <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Configuración de categorias</Text>
+                            <Pressable onPress={() => setModalCategoriesVisible(false)}>
+                                <MaterialCommunityIcons name="window-close" size={24} color="black" />
+                            </Pressable>
+                        </View>
+                        <ScrollView>
+                            <View style={{ gap: 20, paddingHorizontal: 20, paddingBottom: 20 }}>
+                                {categories && categories.map(category => {
+                                    if (category.disabled) return
+                                    return (
+                                        <View style={{ flexDirection: 'row', paddingVertical: 10, borderWidth: 0.5, borderRadius: 10, alignItems: 'center' }} key={category.id}>
+                                            <View style={{ flex: 1, marginStart: 6 }}>
+                                                <Pressable style={{ flexDirection: 'row', gap: 6, flex: 1, alignItems: 'center' }} onPress={() => {
+                                                    setCategory(category)
+                                                    setModalCategoriesVisible(false)
+                                                }}>
+                                                    <View style={{ backgroundColor: category.color || '', height: 20, width: 8 }}></View>
+                                                    <Text>{category.name || ''}</Text>
+                                                </Pressable>
+                                            </View>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 10 }}>
+                                                <Pressable style={{ borderRadius: 10, padding: 10, backgroundColor: 'black' }} onPress={() => {
+                                                    setModalNewOptionVisible(state => ({ ...state, type: 'edit', optionName: 'category', show: true, optionSelect: category }))
+                                                }}>
+                                                    <Feather name="edit" size={24} color="white" />
+                                                </Pressable>
+                                                <Pressable style={{ borderRadius: 10, padding: 10, backgroundColor: 'red' }} onPress={() => {
+                                                    // removeCategory(category.id)
+                                                    setModalDeleteOptionVisible(true)
+                                                    setOptionIdDelete(category.id)
+                                                }}>
+                                                    <MaterialIcons name="delete-outline" size={24} color="white" />
+                                                </Pressable>
+                                            </View>
+                                        </View>
+                                    )
+                                })}
+                                <ButtonBase title={'Añadir una nueva categoría'} onPress={() => setModalNewOptionVisible(state => ({ ...state, type: 'create', optionName: 'category', show: true }))} />
+                                <ButtonBase title={'Ver categorías desactivadas'} onPress={() => {
+                                    setOptionNameDisabled('categories')
+                                    setModalDisabledOptionsVisible(true)
+                                }} />
                             </View>
-                        )
-                    })}
-                    <Button title='Cerrar' color={'red'} onPress={() => setModalCategoriesVisible(false)} />
-                    <Button title='Ver categorias desactivadas' color={'blue'} onPress={() => {
-                        setOptionNameDisabled('categories')
-                        setModalDisabledOptionsVisible(true)
-                    }} />
-                </View>
+                        </ScrollView>
+                    </Pressable>
+                </Pressable>
             </Modal>
             <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, opacity: 0.6 }} onPress={() => setModalCategoriesVisible(true)}>
                 <Text>Categoria:</Text>

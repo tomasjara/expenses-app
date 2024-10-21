@@ -11,7 +11,6 @@ import { ModalDatePicker } from '@/components/modals/ModalDatePicker'
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
 import dayjs from 'dayjs'
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
   const { modalUpdateCreateExpense, setModalUpdateCreateExpense, paymentMethods, categories, addExpense, updateExpense } = useExpensesStore(state => state)

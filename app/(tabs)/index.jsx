@@ -13,6 +13,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { GatosTabla } from '@/components/graphics/GatosTabla';
+import dayjs from 'dayjs';
 
 function Example({ }) {
   const refRBSheet = useRef();
@@ -55,8 +56,12 @@ function Example({ }) {
 }
 
 export default function HomeScreen() {
+  const currentMonth = dayjs().month()
   const { setModalUpdateCreateExpense, expensesWithRelations } = useExpensesStore(state => state)
   const [modalAllExpensesVisible, setModalAllExpensesVisible] = useState(false)
+
+  const recentExpenses = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).month() === currentMonth)
+
   return (
     <>
       <ScrollView>
@@ -67,7 +72,7 @@ export default function HomeScreen() {
           </ContainerWidget>
           <ContainerWidget>
             <Text style={{ fontSize: 17, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text>
-            {expensesWithRelations && expensesWithRelations.slice(0, 3).map((expense) => {
+            {expensesWithRelations && recentExpenses.slice(0, 3).map((expense) => {
               return (
                 <ExpensesSmallCard key={expense.id} expense={expense} />
               )

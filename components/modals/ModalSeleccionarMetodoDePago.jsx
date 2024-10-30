@@ -11,14 +11,14 @@ export const ModalSeleccionarMetodoDePago = ({ setModalNewOptionVisible, setModa
         <View>
             <Modal
                 animationType="slide"
-                transparent={false}
+                transparent={true}
                 visible={modalPaymentMethodVisible}
                 onRequestClose={() => {
                     setModalPaymentMethodVisible(false)
                 }}>
                 <Pressable style={{ alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.6)' }} onPress={() => setModalPaymentMethodVisible(false)}>
                     <Pressable style={{ backgroundColor: 'white', gap: 20, borderRadius: 10, height: '80%', width: '95%' }} onPress={() => { }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 20 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20 }}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Seleccion de metodo de pago</Text>
                             <Pressable onPress={() => setModalPaymentMethodVisible(false)}>
                                 <MaterialCommunityIcons name="window-close" size={24} color="black" />

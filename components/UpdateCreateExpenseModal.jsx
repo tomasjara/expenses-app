@@ -10,26 +10,33 @@ import { ModalConfirmOptionDelete } from '@/components/modals/ModalConfirmOption
 import { ModalDatePicker } from '@/components/modals/ModalDatePicker'
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
-import dayjs from 'dayjs'
 
 export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
-  const { modalUpdateCreateExpense, setModalUpdateCreateExpense, paymentMethods, categories, addExpense, updateExpense } = useExpensesStore(state => state)
+  const { modalUpdateCreateExpense, paymentMethods, categories, addExpense, updateExpense, expensesWithRelations } = useExpensesStore(state => state)
+  const categoryDefault = categories.find(category => !category.disabled)
+  const paymentMethodDefault = paymentMethods.find(paymentMethod => !paymentMethod.disabled)
   const [modalNewOptionVisible, setModalNewOptionVisible] = useState({ show: false })
   const [modalDisabledOptionsVisible, setModalDisabledOptionsVisible] = useState(false)
   const [optionNameDisabled, setOptionNameDisabled] = useState()
   const [dateValue, setDateValue] = useState(new Date())
   const [newExpense, setNewExpense] = useState({ value: '', description: '' })
-  const [category, setCategory] = useState(categories[0])
-  const [paymentMethod, setpaymentMethod] = useState(paymentMethods[0])
+  const [category, setCategory] = useState(categoryDefault)
+  const [paymentMethod, setpaymentMethod] = useState(paymentMethodDefault)
   const [optionIdDelete, setOptionIdDelete] = useState()
   const [modalDeleteOptionVisible, setModalDeleteOptionVisible] = useState()
   const inputValueRef = useRef(null);
 
   useEffect(() => {
-    console.log(dayjs(dateValue).format('DD/MM/YYYY') === dayjs(new Date()).format('DD/MM/YYYY'));
     if (!inputValueRef) return
     inputValueRef.current.focus();
   }, [inputValueRef])
+
+  useEffect(() => {
+    const categoryDefault = categories.find(category => !category.disabled)
+    const paymentMethodDefault = paymentMethods.find(paymentMethod => !paymentMethod.disabled)
+    setCategory(categoryDefault)
+    setpaymentMethod(paymentMethodDefault)
+  }, [expensesWithRelations])
 
   useEffect(() => {
     if (modalUpdateCreateExpense.show === false) return
@@ -95,35 +102,12 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
       <View >
         <ScrollView>
           <View style={{ gap: 5, paddingHorizontal: 20, marginTop: 10, marginBottom: 40 }}>
-            {/* Info gasto || fecha || categoria || metodo de pago */}
-            {/* <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginBottom: 0, gap: 10 }}>
-              <View style={{ borderRadius: 10, padding: 5 }}>
-                <Text style={{ opacity: 0.4, fontSize: 10 }}>Fecha:</Text>
-                <Text>{dayjs(dateValue).format('DD/MM/YYYY')}</Text>
-              </View>
-              <View style={{ borderRadius: 10, padding: 5, alignItems: 'center', gap: 2 }}>
-                <Text style={{ opacity: 0.4, fontSize: 10 }}>Categoria:</Text>
-                <View style={{ flexDirection: 'row', gap: 5 }}>
-                  <Text>{category?.name || categories[0].name}</Text>
-                  <View style={{ backgroundColor: category?.color || categories[0].color, height: 20, width: 30, borderRadius: 5 }}></View>
-                </View>
-              </View>
-              <View style={{ borderRadius: 10, padding: 5, alignItems: 'center', gap: 2 }}>
-                <Text style={{ opacity: 0.4, fontSize: 10 }}>Metodo de pago:</Text>
-                <View style={{ flexDirection: 'row', gap: 5 }}>
-                  <Text >{paymentMethod?.name || paymentMethods[0].name}</Text>
-                  <View style={{ backgroundColor: paymentMethod?.color || paymentMethods[0].color, height: 20, width: 30, borderRadius: 5 }}></View>
-                </View>
-              </View>
-            </View> */}
             <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, marginBottom: 10 }}>Nuevo gasto 💸</Text>
-            {/* FORMULARIO */}
             <TextInput
               keyboardType='numeric'
               onChangeText={(e) => onChangeNewExpenseProp('value', e)}
               value={newExpense.value}
               ref={inputValueRef}
-              // autoFocus
               placeholder='Valor'
               style={styles.input}
             />
@@ -153,9 +137,8 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
                 paymentMethods={paymentMethods}
                 setpaymentMethod={setpaymentMethod} />
               <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={createNewExpense}>
-                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Añadir nuevo gasto</Text> 
+                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Añadir nuevo gasto</Text>
               </Pressable>
-              {/* <Button title='Añadir expense' color={'green'} onPress={createNewExpense} /> */}
             </View>
           </View>
         </ScrollView>

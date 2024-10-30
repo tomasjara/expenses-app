@@ -27,13 +27,13 @@ export const ExpensesSmallCard = ({ expense, onPress = () => { } }) => {
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
                     <View style={{ width: 10, height: 10, backgroundColor: 'black' }}></View>
-                    {description ? <Text style={{ opacity: 0.8, fontSize: 16 }}>{description}</Text> : <CategoryComponent name={category.name} />}
+                    {description ? <Text style={{ opacity: 0.8, fontSize: 16 }}>{description}</Text> : <CategoryComponent name={category?.name ? category.name : ''} />}
                 </View>
                 <Text style={{ fontSize: 15 }}>{moneyFormatted}</Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 5, marginTop: 6 }}>
-                {description && <CategoryComponent name={category.name} />}
-                <CategoryComponent name={paymentMethod.name} color='green' />
+                {description && <CategoryComponent name={category?.name ? category.name : ''} />}
+                <CategoryComponent name={paymentMethod?.name ? paymentMethod.name : ''} color='green' />
             </View>
         </Pressable>
     )

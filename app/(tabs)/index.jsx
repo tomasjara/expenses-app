@@ -57,7 +57,6 @@ function Example({ }) {
 export default function HomeScreen() {
   const { setModalUpdateCreateExpense, expensesWithRelations } = useExpensesStore(state => state)
   const [modalAllExpensesVisible, setModalAllExpensesVisible] = useState(false)
-
   return (
     <>
       <ScrollView>

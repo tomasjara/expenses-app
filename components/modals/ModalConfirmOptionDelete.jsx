@@ -1,4 +1,4 @@
-import { Button, Modal, StyleSheet, Text, View } from 'react-native'
+import { Button, Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useExpensesStore } from '@/store/expensesStore'
 
@@ -31,17 +31,20 @@ export const ModalConfirmOptionDelete = ({ optionId, visible = false, setVisible
 
     const onDeleteOption = () => {
         removeFuntions[relatedOption.key](relatedOption.option.id)
+        setVisible(false)
     }
 
     const onDelete = () => {
         const newExpenses = expenses.filter(expense => expense[optionNamesInExpenses[relatedOption.key]] != relatedOption.option.id)
         onDeleteOption()
         setExpenses(newExpenses)
+        setVisible(false)
     }
 
 
     const onDisable = () => {
         updateFuntions[relatedOption.key]({ id: relatedOption.option.id, disabled: true })
+        setVisible(false)
     }
 
     useEffect(() => {
@@ -62,34 +65,44 @@ export const ModalConfirmOptionDelete = ({ optionId, visible = false, setVisible
     return (
         <Modal
             animationType="fade"
-            transparent={false}
+            transparent={true}
             visible={visible}
             onRequestClose={() => {
                 setVisible(false)
             }}>
+            <Pressable style={{ justifyContent: 'center', height: '100%', paddingHorizontal: 20, backgroundColor: 'rgba(0, 0, 0, 0.6)' }} onPress={() => setVisible(false)}>
+                <Pressable style={{ backgroundColor: 'white', padding: 20, borderRadius: 10, }} onPress={() => { }}>
+                    {lengthArray <= 1 &&
+                        <View style={{ gap: 10 }}>
+                            <Text style={{ fontSize: 19, fontWeight: 'semibold', textAlign: 'center' }}>Debe haber mas de un elemento activado para poder eliminar una opcion</Text>
+                            <Button
+                                title='Cerrar'
+                                onPress={() => setVisible(false)} />
+                        </View>}
 
-            {lengthArray <= 1 && <View>
-                <Text>Debe haber mas de un elemento activado para poder eliminar una opcion</Text>
-            </View>}
+                    {relatedOption?.relations && lengthArray > 1 &&
+                        <View style={{ gap: 10 }}>
+                            <Text style={{ fontSize: 19, fontWeight: 'semibold', textAlign: 'center' }}>Esta categoria/Este metodo de pago esta relacionado con un gasto </Text>
+                            <View style={{ gap: 10 }}>
+                                <Button onPress={onDisable} title='Desactivar categoria/el metodo de pago' color={'green'} />
+                                <Button onPress={onDelete} title='Eliminar todos los gastos relacioanados' color={'red'} />
+                            </View>
+                            <Button onPress={() => setVisible(false)} title='Cancelar' color={'red'} />
+                        </View>}
 
-            {relatedOption?.relations && lengthArray > 1 &&
-                <View>
-                    <Text>Esta categoria/Este metodo de pago esta relacionado con un gasto </Text>
-                    <Button onPress={onDisable} title='Conservar los todos los gastos relacionados, desactivando la categoria/el metodo de pago' color={'green'} />
-                    <Button onPress={onDelete} title='Eliminar todas los gastos relaciondos' color={'red'} />
-                </View>}
+                    {!relatedOption?.relations && lengthArray > 1 &&
+                        <View style={{ gap: 10 }}>
+                            <Text style={{ fontSize: 19, fontWeight: 'semibold', textAlign: 'center' }}>¿Estas seguro de eliminar esta categoria/metodo de pago?</Text>
+                            <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center' }}>
+                                <Button onPress={onDeleteOption} title='Confirmar' color={'green'} />
+                                <Button onPress={() => setVisible(false)} title='Cencelar' color={'red'} />
+                            </View>
+                        </View>
+                    }
 
-            {!relatedOption?.relations && lengthArray > 1 &&
-                <View>
-                    <Button onPress={onDeleteOption} title='Eliminar categoria/metodo de pago' color={'red'} />
-                    <Text>Opcion no relacionada</Text>
-                </View>
-            }
-
-            <Button
-                title='Cerrar'
-                onPress={() => setVisible(false)} />
-        </Modal>
+                </Pressable>
+            </Pressable>
+        </Modal >
     )
 }
 

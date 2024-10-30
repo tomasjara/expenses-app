@@ -20,7 +20,7 @@ export const ModalSeleccionarCatergoria = ({ setModalNewOptionVisible, setModalD
                 }}>
                 <Pressable style={{ alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.6)' }} onPress={() => setModalCategoriesVisible(false)}>
                     <Pressable style={{ backgroundColor: 'white', borderRadius: 10, height: '80%', width: '95%' }} onPress={() => { }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingTop: 20 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20}}>
                             <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Configuración de categorias</Text>
                             <Pressable onPress={() => setModalCategoriesVisible(false)}>
                                 <MaterialCommunityIcons name="window-close" size={24} color="black" />

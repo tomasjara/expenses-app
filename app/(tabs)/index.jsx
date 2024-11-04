@@ -3,17 +3,19 @@ import { Button, ScrollView, Text, View } from 'react-native';
 import { ContainerWidget } from './../../components/ContainerWidget'
 import { ContainerScreen } from './../../components/ContainerScreen'
 import { AllExpenses } from './../../components/AllExpenses'
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useExpensesStore } from '@/store/expensesStore'
 import { ExpensesSmallCard } from '@/components/ExpensesSmallCard'
 import { TotalExpenseValue } from '@/components/TotalExpenseValue'
 import { UpdateCreateExpenseModal } from './../../components/UpdateCreateExpenseModal';
 import Toast from 'react-native-toast-message';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import { formatFirstLetterString } from '@/utils/formatFirstLetterString';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { GatosTabla } from '@/components/graphics/GatosTabla';
 import dayjs from 'dayjs';
+import { MONTHS } from '@/utils/constantes';
+import YearAndMonthSelect from '@/components/YearAndMonthSelect';
 
 function Example({ }) {
   const refRBSheet = useRef();
@@ -57,10 +59,21 @@ function Example({ }) {
 
 export default function HomeScreen() {
   const currentMonth = dayjs().month()
+  const initialValuesPeriod = { month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) }, year: dayjs().get('y') }
+  const [dateValue, setDateValue] = useState(initialValuesPeriod)
   const { setModalUpdateCreateExpense, expensesWithRelations } = useExpensesStore(state => state)
   const [modalAllExpensesVisible, setModalAllExpensesVisible] = useState(false)
+  const [periodSelected, setPeriodSelected] = useState(currentMonth)
+  const [expensesPeriodSelected, setExpensesPeriodSelected] = useState()
+  const [totalCountExpensesPeriodSelected, setTotalCountExpensesPeriodSelected] = useState(0)
 
-  const recentExpenses = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).month() === currentMonth)
+  useEffect(() => {
+    const expensesPeriod = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).month() === dateValue.month.id)
+    setExpensesPeriodSelected(expensesPeriod)
+
+    const count = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).month() === dateValue.month.id).length
+    setTotalCountExpensesPeriodSelected(count)
+  }, [dateValue])
 
   return (
     <>
@@ -68,11 +81,15 @@ export default function HomeScreen() {
         <ContainerScreen>
           <AllExpenses modalAllExpensesVisible={modalAllExpensesVisible} setModalAllExpensesVisible={setModalAllExpensesVisible} />
           <ContainerWidget >
-            <TotalExpenseValue />
+            <YearAndMonthSelect dateValue={dateValue} setDateValue={setDateValue} />
+            <Text style={{ fontSize: 12, opacity: 0.5 }}>Gastos registrados: {totalCountExpensesPeriodSelected}</Text>
+          </ContainerWidget>
+          <ContainerWidget >
+            <TotalExpenseValue dateValue={dateValue} />
           </ContainerWidget>
           <ContainerWidget>
             <Text style={{ fontSize: 17, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text>
-            {expensesWithRelations && recentExpenses.slice(0, 3).map((expense) => {
+            {expensesPeriodSelected && expensesPeriodSelected.slice(0, 3).map((expense) => {
               return (
                 <ExpensesSmallCard key={expense.id} expense={expense} />
               )

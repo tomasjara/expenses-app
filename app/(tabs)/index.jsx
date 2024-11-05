@@ -14,7 +14,7 @@ import { formatFirstLetterString } from '@/utils/formatFirstLetterString';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { GatosTabla } from '@/components/graphics/GatosTabla';
 import dayjs from 'dayjs';
-import { MONTHS } from '@/utils/constantes';
+import { MONTHS, MONTHS_LIST, MONTHS_MAYUS } from '@/utils/constantes';
 import YearAndMonthSelect from '@/components/YearAndMonthSelect';
 
 function Example({ }) {
@@ -66,13 +66,24 @@ export default function HomeScreen() {
   const [periodSelected, setPeriodSelected] = useState(currentMonth)
   const [expensesPeriodSelected, setExpensesPeriodSelected] = useState()
   const [totalCountExpensesPeriodSelected, setTotalCountExpensesPeriodSelected] = useState(0)
+  const [expensesMonthWithYear, setExpensesMonthWithYear] = useState([])
 
   useEffect(() => {
-    const expensesPeriod = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).month() === dateValue.month.id)
+    const expensesFilterYear = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).year() === dateValue.year)
+    const expensesPeriod = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).month() === dateValue.month.id && dayjs(expense.paymentDate).year() === dateValue.year)
+    const expensesMonthWithYearTransformed = expensesFilterYear ? expensesFilterYear.reduce((total, expense) => {
+      const currentMonth = MONTHS_MAYUS[dayjs(expense.paymentDate).month()]
+      const ifMesExistente = total.find(item => item[currentMonth])
+      if (ifMesExistente) {
+        ifMesExistente[currentMonth] += 1;
+      } else {
+        total.push({ [MONTHS_MAYUS[dayjs(expense.paymentDate).month()]]: 1 })
+      }
+      return total
+    }, []) : []
+    setExpensesMonthWithYear(expensesMonthWithYearTransformed)
     setExpensesPeriodSelected(expensesPeriod)
-
-    const count = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).month() === dateValue.month.id).length
-    setTotalCountExpensesPeriodSelected(count)
+    setTotalCountExpensesPeriodSelected(expensesPeriod.length)
   }, [dateValue])
 
   return (
@@ -81,15 +92,15 @@ export default function HomeScreen() {
         <ContainerScreen>
           <AllExpenses modalAllExpensesVisible={modalAllExpensesVisible} setModalAllExpensesVisible={setModalAllExpensesVisible} />
           <ContainerWidget >
-            <YearAndMonthSelect dateValue={dateValue} setDateValue={setDateValue} />
-            <Text style={{ fontSize: 12, opacity: 0.5 }}>Gastos registrados: {totalCountExpensesPeriodSelected}</Text>
+            <YearAndMonthSelect dateValue={dateValue} expensesMonthWithYear={expensesMonthWithYear} setDateValue={setDateValue} />
           </ContainerWidget>
           <ContainerWidget >
-            <TotalExpenseValue dateValue={dateValue} />
+            <TotalExpenseValue expensesPeriodSelected={expensesPeriodSelected} dateValue={dateValue} />
+            <Text style={{ fontSize: 12, opacity: 0.5 }}>Gastos registrados: {totalCountExpensesPeriodSelected}</Text>
           </ContainerWidget>
           <ContainerWidget>
             <Text style={{ fontSize: 17, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text>
-            {expensesPeriodSelected && expensesPeriodSelected.slice(0, 3).map((expense) => {
+            {expensesPeriodSelected && expensesPeriodSelected.slice(0, 3).sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).map((expense) => {
               return (
                 <ExpensesSmallCard key={expense.id} expense={expense} />
               )

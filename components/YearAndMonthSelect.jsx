@@ -10,7 +10,7 @@ import { MONTHS, MONTHS_LIST } from "@/utils/constantes";
 import dayjs from "dayjs";
 import { formatFirstLetterString } from "@/utils/formatFirstLetterString";
 
-export default function YearAndMonthSelect({ dateValue, setDateValue }) {
+export default function YearAndMonthSelect({ dateValue, setDateValue, expensesMonthWithYear }) {
   const [modalVisible, setModalVisible] = useState(false)
 
   const onSelectMonth = (item) => {
@@ -50,11 +50,18 @@ export default function YearAndMonthSelect({ dateValue, setDateValue }) {
                 </Pressable>
               </View>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
-                {MONTHS_LIST.map((item) => (
-                  <Pressable onPress={() => onSelectMonth(item)} style={{ borderWidth: 1, borderRadius: 10, padding: 10, borderColor: dateValue.month.id === item.id ? 'blue' : 'black', backgroundColor: dateValue.month.id === item.id ? 'blue' : 'white', width: 90 }}>
-                    <Text style={{ fontSize: 12, textAlign: 'center', color: dateValue.month.id === item.id ? 'white' : 'black', }}>{item.month}</Text>
-                  </Pressable>
-                ))}
+                {MONTHS_LIST.map((item) => {
+                  const currentMonth = item.month
+                  const expensesCount = expensesMonthWithYear.find(item => item[currentMonth])
+                  return (
+                    <Pressable onPress={() => onSelectMonth(item)} style={{ borderWidth: 1, borderRadius: 10, padding: 10, borderColor: dateValue.month.id === item.id ? 'blue' : 'black', backgroundColor: dateValue.month.id === item.id ? 'blue' : 'white', width: 90 }}>
+                      <Text style={{ fontSize: 12, textAlign: 'center', color: dateValue.month.id === item.id ? 'white' : 'black', }}>{item.month}</Text>
+                      {expensesCount && <View style={{ position: 'absolute', top: -5, right: -5, backgroundColor: 'black', borderRadius: 10, paddingVertical: 2, paddingHorizontal: 5, opacity: 0.8 }}>
+                        <Text style={{ fontSize: 10, textAlign: 'center', color: 'white' }}>{expensesCount[currentMonth]}</Text>
+                      </View>}
+                    </Pressable>
+                  )
+                })}
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 10 }}>
                 <Pressable style={{ backgroundColor: '#2282e3', padding: 10, borderRadius: 10 }} onPress={onActuallyYear} >
@@ -68,7 +75,7 @@ export default function YearAndMonthSelect({ dateValue, setDateValue }) {
           </Pressable>
         </Pressable>
       </Modal>
-      <View style={{gap:10}}>
+      <View style={{ gap: 10 }}>
         <Text style={{ fontSize: 12, marginBottom: 3, opacity: 0.5 }}>Periodo seleccionado {dateValue.year}</Text>
         <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }} onPress={() => setModalVisible(true)}>
           <View style={{ borderWidth: 0.5, padding: 5, borderRadius: 5 }}>

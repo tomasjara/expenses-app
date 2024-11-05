@@ -13,6 +13,21 @@ export const MONTHS = {
   11: "diciembre",
 };
 
+export const MONTHS_MAYUS = {
+  0: "Enero",
+  1: "Febrero",
+  2: "Marzo",
+  3: "Abril",
+  4: "Mayo",
+  5: "Junio",
+  6: "Julio",
+  7: "Agosto",
+  8: "Septiembre",
+  9: "Octubre",
+  10: "Noviembre",
+  11: "Diciembre",
+};
+
 export const MONTHS_LIST = [
   {id: 0, month: "Enero"},
   {id: 1, month: "Febrero"},

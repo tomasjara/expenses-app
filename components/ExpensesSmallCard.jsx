@@ -12,7 +12,7 @@ const CategoryComponent = ({ name = '', color = 'blue' }) => (
 export const ExpensesSmallCard = ({ expense, onPress = () => { } }) => {
     const { value, description, category, paymentMethod, paymentDate } = expense || {}
 
-    const dayWeek = dayOfWeek('small', dayjs(paymentDate).day())
+    const dayWeek = dayOfWeek('small', dayjs(paymentDate).day() - 1 )
     const day = dayjs(paymentDate).date().toString().padStart(2, '0')
     const month = (dayjs(paymentDate).month() + 1).toString().padStart(2, '0')
     const year = dayjs(paymentDate).year()

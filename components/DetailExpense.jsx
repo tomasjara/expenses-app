@@ -6,10 +6,13 @@ import { UpdateCreateExpenseModal } from './UpdateCreateExpenseModal';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useEffect, useRef, useState } from 'react';
+import { ModalConfirmExpenseDelete } from './modals/ModalConfirmExpenseDelete';
+import ButtonBase from './ButtonBase';
+import { formatFirstLetterString } from '@/utils/formatFirstLetterString';
 
-function BottomSheetModal({ expense }) {
+function ButtonEditExpense({ expense }) {
     const refRBSheet = useRef();
-    const { setModalUpdateCreateExpense, expensesWithRelations } = useExpensesStore(state => state)
+    const { setModalUpdateCreateExpense } = useExpensesStore(state => state)
 
     return (
         <View >
@@ -33,7 +36,7 @@ function BottomSheetModal({ expense }) {
                 <UpdateCreateExpenseModal refRBSheet={refRBSheet} />
             </RBSheet>
 
-            <Button title='editar' color={'blue'} onPress={() => {
+            <ButtonBase title={'Editar'} onPress={() => {
                 refRBSheet.current.open()
                 setModalUpdateCreateExpense({ type: 'edit', show: true, optionSelect: expense }
                 )
@@ -45,7 +48,7 @@ function BottomSheetModal({ expense }) {
 const KeyValue = ({ keyValue, value }) => {
     return (
         <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-            <Text style={{ fontSize: 15 }}>{keyValue}</Text>
+            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{formatFirstLetterString(keyValue)}</Text>
             <Text style={{ fontSize: 15 }}>{value}</Text>
         </View>
     )
@@ -82,11 +85,9 @@ export const DetailExpense = ({ expenseSelect, setDetailExpenseVisible }) => {
                     <KeyValue keyValue={'Color:'} value={color} />
                     <View style={{ backgroundColor: color, width: 300, height: 100, borderRadius: 10 }}></View>
                 </>}
-                <BottomSheetModal expense={expense} />
-                {/* <Button title='editar' color={'blue'} onPress={() => setModalUpdateCreateExpense({ type: 'edit', show: true, optionSelect: expense })} /> */}
-
-                <Button title='Eliminar' color={'red'} onPress={onDelete} />
-                <View style={{ marginTop: 10 }}>
+                <View style={{ gap: 15, marginTop: 20 }}>
+                    <ButtonEditExpense expense={expense} />
+                    <ModalConfirmExpenseDelete onDeleteOption={onDelete} />
                     <Button title='Cerrar' onPress={() => setDetailExpenseVisible(false)} />
                 </View>
             </View>

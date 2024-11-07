@@ -17,7 +17,7 @@ import dayjs from 'dayjs';
 import { MONTHS, MONTHS_LIST, MONTHS_MAYUS } from '@/utils/constantes';
 import YearAndMonthSelect from '@/components/YearAndMonthSelect';
 
-function Example({ }) {
+function ButtonAddExpense({ }) {
   const refRBSheet = useRef();
   const { setModalUpdateCreateExpense, expensesWithRelations } = useExpensesStore(state => state)
 
@@ -50,7 +50,7 @@ function Example({ }) {
             type: 'create'
           })
         }}
-        style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 20, borderRadius: 20, shadowRadius: 10, elevation: 4 }}>
+        style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 15, borderRadius: 20, shadowRadius: 10, elevation: 5, borderColor: 'black', borderWidth: 1 }}>
         <Ionicons name="add-circle-sharp" size={45} color="black" />
       </Pressable>
     </View>
@@ -58,12 +58,10 @@ function Example({ }) {
 }
 
 export default function HomeScreen() {
-  const currentMonth = dayjs().month()
   const initialValuesPeriod = { month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) }, year: dayjs().get('y') }
   const [dateValue, setDateValue] = useState(initialValuesPeriod)
-  const { setModalUpdateCreateExpense, expensesWithRelations } = useExpensesStore(state => state)
+  const { expensesWithRelations } = useExpensesStore(state => state)
   const [modalAllExpensesVisible, setModalAllExpensesVisible] = useState(false)
-  const [periodSelected, setPeriodSelected] = useState(currentMonth)
   const [expensesPeriodSelected, setExpensesPeriodSelected] = useState()
   const [totalCountExpensesPeriodSelected, setTotalCountExpensesPeriodSelected] = useState(0)
   const [expensesMonthWithYear, setExpensesMonthWithYear] = useState([])
@@ -84,7 +82,7 @@ export default function HomeScreen() {
     setExpensesMonthWithYear(expensesMonthWithYearTransformed)
     setExpensesPeriodSelected(expensesPeriod)
     setTotalCountExpensesPeriodSelected(expensesPeriod.length)
-  }, [dateValue])
+  }, [dateValue, expensesWithRelations])
 
   return (
     <>
@@ -100,7 +98,7 @@ export default function HomeScreen() {
           </ContainerWidget>
           <ContainerWidget>
             <Text style={{ fontSize: 17, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text>
-            {expensesPeriodSelected && expensesPeriodSelected.slice(0, 3).sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).map((expense) => {
+            {expensesPeriodSelected && expensesPeriodSelected.sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).slice(0, 3).map((expense) => {
               return (
                 <ExpensesSmallCard key={expense.id} expense={expense} />
               )
@@ -114,7 +112,7 @@ export default function HomeScreen() {
           </ContainerWidget>
         </ContainerScreen>
       </ScrollView >
-      <Example />
+      <ButtonAddExpense />
       <Toast />
     </>
   );

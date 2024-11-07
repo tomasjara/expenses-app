@@ -98,11 +98,13 @@ export default function HomeScreen() {
           </ContainerWidget>
           <ContainerWidget>
             <Text style={{ fontSize: 17, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text>
-            {expensesPeriodSelected && expensesPeriodSelected.sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).slice(0, 3).map((expense) => {
-              return (
-                <ExpensesSmallCard key={expense.id} expense={expense} />
-              )
-            })}
+            <View>
+              {expensesPeriodSelected && expensesPeriodSelected.sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).slice(0, 3).map((expense) => {
+                return (
+                  <ExpensesSmallCard key={expense.id} expense={expense} />
+                )
+              })}
+            </View>
             <View style={{ gap: 10 }}>
               <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={() => { setModalAllExpensesVisible(true) }}>
                 <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Lista de todos los gastos</Text>

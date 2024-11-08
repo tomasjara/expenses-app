@@ -2,34 +2,9 @@ import { useExpensesStore } from '@/store/expensesStore';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ScrollView, Pressable, Modal, Text } from 'react-native';
-import { Table, TableWrapper, Row } from 'react-native-table-component';
+import { Table, Row } from 'react-native-table-component';
 import { ModalDatePicker } from '../modals/ModalDatePicker';
 import { formatMoney } from '@/utils/formatMoney';
-
-const MOCK_EXPENSES = [
-    {
-        "category": { "color": "#2ecc71", "id": "18a9a02a-fc75-4766-a7f2-2359267a69a0", "name": "Otros" },
-        "categoryId": "18a9a02a-fc75-4766-a7f2-2359267a69a0",
-        "creationDate": '2024-10-17T13:13:40.213Z',
-        "description": "njasdjnadsjnkasdjnkasdnjksadnjkasdjnkasdnjsadnjasdadsnjk",
-        "id": "7ffa11c7-cab0-49cc-bc99-11181be40797",
-        "lastModificationDate": '2024-10-17T13:13:40.213Z',
-        "paymentDate": '2024-10-17T13:13:33.301Z',
-        "paymentMethod": {
-            "color": "#3498db", "description": "",
-            "id": "f739c40d-3545-40e4-aaf7-83b875c122bb",
-            "name": "Principal"
-        },
-        "paymentMethodId": "f739c40d-3545-40e4-aaf7-83b875c122bb",
-        "value": "50000"
-    },
-    { "category": { "color": "#2ecc71", "id": "18a9a02a-fc75-4766-a7f2-2359267a69a0", "name": "Otros" }, "categoryId": "18a9a02a-fc75-4766-a7f2-2359267a69a0", "creationDate": '2024-10-17T13:13:47.578Z', "description": "", "id": "38d54edf-ec55-4710-9fe7-a89fccc75b52", "lastModificationDate": '2024-10-17T13:13:47.578Z', "paymentDate": '2024-10-17T13:13:41.829Z', "paymentMethod": { "color": "#3498db", "description": "", "id": "f739c40d-3545-40e4-aaf7-83b875c122bb", "name": "Principal" }, "paymentMethodId": "f739c40d-3545-40e4-aaf7-83b875c122bb", "value": "15000" },
-    { "category": { "color": "#2ecc71", "id": "18a9a02a-fc75-4766-a7f2-2359267a69a0", "name": "Otros" }, "categoryId": "18a9a02a-fc75-4766-a7f2-2359267a69a0", "creationDate": '2024-10-17T13:13:53.411Z', "description": "", "id": "c4422dc8-c66b-40f1-b86b-998a4ab0f1ed", "lastModificationDate": '2024-10-17T13:13:53.411Z', "paymentDate": '2024-10-17T13:13:48.838Z', "paymentMethod": { "color": "#3498db", "description": "", "id": "f739c40d-3545-40e4-aaf7-83b875c122bb", "name": "Principal" }, "paymentMethodId": "f739c40d-3545-40e4-aaf7-83b875c122bb", "value": "26000" }]
-
-const data = {
-    tableHead: ['Head', 'Head2', 'Head3', 'Head4', 'Head5', 'Head6', 'Head7', 'Head8', 'Head9'],
-    widthArr: [['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9'], ['content', 'content2', 'content3', 'content4', 'content5', 'content6', 'content7', 'content8', 'content9']]
-}
 
 export const GatosTabla = () => {
 
@@ -64,10 +39,6 @@ export const GatosTabla = () => {
         });
     }
 
-    const startDate = '2024-10-16';
-    const endDate = '2024-10-18';
-    const specificDate = '2024-10-16';
-
     useEffect(() => {
         const data = transformToTableData(expensesWithRelations);
         setTableData(data)
@@ -94,7 +65,7 @@ export const GatosTabla = () => {
     }, [dateSelected])
 
     function transformToTableData(expenses) {
-        const tableHead = ['Descripción', 'Valor', 'Categoría', 'Metodo de pago', 'Fecha de pago', 'Fecha de creación', 'Fecha de modificación']; 
+        const tableHead = ['Descripción', 'Valor', 'Categoría', 'Metodo de pago', 'Fecha de pago', 'Fecha de creación', 'Fecha de modificación'];
 
         const widthArr = expenses.map(expense => {
             return [
@@ -109,8 +80,6 @@ export const GatosTabla = () => {
         });
         return { tableHead, widthArr };
     }
-
-    // const data = transformToTableData(MOCK_EXPENSES);
 
     return (
         <View>

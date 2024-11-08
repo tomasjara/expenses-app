@@ -20,7 +20,7 @@ export const ExpensesSmallCard = ({ expense, onPress = () => { } }) => {
 
     return (
         <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', borderWidth: 1, marginBottom: 10, borderColor: '#0000007a', paddingVertical: 9, paddingHorizontal: 12, borderRadius: 10 }} onPress={onPress}>
-            <View style={{ gap: 5 }}>
+            <View style={{ gap: 5, maxWidth: 220 }}>
                 <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text>{day}</Text>
@@ -37,6 +37,7 @@ export const ExpensesSmallCard = ({ expense, onPress = () => { } }) => {
                     </View>
                 </View>
                 {description && <View style={{ flexDirection: 'row' }}>
+                    {/* <Text style={{ marginStart: 4, opacity: 0.8, fontSize: 13 }}>Texto largoooooooooooo000000000000000000000000000000000largoooooooooooo000000000000000000000000000000000</Text> */}
                     <Text style={{ marginStart: 4, opacity: 0.8, fontSize: 13 }}>{description}</Text>
                 </View>}
             </View>

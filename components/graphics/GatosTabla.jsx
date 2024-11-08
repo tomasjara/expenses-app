@@ -1,8 +1,7 @@
 import { useExpensesStore } from '@/store/expensesStore';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, Pressable, Modal, Text } from 'react-native';
-import { Table, Row } from 'react-native-table-component';
+import { View, ScrollView, Pressable, Modal, Text } from 'react-native';
 import { ModalDatePicker } from '../modals/ModalDatePicker';
 import { formatMoney } from '@/utils/formatMoney';
 
@@ -65,19 +64,8 @@ export const GatosTabla = () => {
     }, [dateSelected])
 
     function transformToTableData(expenses) {
-        const tableHead = ['Descripción', 'Valor', 'Categoría', 'Metodo de pago', 'Fecha de pago', 'Fecha de creación', 'Fecha de modificación'];
-
-        const widthArr = expenses.map(expense => {
-            return [
-                expense.description || "",
-                formatMoney(expense.value) || "",
-                expense.category?.name || "",
-                expense.paymentMethod?.name || "",
-                dayjs(expense.paymentDate).format('DD/MM/YYYY') || "",
-                dayjs(expense.creationDate).format('DD/MM/YYYY') || "",
-                dayjs(expense.lastModificationDate).format('DD/MM/YYYY') || ""
-            ];
-        });
+        const tableHead = ['Categoría', 'Metodo de pago', 'Valor', 'Descripción', 'Fecha de pago', 'Fecha de creación', 'Fecha de modificación'];
+        const widthArr = expenses
         return { tableHead, widthArr };
     }
 
@@ -90,32 +78,45 @@ export const GatosTabla = () => {
                 onRequestClose={() => {
                     serModalTable(false);
                 }}>
-                <View>
-                    <Text>Todos los gastos</Text>
+                <View style={{ paddingHorizontal: 30, paddingTop: 30, gap: 10 }}>
+                    <Text style={{ fontSize: 20, color: 'black', fontWeight: 'bold', textAlign: 'center' }}>Tabla de todos los gastos</Text>
                     <ModalDatePicker mode='range' startDateValue={dateSelected.startDate} endDateValue={dateSelected.endDate} setDateValue={setDateSelected} />
                 </View>
-                <View style={styles.container}>
-                    <ScrollView horizontal={true}>
-                        <View>
-                            <Table borderStyle={{ borderWidth: 0, borderColor: '#C1C0B9' }}>
-                                {tableData && <Row data={tableData.tableHead} widthArr={[100, 120, 110, 120, 120, 120, 120]} style={styles.header} textStyle={styles.textHeader} />}
-                            </Table>
-                            <ScrollView style={styles.dataWrapper}>
-                                <Table borderStyle={{ borderWidth: 1, borderColor: '#C1C0B9' }}>
-                                    {
-                                        tableData && tableData.widthArr.map((rowData, index) => (
-                                            <Row
-                                                key={index}
-                                                data={rowData}
-                                                widthArr={[100, 120, 110, 120, 120, 120, 120]}
-                                                style={[styles.row, index % 2 && { backgroundColor: '#f9f9f9' }]}
-                                                textStyle={styles.textContent}
-                                            />
-                                        ))
-                                    }
-                                </Table>
-                            </ScrollView>
-                        </View>
+                <View>
+                    <ScrollView horizontal style={{ maxHeight: 600, margin: 3, borderRadius: 10 }}>
+                        <ScrollView>
+                            {/* Headers */}
+                            <View style={{ flexDirection: 'row', paddingHorizontal: 10 }}>
+                                {tableData && tableData.tableHead.map((colName, colIndex) => (
+                                    <Text key={colName} style={{ fontSize: 12, textAlign: 'center', padding: 10, width: colIndex === 3 ? 200 : colIndex === 6 ? 141 : 120 }}>{colName}</Text>
+                                ))}
+                            </View>
+                            {/* Rows */}
+                            <View style={{ paddingHorizontal: 10 }}>
+                                {tableData && tableData.widthArr.map((rowData, cellIndex) => (
+                                    <View key={cellIndex} style={{ flexDirection: 'row' }}>
+                                        <View style={{ width: 120, borderWidth: 0.5, borderLeftWidth: 0, borderColor: '#C1C0B9', padding: 5, alignItems: 'center' }}>
+                                            <View style={{ backgroundColor: rowData.category.color, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 3 }}>
+                                                <Text style={{ color: 'white', textAlign: 'center', fontSize: 12 }}>{rowData.category.name}</Text>
+                                                {/* <Text style={{ color: 'white', textAlign: 'center', fontSize: 12 }}>asdasd asd asdasdasdasdas dasdasdas asdasdasdasd asda dasdasasddasadd asdasdasdas asdasdasdasda asd asdas sadasdas</Text> */}
+                                            </View>
+                                        </View>
+                                        <View style={{ width: 120, borderWidth: 0.5, borderColor: '#C1C0B9', padding: 5, alignItems: 'center' }}>
+                                            <View style={{ backgroundColor: rowData.category.color, borderRadius: 10, paddingHorizontal: 10, paddingVertical: 3 }}>
+                                                <Text style={{ color: 'white', textAlign: 'center', fontSize: 12 }}>{rowData.paymentMethod.name}</Text>
+                                                {/* <Text style={{ color: 'white', textAlign: 'center', fontSize: 12 }}>asdasd asd asdasdasdasdas dasdasdas asdasdasdasd asda dasdasasddasadd asdasdasdas asdasdasdasda asd asdas sadasdas</Text> */}
+                                            </View>
+                                        </View>
+                                        <Text style={{ width: 120, borderWidth: 0.5, borderColor: '#C1C0B9', padding: 5, textAlign: 'right', fontSize: 12 }}>{formatMoney(rowData.value)}</Text>
+                                        <Text style={{ width: 200, borderWidth: 0.5, borderColor: '#C1C0B9', padding: 5, fontSize: 12  }}>{rowData.description}</Text>
+                                        {/* <Text style={{ width: 200, borderWidth: 0.5, borderColor: '#C1C0B9', padding: 5, fontSize: 12 }}>asdasd asd asdasdasdasdas dasdasdas asdasdasdasd asda dasdasasddasadd asdasdasdas asdasdasdasda asd asdas sadasdas asdasd asdasdasdasdad asd as dasd</Text> */}
+                                        <Text style={{ width: 120, borderWidth: 0.5, borderColor: '#C1C0B9', padding: 5, fontSize: 12 }}>{dayjs(rowData.paymentDate).format('DD/MM/YYYY')}</Text>
+                                        <Text style={{ width: 120, borderWidth: 0.5, borderColor: '#C1C0B9', padding: 5, fontSize: 12 }}>{dayjs(rowData.creationDate).format('DD/MM/YYYY')}</Text>
+                                        <Text style={{ width: 141, borderWidth: 0.5, borderRightWidth: 0, borderColor: '#C1C0B9', padding: 5, fontSize: 12 }}>{dayjs(rowData.lastModificationDate).format('DD/MM/YYYY')}</Text>
+                                    </View>
+                                ))}
+                            </View>
+                        </ScrollView>
                     </ScrollView>
                 </View>
             </Modal>
@@ -125,12 +126,3 @@ export const GatosTabla = () => {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: { padding: 5, paddingTop: 30, backgroundColor: '#fff', maxHeight: 600, borderRadius: 10 },
-    header: { backgroundColor: '#ffff' },
-    textHeader: { color: '#000', textAlign: 'start', fontWeight: 'bold', paddingStart: 9, marginVertical: 11 },
-    textContent: { textAlign: 'center', fontWeight: 'normal', marginVertical: 11, paddingHorizontal: 5 },
-    dataWrapper: { marginTop: -1 },
-    row: { backgroundColor: '#e9e9e9' }
-});

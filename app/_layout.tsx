@@ -6,6 +6,7 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useExpensesStore } from '@/store/expensesStore';
+import { StatusBar } from 'react-native';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -30,6 +31,7 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={DarkTheme}>
+      <StatusBar translucent={false} barStyle='light-content' backgroundColor={'#000'} />
       {/* <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}> */}
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

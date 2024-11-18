@@ -8,7 +8,7 @@ import { BarChart, LineChart } from "react-native-chart-kit"
 
 const AllExpensesRegister = ({ category }) => {
     const { expensesWithRelations } = useExpensesStore(state => state)
-    const expensesFilter = expensesWithRelations.filter(expense => expense.categoryId === category.id)
+    const expensesFilter = expensesWithRelations.filter(expense => expense.categoryId === category.id).sort((a, b) => a.paymentDate > b.paymentDate ? -1 : 1)
 
     // Grafico para grafico de lineas de ultimos 6 meses
     const UltimosCincoMeses = ''
@@ -45,17 +45,18 @@ export const CategoryDetail = ({ category }) => {
                 <View >
                     <View style={{ flexDirection: 'row', gap: 19, padding: 15, justifyContent: 'start', alignItems: 'center', backgroundColor: category.color }}>
                         <Pressable onPress={() => { setVisible(false) }}>
-                            <AntDesign name="close" size={24} color="white" />
+                            {/* <AntDesign name="close" size={24} color="white" /> */}
+                            <AntDesign name="left" size={24} color="white" />
                         </Pressable>
                         <Text style={{ fontSize: 20, color: 'white' }}>{category.name}</Text>
                     </View>
                     <ScrollView>
                         <View style={{ gap: 10 }}>
-                            <View style={{ flexDirection: 'row', gap: 20, padding: 10 }}>
+                            <View style={{ flexDirection: 'row', gap: 20, padding: 10, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{ fontSize: 15, }}>Total de gastos</Text>
-                                <Text style={{ fontSize: 15 }}> {formatMoney(category.value)}</Text>
+                                <Text style={{ fontSize: 20 }}> {formatMoney(category.value)}</Text>
                             </View>
-                            <View style={{ gap: 10, paddingHorizontal: 10 }}>
+                            {/* <View style={{ gap: 10, paddingHorizontal: 10 }}>
                                 <Text style={{ fontSize: 15, }}>- Total de gastos registrados</Text>
                                 <Text style={{ fontSize: 15, }}>- Limite de gasto</Text>
                             </View>
@@ -63,7 +64,6 @@ export const CategoryDetail = ({ category }) => {
                                 <Text style={{ fontSize: 15, }}>- Frecuencia de gasto</Text>
                                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                     <ScrollView horizontal>
-
                                         <BarChart
                                             chartConfig={{
                                                 backgroundColor: "#000",
@@ -80,9 +80,9 @@ export const CategoryDetail = ({ category }) => {
                                         />
                                     </ScrollView>
                                 </View>
-                            </View>
-                            <View style={{ gap: 10, borderWidth: 1, borderRadius: 10, marginBottom: 80, marginHorizontal: 10 }}>
-                                <Text style={{ fontSize: 15, textAlign: 'center' }}>Todos los gastos - (Opciones de ordenamiento) </Text>
+                            </View> */}
+                            <View style={{ gap: 10, marginBottom: 80,  }}>
+                                <Text style={{ fontSize: 15, textAlign: 'center' }}>Todos los gastos</Text>
                                 <AllExpensesRegister category={category} />
                             </View>
                         </View>

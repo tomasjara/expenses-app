@@ -1,10 +1,9 @@
 import { useExpensesStore } from '@/store/expensesStore'
 import dayjs from 'dayjs'
-import { View, Text, Button, Pressable } from 'react-native'
+import { View, Text, Button } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { UpdateCreateExpenseModal } from './UpdateCreateExpenseModal';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useEffect, useRef, useState } from 'react';
 import { ModalConfirmExpenseDelete } from './modals/ModalConfirmExpenseDelete';
 import ButtonBase from './ButtonBase';
@@ -19,7 +18,7 @@ function ButtonEditExpense({ expense }) {
             <RBSheet
                 ref={refRBSheet}
                 draggable
-                height={400}
+                height={600}
                 customModalProps={{
                     animationType: 'fade',
                     statusBarTranslucent: true,
@@ -35,7 +34,6 @@ function ButtonEditExpense({ expense }) {
                 }}>
                 <UpdateCreateExpenseModal refRBSheet={refRBSheet} />
             </RBSheet>
-
             <ButtonBase title={'Editar'} onPress={() => {
                 refRBSheet.current.open()
                 setModalUpdateCreateExpense({ type: 'edit', show: true, optionSelect: expense }

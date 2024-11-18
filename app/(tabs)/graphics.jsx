@@ -1,18 +1,13 @@
-import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, ScrollView, Text, View } from 'react-native';
 import { ContainerScreen } from '@/components/ContainerScreen';
 import { ContainerWidget } from '@/components/ContainerWidget';
 import {
-  LineChart,
-  BarChart,
   PieChart,
-  ProgressChart,
   ContributionGraph,
-  StackedBarChart
 } from "react-native-chart-kit";
 import { useExpensesStore } from '@/store/expensesStore';
 import dayjs from 'dayjs';
-import GastosPorMesBarChart from './../../components/graphics/GastosPorMesBarChart';
-import { GatosTabla } from './../../components/graphics/GatosTabla';
+import { GastosPorOpcion } from '@/components/graphics/GastosPorOpcion';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -76,34 +71,7 @@ export default function GraphicsScreen() {
     <ScrollView>
       <ContainerScreen>
         <Text style={{ color: 'white', fontSize: 30 }}>Graficos</Text>
-        {/* <ContainerWidget>
-          <Text style={{ color: 'black', fontSize: 25, alignSelf: 'flex-start' }}>Grafico 1</Text>
-          <LineChart
-            data={data}
-            width={310}
-            height={240}
-            yAxisLabel="$"
-            yAxisSuffix="k"
-            yAxisInterval={1}
-            chartConfig={chartConfig}
-            bezier
-            style={{
-              borderRadius: 16,
-            }}
-          />
-        </ContainerWidget> */}
-        {expensesPieChart.length != 0 && <ContainerWidget customStyle={{ alignItems: 'center' }}>
-          <TitleSections title={'Gastos por categorías'} />
-          <PieChart
-            data={expensesPieChart}
-            width={340}
-            height={220}
-            chartConfig={chartConfig}
-            accessor={"value"}
-            backgroundColor={"transparent"}
-            center={[12, 0]}
-          />
-        </ContainerWidget>}
+        <GastosPorOpcion />
 
         <ContainerWidget>
           <TitleSections title={'Gastos durante el tiempo'} />
@@ -125,6 +93,18 @@ export default function GraphicsScreen() {
 
         </ContainerWidget>
 
+        {expensesPieChart.length != 0 && <ContainerWidget customStyle={{ alignItems: 'center' }}>
+          <TitleSections title={'Gastos por categorías'} />
+          <PieChart
+            data={expensesPieChart}
+            width={340}
+            height={220}
+            chartConfig={chartConfig}
+            accessor={"value"}
+            backgroundColor={"transparent"}
+            center={[12, 0]}
+          />
+        </ContainerWidget>}
         {/* <ContainerWidget>
           <TitleSections title={'Gastos en los meses de 2024'} />
           <GastosPorMesBarChart />

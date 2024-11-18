@@ -1,4 +1,4 @@
-import { Pressable } from 'react-native';
+import { Modal, Pressable } from 'react-native';
 import { Button, ScrollView, Text, View } from 'react-native';
 import { ContainerWidget } from './../../components/ContainerWidget'
 import { ContainerScreen } from './../../components/ContainerScreen'
@@ -14,12 +14,13 @@ import { formatFirstLetterString } from '@/utils/formatFirstLetterString';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { GatosTabla } from '@/components/graphics/GatosTabla';
 import dayjs from 'dayjs';
-import { MONTHS, MONTHS_LIST, MONTHS_MAYUS } from '@/utils/constantes';
+import { MONTHS, MONTHS_MAYUS } from '@/utils/constantes';
 import YearAndMonthSelect from '@/components/YearAndMonthSelect';
+import { DetailExpense } from '@/components/DetailExpense';
 
 function ButtonAddExpense({ }) {
   const refRBSheet = useRef();
-  const { setModalUpdateCreateExpense, expensesWithRelations } = useExpensesStore(state => state)
+  const { setModalUpdateCreateExpense } = useExpensesStore(state => state)
 
   return (
     <View style={{ flex: 1 }}>
@@ -65,6 +66,8 @@ export default function HomeScreen() {
   const [expensesPeriodSelected, setExpensesPeriodSelected] = useState()
   const [totalCountExpensesPeriodSelected, setTotalCountExpensesPeriodSelected] = useState(0)
   const [expensesMonthWithYear, setExpensesMonthWithYear] = useState([])
+  const [detailExpenseVisible, setDetailExpenseVisible] = useState(false)
+  const [expenseSelect, setExpenseSelect] = useState()
 
   useEffect(() => {
     const expensesFilterYear = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).year() === dateValue.year)
@@ -86,6 +89,19 @@ export default function HomeScreen() {
 
   return (
     <>
+
+      <Modal
+        animationType="fade"
+        transparent={false}
+        visible={detailExpenseVisible}
+        onRequestClose={() => {
+          setDetailExpenseVisible(false);
+        }}>
+        <View>
+          {expenseSelect && <DetailExpense key={expenseSelect.id} expenseSelect={expenseSelect} setDetailExpenseVisible={setDetailExpenseVisible} />}
+        </View>
+      </Modal>
+
       <ScrollView>
         <ContainerScreen>
           <AllExpenses modalAllExpensesVisible={modalAllExpensesVisible} setModalAllExpensesVisible={setModalAllExpensesVisible} />
@@ -101,7 +117,10 @@ export default function HomeScreen() {
             <View>
               {expensesPeriodSelected && expensesPeriodSelected.sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).slice(0, 3).map((expense) => {
                 return (
-                  <ExpensesSmallCard key={expense.id} expense={expense} />
+                  <ExpensesSmallCard key={expense.id} expense={expense} onPress={() => {
+                    setExpenseSelect(expense)
+                    setDetailExpenseVisible(true)
+                  }} />
                 )
               })}
             </View>

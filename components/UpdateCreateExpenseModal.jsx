@@ -1,6 +1,5 @@
-import { View, Text, Modal, Button, TextInput, ActivityIndicator, ScrollView, StyleSheet, Pressable } from 'react-native'
+import { View, Text, TextInput, ScrollView, StyleSheet, Pressable } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
-import DatePicker from 'react-native-date-picker'
 import { useExpensesStore } from '@/store/expensesStore'
 import { UpdateCreateOptionExpense } from '@/components/UpdateCreateOptionExpense'
 import { ModalSeleccionarCatergoria } from '@/components/modals/ModalSeleccionarCatergoria'
@@ -10,6 +9,7 @@ import { ModalConfirmOptionDelete } from '@/components/modals/ModalConfirmOption
 import { ModalDatePicker } from '@/components/modals/ModalDatePicker'
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
+import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
 
 export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
   const { modalUpdateCreateExpense, paymentMethods, categories, addExpense, updateExpense, expensesWithRelations } = useExpensesStore(state => state)
@@ -25,11 +25,21 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
   const [optionIdDelete, setOptionIdDelete] = useState()
   const [modalDeleteOptionVisible, setModalDeleteOptionVisible] = useState()
   const inputValueRef = useRef(null);
+  const regexNumberInt = /^[0-9]+$/;
 
   useEffect(() => {
     if (!inputValueRef) return
     inputValueRef.current.focus();
   }, [inputValueRef])
+
+  const offsetAnimation = useSharedValue(0);
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateX: offsetAnimation.value }, // Vibración horizontal
+      ],
+    };
+  });
 
   useEffect(() => {
     const categoryDefault = categories.find(category => !category.disabled)
@@ -42,6 +52,7 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
     if (modalUpdateCreateExpense.show === false) return
     if (modalUpdateCreateExpense && modalUpdateCreateExpense.type === 'edit') {
       setNewExpense(modalUpdateCreateExpense.optionSelect)
+      setDateValue(modalUpdateCreateExpense.optionSelect.paymentDate)
       setCategory(modalUpdateCreateExpense.optionSelect.category)
       setpaymentMethod(modalUpdateCreateExpense.optionSelect.paymentMethod)
     }
@@ -50,6 +61,26 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
   const onChangeNewExpenseProp = (key, value) => { setNewExpense(prevState => ({ ...prevState, [key]: value })) }
 
   const createNewExpense = () => {
+    if (!regexNumberInt.test(newExpense.value)) {
+      // Iniciar la vibración
+      offsetAnimation.value = withRepeat(
+        withTiming(10, { duration: 50 }), // Desplazarse 10 unidades en 50ms
+        -1, // Repetir indefinidamente
+        true // Alternar dirección (ida y vuelta)
+      );
+      // Detener después de 1 segundo
+      setTimeout(() => {
+        cancelAnimation(offsetAnimation); // Detener la animación
+        offsetAnimation.value = 0; // Restablecer a la posición inicial
+      }, 1000); // Tiempo configurado en milisegundos
+
+      Toast.show({
+        type: 'error',
+        text1: 'Valor de gasto no valido 😭'
+      });
+      return
+    }
+
     if (modalUpdateCreateExpense.type === 'edit') {
       const newExpenseEdited = {
         ...newExpense,
@@ -101,16 +132,18 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
       <ModalDisabledOption optionName={optionNameDisabled} visible={modalDisabledOptionsVisible} setVisible={setModalDisabledOptionsVisible} />
       <View >
         <ScrollView>
-          <View style={{ gap: 5, paddingHorizontal: 20, marginTop: 10, marginBottom: 40 }}>
-            <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, marginBottom: 10 }}>Nuevo gasto 💸</Text>
-            <TextInput
-              keyboardType='numeric'
-              onChangeText={(e) => onChangeNewExpenseProp('value', e)}
-              value={newExpense.value}
-              ref={inputValueRef}
-              placeholder='Valor'
-              style={styles.input}
-            />
+          <View style={{ gap: 5, paddingHorizontal: 20, marginTop: 10, marginBottom: 70 }}>
+            <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, marginBottom: 10 }}>{modalUpdateCreateExpense.type === 'create' ? 'Nuevo gasto 💸' : 'Editar gasto 💸'}</Text>
+            <Animated.View style={[styles.input, animatedStyle]} >
+              <TextInput
+                keyboardType='numeric'
+                onChangeText={(e) => onChangeNewExpenseProp('value', e.replace(/[^0-9]/g, ""))}
+                value={newExpense.value}
+                ref={inputValueRef}
+                placeholder='Valor'
+              // style={styles.input}
+              />
+            </Animated.View>
             <TextInput
               placeholder='Descripcion'
               value={newExpense.description}
@@ -136,12 +169,12 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
                 setOptionIdDelete={setOptionIdDelete}
                 paymentMethods={paymentMethods}
                 setpaymentMethod={setpaymentMethod} />
-              <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={createNewExpense}>
-                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Añadir nuevo gasto</Text>
-              </Pressable>
             </View>
           </View>
         </ScrollView>
+        <Pressable style={{ position: 'absolute', bottom: 35, right: 20, width: '90%', backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={createNewExpense}>
+          <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>{modalUpdateCreateExpense.type === 'create' ? 'Añadir nuevo gasto' : 'Aceptar'}</Text>
+        </Pressable>
       </View>
     </>
   )
@@ -153,5 +186,5 @@ const styles = StyleSheet.create({
     padding: 10,
     borderWidth: 1,
     marginBottom: 10
-  },
+  }
 });

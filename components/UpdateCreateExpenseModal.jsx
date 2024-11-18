@@ -24,13 +24,7 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
   const [paymentMethod, setpaymentMethod] = useState(paymentMethodDefault)
   const [optionIdDelete, setOptionIdDelete] = useState()
   const [modalDeleteOptionVisible, setModalDeleteOptionVisible] = useState()
-  const inputValueRef = useRef(null);
   const regexNumberInt = /^[0-9]+$/;
-
-  useEffect(() => {
-    if (!inputValueRef) return
-    inputValueRef.current.focus();
-  }, [inputValueRef])
 
   const offsetAnimation = useSharedValue(0);
   const animatedStyle = useAnimatedStyle(() => {
@@ -130,7 +124,7 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
       <UpdateCreateOptionExpense modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} />
       <ModalConfirmOptionDelete optionId={optionIdDelete} setVisible={setModalDeleteOptionVisible} visible={modalDeleteOptionVisible} />
       <ModalDisabledOption optionName={optionNameDisabled} visible={modalDisabledOptionsVisible} setVisible={setModalDisabledOptionsVisible} />
-      <View >
+      <View>
         <ScrollView>
           <View style={{ gap: 5, paddingHorizontal: 20, marginTop: 10, marginBottom: 70 }}>
             <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, marginBottom: 10 }}>{modalUpdateCreateExpense.type === 'create' ? 'Nuevo gasto 💸' : 'Editar gasto 💸'}</Text>
@@ -139,9 +133,7 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
                 keyboardType='numeric'
                 onChangeText={(e) => onChangeNewExpenseProp('value', e.replace(/[^0-9]/g, ""))}
                 value={newExpense.value}
-                ref={inputValueRef}
                 placeholder='Valor'
-              // style={styles.input}
               />
             </Animated.View>
             <TextInput

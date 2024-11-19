@@ -29,8 +29,14 @@ function ButtonAddExpense({ }) {
         draggable
         height={600}
         customModalProps={{
-          animationType: 'fade',
-          statusBarTranslucent: true,
+          statusBarTranslucent: false,
+        }}
+        closeOnPressBack
+        // customAvoidingViewProps={{
+        //   enabled: false,
+        // }}
+        customAvoidingViewProps={{
+          enabled: false,
         }}
         customStyles={{
           container: {
@@ -38,7 +44,7 @@ function ButtonAddExpense({ }) {
             borderTopRightRadius: 10,
           },
           draggableIcon: {
-            width: 80,
+            width: 50,
           },
         }}>
         <UpdateCreateExpenseModal refRBSheet={refRBSheet} />

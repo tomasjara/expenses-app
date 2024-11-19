@@ -54,7 +54,7 @@ export default function YearAndMonthSelect({ dateValue, setDateValue, expensesMo
                   const currentMonth = item.month
                   const expensesCount = expensesMonthWithYear.find(item => item[currentMonth])
                   return (
-                    <Pressable onPress={() => onSelectMonth(item)} style={{ borderWidth: 1, borderRadius: 10, padding: 10, borderColor: dateValue.month.id === item.id ? 'blue' : 'black', backgroundColor: dateValue.month.id === item.id ? 'blue' : 'white', width: 90 }}>
+                    <Pressable key={item.month} onPress={() => onSelectMonth(item)} style={{ borderWidth: 1, borderRadius: 10, padding: 10, borderColor: dateValue.month.id === item.id ? 'blue' : 'black', backgroundColor: dateValue.month.id === item.id ? 'blue' : 'white', width: 90 }}>
                       <Text style={{ fontSize: 12, textAlign: 'center', color: dateValue.month.id === item.id ? 'white' : 'black', }}>{item.month}</Text>
                       {expensesCount && <View style={{ position: 'absolute', top: -5, right: -5, backgroundColor: 'black', borderRadius: 10, paddingVertical: 2, paddingHorizontal: 5, opacity: 0.8 }}>
                         <Text style={{ fontSize: 10, textAlign: 'center', color: 'white' }}>{expensesCount[currentMonth]}</Text>

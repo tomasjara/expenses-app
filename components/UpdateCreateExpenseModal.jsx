@@ -91,7 +91,6 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
         text1: 'Gasto editado satisfactoriamente 👋'
       });
       refRBSheet.current.close()
-      console.log('edit');
     }
 
     if (modalUpdateCreateExpense.type === 'create') {
@@ -113,7 +112,6 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
           type: 'success',
           text1: 'Nuevo gasto registrado 👋'
         });
-        console.log('create');
         refRBSheet.current.close()
       }
     }

@@ -4,6 +4,7 @@ import { useExpensesStore } from './../store/expensesStore'
 import * as FileSystem from 'expo-file-system'
 import { jsonToCSV } from 'react-native-csv'
 import dayjs from 'dayjs'
+import ButtonBase from './ButtonBase'
 
 // TODO:
 // Eliminar la funcion de leer el archivo, crearlo directamente desde el json a la carpeta de descargas
@@ -93,13 +94,7 @@ export const ExportFiles = () => {
     };
 
     return (
-        <View >
-            {/* <Text>Exportar datos en varios formatos</Text> */}
-            {/* <Button title="Exportar CSV" onPress={exportData} /> */}
-            <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10 }} onPress={exportData}>
-                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Exportar datos en CSV</Text>
-            </Pressable>
-        </View>
+        <ButtonBase title={'Exportar datos en CSV'} onPress={exportData} customStyleText={{ textAlign: 'start' }}/>
     );
 
 }

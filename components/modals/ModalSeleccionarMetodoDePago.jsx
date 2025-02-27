@@ -16,15 +16,17 @@ export const ModalSeleccionarMetodoDePago = ({ setModalNewOptionVisible, setModa
                 onRequestClose={() => {
                     setModalPaymentMethodVisible(false)
                 }}>
-                <Pressable style={{ alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.6)' }} onPress={() => setModalPaymentMethodVisible(false)}>
-                    <Pressable style={{ backgroundColor: 'white', gap: 20, borderRadius: 10, height: '80%', width: '95%' }} onPress={() => { }}>
+                <Pressable style={{ alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.6)' }} onPress={() => setModalPaymentMethodVisible(false)} >
+                    <Pressable style={{ backgroundColor: 'white', gap: 20, borderRadius: 10, height: '80%', width: '95%' }}  >
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20 }}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Seleccion de metodo de pago</Text>
                             <Pressable onPress={() => setModalPaymentMethodVisible(false)}>
                                 <MaterialCommunityIcons name="window-close" size={24} color="black" />
                             </Pressable>
                         </View>
-                        <ScrollView>
+                        <View>
+
+                        <ScrollView style={{ backgroundColor: 'red' }} keyboardShouldPersistTaps="handled">
                             <View style={{ gap: 20, paddingHorizontal: 20, paddingBottom: 20 }}>
                                 {paymentMethods && paymentMethods.map(paymentMethod => {
                                     if (paymentMethod.disabled) return
@@ -81,8 +83,8 @@ export const ModalSeleccionarMetodoDePago = ({ setModalNewOptionVisible, setModa
                                         </View>
                                     )
                                 })}
-                                <ButtonBase title={'Añadir una nueva categoría'} onPress={() => setModalNewOptionVisible(state => ({ ...state, type: 'create', optionName: 'paymentMethod', show: true }))} />
-                                <ButtonBase title={'Ver categorías desactivadas'} onPress={() => {
+                                <ButtonBase title={'Añadir un nuevo método de pago'} onPress={() => setModalNewOptionVisible(state => ({ ...state, type: 'create', optionName: 'paymentMethod', show: true }))} />
+                                <ButtonBase title={'Ver métodos de pagos desactivados'} onPress={() => {
                                     setOptionNameDisabled('paymentMethods')
                                     setModalDisabledOptionsVisible(true)
                                 }} />
@@ -93,6 +95,8 @@ export const ModalSeleccionarMetodoDePago = ({ setModalNewOptionVisible, setModa
                                 }} /> */}
                             </View>
                         </ScrollView>
+                        </View>
+
                     </Pressable>
                 </Pressable>
             </Modal>

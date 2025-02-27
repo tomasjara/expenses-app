@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     // height: 150,
     gap: 10,
     // alignItems: 'center',
-    padding: 20,
+    padding: 15,
     ...customStyle
   })
 });

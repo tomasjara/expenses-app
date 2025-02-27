@@ -27,6 +27,11 @@ export default function YearAndMonthSelect({ dateValue, setDateValue, expensesMo
     setModalVisible(false)
   }
 
+  const onAllTime = () => {
+    // setDateValue(prevState => ({ ...prevState, month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) } }))
+    // setModalVisible(false)
+  }
+
   return (
     <>
       <Modal
@@ -69,6 +74,11 @@ export default function YearAndMonthSelect({ dateValue, setDateValue, expensesMo
                 </Pressable>
                 <Pressable style={{ backgroundColor: '#2282e3', padding: 10, borderRadius: 10 }} onPress={onActuallyMonth} >
                   <Text style={{ color: 'white' }}>Mes actual</Text>
+                </Pressable>
+              </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 10 }}>
+                <Pressable style={{ backgroundColor: '#2282e3', padding: 10, borderRadius: 10 }} onPress={onAllTime} >
+                  <Text style={{ color: 'white' }}>Todo el tiempo</Text>
                 </Pressable>
               </View>
             </View>

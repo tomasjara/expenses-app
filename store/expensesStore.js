@@ -132,22 +132,18 @@ export const useExpensesStore = create(
         })),
       removePaymentMethod: (idPaymentMethod) =>
         set((state) => {
-          console.log("object");
           const newPaymentMethods = state.paymentMethods.filter(
             (paymentMethod) => paymentMethod.id !== idPaymentMethod
           );
-          console.log(newPaymentMethods);
           return { paymentMethods: newPaymentMethods };
         }),
       updatePaymentMethod: (newObject) =>
         set((state) => {
-          console.log({ newObject });
           const newPaymentMethods = state.paymentMethods.map((paymentMethod) =>
             paymentMethod.id === newObject.id
               ? { ...paymentMethod, ...newObject }
               : paymentMethod
           );
-          console.log({ newPaymentMethods });
           return {
             paymentMethods: newPaymentMethods,
           };

@@ -95,7 +95,6 @@ export default function HomeScreen() {
 
   return (
     <>
-
       <Modal
         animationType="fade"
         transparent={false}

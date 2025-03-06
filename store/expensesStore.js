@@ -1,3 +1,4 @@
+import { expensesDataSanitization } from "@/utils/expensesDataSanitization";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 import {
@@ -17,6 +18,18 @@ export const useExpensesStore = create(
           _hasHydrated: state,
         })),
 
+      importData: async (data) =>
+        set((state) => ({
+          expenses: data.expenses
+            ? [...state.expenses, ...data.expenses]
+            : state.expenses,
+          categories: data.categories
+            ? [...state.categories, ...data.categories]
+            : state.categories,
+          paymentMethods: data.paymentMethods
+            ? [...state.paymentMethods, ...data.paymentMethods]
+            : state.paymentMethods,
+        })),
       // Expenses
       expenses: [],
       addExpense: (newExpense) =>
@@ -42,7 +55,16 @@ export const useExpensesStore = create(
         set((prevState) => ({
           expenses: [],
         })),
-
+      cleanAllData: () =>
+        set((prevState) => ({
+          expenses: [],
+          categories: [],
+          paymentMethods: [],
+        })),
+      expensesDataSanitizationStore: () =>
+        set((prevState) => ({
+          expenses: expensesDataSanitization(prevState.expenses),
+        })),
       // Expenses with relations
       expensesWithRelations: [],
       setExpensesWithRelations: () =>

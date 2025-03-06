@@ -18,12 +18,12 @@ const GastosPorMesBarChart = () => {
     const { expensesWithRelations } = useExpensesStore(state => state)
     const screenWidth = Dimensions.get("window").width;
 
-    console.log(expensesWithRelations.map(item => item.paymentDate));
+    // console.log(expensesWithRelations.map(item => item.paymentDate));
 
     const groupedByMonth = expensesWithRelations.reduce((acc, expense) => {
         // Extraer el mes y año de la fecha
         const month = dayjs(expense.paymentDate).format("M");
-        console.log(month);
+        // console.log(month);
         // Si el mes ya existe en el acumulador, sumar el valor
         if (acc[month]) {
             acc[month] += Number(expense.value);
@@ -35,7 +35,7 @@ const GastosPorMesBarChart = () => {
         return acc;
     }, []);
 
-    console.log(groupedByMonth);
+    // console.log(groupedByMonth);
 
     // Necesito crear un array de objetos en los que aparesca el mes y el valor total del mes
 

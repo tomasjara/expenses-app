@@ -17,10 +17,11 @@ import dayjs from 'dayjs';
 import { MONTHS, MONTHS_MAYUS } from '@/utils/constantes';
 import YearAndMonthSelect from '@/components/YearAndMonthSelect';
 import { DetailExpense } from '@/components/DetailExpense';
+import { expensesDataSanitization } from '@/utils/expensesDataSanitization';
 
 function ButtonAddExpense({ }) {
   const refRBSheet = useRef();
-  const { setModalUpdateCreateExpense } = useExpensesStore(state => state)
+  const { setModalUpdateCreateExpense, expenses, expensesDataSanitizationStore } = useExpensesStore(state => state)
 
   return (
     <View style={{ flex: 1 }}>
@@ -51,6 +52,10 @@ function ButtonAddExpense({ }) {
       </RBSheet>
       <Pressable
         onPress={() => {
+          // !funcion temporal para sanitizar los datos
+          if (expenses && expenses[0]?.hasOwnProperty("paymentMethods") || expenses[0]?.hasOwnProperty("category")) {
+            expensesDataSanitizationStore()
+          }
           refRBSheet.current.open()
           setModalUpdateCreateExpense({
             // show: true, 
@@ -67,7 +72,7 @@ function ButtonAddExpense({ }) {
 export default function HomeScreen() {
   const initialValuesPeriod = { month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) }, year: dayjs().get('y') }
   const [dateValue, setDateValue] = useState(initialValuesPeriod)
-  const { expensesWithRelations } = useExpensesStore(state => state)
+  const { expensesWithRelations, expenses } = useExpensesStore(state => state)
   const [modalAllExpensesVisible, setModalAllExpensesVisible] = useState(false)
   const [expensesPeriodSelected, setExpensesPeriodSelected] = useState()
   const [totalCountExpensesPeriodSelected, setTotalCountExpensesPeriodSelected] = useState(0)
@@ -130,7 +135,9 @@ export default function HomeScreen() {
               })}
             </View>
             <View style={{ gap: 10 }}>
-              <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={() => { setModalAllExpensesVisible(true) }}>
+              <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={() => {
+                setModalAllExpensesVisible(true)
+              }}>
                 <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Lista de todos los gastos</Text>
               </Pressable>
               <GatosTabla />

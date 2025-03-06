@@ -10,7 +10,7 @@ import { ModalDatePicker } from '@/components/modals/ModalDatePicker'
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
 import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
-
+import {expensesDataSanitization} from '@/utils/expensesDataSanitization'
 export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
   const { modalUpdateCreateExpense, paymentMethods, categories, addExpense, updateExpense, expensesWithRelations } = useExpensesStore(state => state)
   const categoryDefault = categories.find(category => !category.disabled)
@@ -80,8 +80,6 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
         ...newExpense,
         paymentDate: dateValue,
         lastModificationDate: new Date(),
-        paymentMethod: {},
-        category: {},
         paymentMethodId: paymentMethod?.id,
         categoryId: category?.id
       }
@@ -101,8 +99,6 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
           paymentDate: dateValue,
           creationDate: new Date(),
           lastModificationDate: new Date(),
-          paymentMethod: {},
-          category: {},
           paymentMethodId: paymentMethod?.id,
           categoryId: category?.id
         }

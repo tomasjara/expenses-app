@@ -71,21 +71,21 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
             disabled: false,
         }
         if (modalNewOptionVisible.type === 'edit') {
-            if (modalNewOptionVisible.optionName === 'category') {
+            if (modalNewOptionVisible.optionName === 'categories') {
                 updateCategory(newOption);
                 closeModal()
             }
-            if (modalNewOptionVisible.optionName === 'paymentMethod') {
+            if (modalNewOptionVisible.optionName === 'paymentMethods') {
                 updatePaymentMethod(newOption);
                 closeModal()
             }
         }
         if (modalNewOptionVisible.type === 'create') {
-            if (modalNewOptionVisible.optionName === 'category') {
+            if (modalNewOptionVisible.optionName === 'categories') {
                 addCategory(newOptionyObj)
                 closeModal()
             }
-            if (modalNewOptionVisible.optionName === 'paymentMethod') {
+            if (modalNewOptionVisible.optionName === 'paymentMethods') {
                 addPaymentMethod(newOptionyObj)
                 closeModal()
             }

@@ -83,9 +83,6 @@ export const ModalConfigMetodoDePago = () => {
                 </Pressable>
             </Modal>
             <ButtonBase title={'Configurar metodo de pago'} customStyleText={{ textAlign: 'start' }} onPress={() => setModalVisible(true)} />
-            {/* <Pressable onPress={() => setModalVisible(true)} style={{ padding: 10, borderRadius: 10, backgroundColor: 'white', marginTop: 10 }}>
-                <Text>Configurar metodo de pago</Text>
-            </Pressable> */}
         </>
 
     );

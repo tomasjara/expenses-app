@@ -6,12 +6,16 @@ import { ContainerWidget } from '../../components/ContainerWidget';
 import ButtonBase from '@/components/ButtonBase';
 import { ModalComponent } from '../../components/modals/ModalComponent';
 import { ModalConfigMetodoDePago } from '../../components/modals/ModalConfigMetodoDePago';
+import { ModalConfigOption } from '../../components/modals/ModalConfigOption'
 import { useState } from 'react';
 
 export default function SettingsScreen() {
 
-  const { cleanAllData } = useExpensesStore(state => state)
+  const { cleanAllData, categories, paymentMethods } = useExpensesStore(state => state)
   const [modalVisibleDeleteData, setModalVisibleDeleteData] = useState(false)
+
+  const [configCategoriesModalVisible, setConfigCategoriesModalVisible] = useState(false);
+  const [configPaymentMethodsModalVisible, setConfigPaymentMethodsModalVisible] = useState(false);
 
   const onDeleteData = () => {
     setModalVisibleDeleteData(false)
@@ -22,26 +26,30 @@ export default function SettingsScreen() {
   return (
     <ContainerScreen>
       <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>Configuraciones</Text>
-      {/* <ContainerWidget>
-        <View style={{ gap: 15 }}>
-          <Pressable style={{ backgroundColor: 'red', padding: 10, borderRadius: 10 }}
-          // onPress={() => { cleanExpensesState() }}
-          >
-            <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Eliminar expenses</Text>
-          </Pressable>
-          <ButtonBase title={'Configurar categorías'} customStyleText={{ textAlign: 'start' }} onPress={() => { }} />
-          <ButtonBase title={'Configurar métodos de pagos'} customStyleText={{ textAlign: 'start' }} onPress={() => { }} />
-        </View>
-      </ContainerWidget> */}
 
       {/* <ContainerWidget>
         <View style={{ gap: 15 }}>
           <ExportImportFiles />
         </View>
       </ContainerWidget> */}
-      <ContainerWidget>
-        <ModalConfigMetodoDePago />
 
+      <ContainerWidget>
+        <ModalConfigOption
+          title="Configuración de categorías"
+          optionName="categories"
+          options={categories}
+          modalVisible={configCategoriesModalVisible}
+          setModalVisible={setConfigCategoriesModalVisible}
+        />
+        <ButtonBase customStyleText={{ textAlign: 'start' }} title="Configurar categorías" onPress={() => setConfigCategoriesModalVisible(true)} />
+        <ModalConfigOption
+          title="Configuración de métodos de pago"
+          optionName="paymentMethods"
+          options={paymentMethods}
+          modalVisible={configPaymentMethodsModalVisible}
+          setModalVisible={setConfigPaymentMethodsModalVisible}
+        />
+        <ButtonBase customStyleText={{ textAlign: 'start' }} title="Configurar método de pago" onPress={() => setConfigPaymentMethodsModalVisible(true)} />
       </ContainerWidget>
 
       <ContainerWidget>
@@ -57,13 +65,6 @@ export default function SettingsScreen() {
         </ModalComponent>
         <ButtonBase title={'Eliminar datos'} customStyleContainer={{ backgroundColor: 'red' }} customStyleText={{ textAlign: 'center' }} onPress={() => { setModalVisibleDeleteData(true) }} />
       </ContainerWidget>
-      {/* <Button
-        title='Limpiar state de expenses'
-        color={'red'}
-        onPress={() => {
-          cleanExpensesState(true)
-        }}
-      /> */}
     </ContainerScreen>
   );
 }

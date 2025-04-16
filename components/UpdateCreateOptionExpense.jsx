@@ -6,132 +6,6 @@ import ColorPicker from 'react-native-wheel-color-picker';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import ButtonBase from './ButtonBase';
 
-const COLORS1 = [
-    "#F94144", // Rojo suave
-    "#F3722C", // Naranja vibrante
-    "#F8961E", // Amarillo cálido
-    "#F9C74F", // Amarillo pastel
-    "#90BE6D", // Verde suave
-    "#43AA8B", // Verde esmeralda
-    "#4D908E", // Verde azulado
-    "#577590", // Azul grisáceo
-    "#277DA1", // Azul océano
-    "#A05195", // Morado ciruela
-    "#D45087", // Magenta apagado
-    "#F9844A", // Coral pastel
-    "#FF5A5F", // Rosa cálido
-    "#6A4C93", // Púrpura profundo
-    "#5B5F97"  // Azul índigo
-];
-
-const COLORS2 = [
-    "#F94144", // Rojo vibrante
-    "#F3722C", // Naranja intenso
-    "#F8961E", // Naranja claro
-    "#F9C74F", // Amarillo cálido
-    "#90BE6D", // Verde fresco
-    "#43AA8B", // Verde esmeralda
-    "#577590", // Azul grisáceo
-    "#277DA1", // Azul profundo
-    "#4D908E", // Verde azulado
-    "#F9844A", // Coral
-    "#FF006E", // Rosa vibrante
-    "#8338EC", // Morado eléctrico
-    "#3A86FF", // Azul brillante
-    "#FB5607", // Naranja rojizo
-    "#FFBE0B"  // Amarillo vibrante
-];
-
-const COLORS3 = [
-    "#D32F2F", // Rojo oscuro [x]
-    "#AC1552", // Magenta [x]
-    "#7B1FA2", // Morado profundo [x]
-    "#512DA8", // Púrpura oscuro [x]
-    "#303F9F", // Azul fuerte [x]
-    "#12579B", //  [x] 
-    "#023350", //  [x]
-    "#005C51", //  [x]
-    "#29652C", //  [x]
-    "#6D4F03", //  [x]
-    "#7A4E00", // [x]
-    "#8A4500", //  [x]
-    "#973011", // Terracota [x]
-    "#5D4037", // Café oscuro [x]
-    "#455A64",  // Azul grisáceo [x]
-    '#D32F2F',
-    '#1976D2',
-    '#F57C00'
-];
-
-const COLORS4 = [
-    "#D32F2F", // Rojo vibrante
-    "#C2185B", // Magenta profundo
-    "#7B1FA2", // Morado fuerte
-    "#512DA8", // Púrpura oscuro
-    "#303F9F", // Azul intenso
-    "#1976D2", // Azul vibrante
-    "#0288D1", // Azul cielo oscuro
-    "#00796B", // Verde esmeralda oscuro
-    "#388E3C", // Verde vibrante
-    "#F57C00", // Naranja quemado
-    "#E64A19", // Rojo terracota
-    "#5D4037"  // Café intenso
-];
-
-const COLORS5 = [
-    "#D32F2F", // Rojo vibrante
-    "#C2185B", // Magenta intenso
-    "#7B1FA2", // Morado fuerte
-    "#512DA8", // Púrpura oscuro
-    "#303F9F", // Azul intenso
-    "#1976D2", // Azul vibrante
-    "#0288D1", // Azul cielo oscuro
-    "#00796B", // Verde esmeralda oscuro
-    "#388E3C", // Verde brillante
-    "#689F38", // Verde lima oscuro
-    "#FBC02D", // Amarillo mostaza
-    "#F57C00", // Naranja quemado
-    "#E64A19", // Terracota
-    "#5D4037", // Café oscuro
-    "#455A64"  // Azul grisáceo
-];
-
-const COLORS6 = [
-    "#FFCDD2", // Rosa pastel
-    "#F8BBD0", // Magenta claro
-    "#E1BEE7", // Lavanda claro
-    "#D1C4E9", // Lila suave
-    "#C5CAE9", // Azul claro
-    "#BBDEFB", // Azul cielo
-    "#B3E5FC", // Cian suave
-    "#B2EBF2", // Turquesa pastel
-    "#B2DFDB", // Verde menta
-    "#C8E6C9", // Verde claro
-    "#DCEDC8", // Lima suave
-    "#FFF9C4", // Amarillo pálido
-    "#FFECB3", // Naranja claro
-    "#FFE0B2", // Durazno pastel
-    "#FFCCBC"  // Coral suave
-];
-
-const COLORS7 = [
-    "#FF8A80", // Rosa coral
-    "#FF80AB", // Fucsia vibrante
-    "#EA80FC", // Lavanda intensa
-    "#B388FF", // Lila vibrante
-    "#8C9EFF", // Azul periwinkle
-    "#82B1FF", // Azul cielo intenso
-    "#80D8FF", // Turquesa brillante
-    "#84FFFF", // Cian eléctrico
-    "#A7FFEB", // Verde agua vibrante
-    "#B9F6CA", // Verde menta fuerte
-    "#CCFF90", // Lima vibrante
-    "#FFFF8D", // Amarillo neón
-    "#FFD180", // Naranja suave vibrante
-    "#FFAB91", // Melón coral
-    "#FFCC80"  // Durazno intenso
-];
-
 const COLORS8 = [
     "#486b00", // grass
     // "#234600", // forest green SACAR
@@ -240,8 +114,8 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
                             <Text style={{ marginStart: 28, color: 'black', fontWeight: 'bold', fontSize: 20 }}>Escoge un color</Text>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                 <View style={{ gap: 10, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', width: 250 }}>
-                                    {COLORS8.map(color =>
-                                        <Pressable
+                                    {COLORS8.map((color,index) =>
+                                        <Pressable key={index}
                                             onPress={() => setNewOption(prevState => ({ ...prevState, color: color }))}
                                             style={{ borderRadius: 10, width: 40, height: 40, backgroundColor: color, justifyContent: 'center', alignItems: 'center' }}>
                                             {newOption.color === color && <AntDesign name="check" size={24} color="white" />}

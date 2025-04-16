@@ -18,6 +18,7 @@ import { MONTHS, MONTHS_MAYUS } from '@/utils/constantes';
 import YearAndMonthSelect from '@/components/YearAndMonthSelect';
 import { DetailExpense } from '@/components/DetailExpense';
 import { expensesDataSanitization } from '@/utils/expensesDataSanitization';
+import { FontAwesome } from '@expo/vector-icons';
 
 function ButtonAddExpense({ }) {
   const refRBSheet = useRef();
@@ -33,11 +34,8 @@ function ButtonAddExpense({ }) {
           statusBarTranslucent: false,
         }}
         closeOnPressBack
-        // customAvoidingViewProps={{
-        //   enabled: false,
-        // }}
         customAvoidingViewProps={{
-          enabled: false,
+          enabled: true,
         }}
         customStyles={{
           container: {
@@ -50,6 +48,7 @@ function ButtonAddExpense({ }) {
         }}>
         <UpdateCreateExpenseModal refRBSheet={refRBSheet} />
       </RBSheet>
+
       <Pressable
         onPress={() => {
           // !funcion temporal para sanitizar los datos
@@ -115,32 +114,45 @@ export default function HomeScreen() {
       <ScrollView>
         <ContainerScreen>
           <AllExpenses modalAllExpensesVisible={modalAllExpensesVisible} setModalAllExpensesVisible={setModalAllExpensesVisible} />
-            <YearAndMonthSelect dateValue={dateValue} expensesMonthWithYear={expensesMonthWithYear} setDateValue={setDateValue} />
-          <ContainerWidget >
+          {/* <YearAndMonthSelect dateValue={dateValue} expensesMonthWithYear={expensesMonthWithYear} setDateValue={setDateValue} /> */}
+          <TotalExpenseValue expensesPeriodSelected={expensesPeriodSelected} dateValue={dateValue} />
+          {/* <ContainerWidget >
             <TotalExpenseValue expensesPeriodSelected={expensesPeriodSelected} dateValue={dateValue} />
-            <Text style={{ fontSize: 12, opacity: 0.5 }}>Cantidad de registros PRUEBA2: {totalCountExpensesPeriodSelected}</Text>
-          </ContainerWidget>
-          <ContainerWidget>
-            <Text style={{ fontSize: 14, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text>
-            <View>
-              {expensesPeriodSelected && expensesPeriodSelected.sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).slice(0, 3).map((expense) => {
+            <Text style={{ fontSize: 12, opacity: 0.5 }}>Cantidad de registros: {totalCountExpensesPeriodSelected}</Text>
+          </ContainerWidget> */}
+          {/* <ContainerWidget> */}
+          <View style={{
+            // backgroundColor: 'white',
+            gap: 10,
+            padding: 15,
+          }}>
+            {/* <Text style={{ fontSize: 14, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text> */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+              <Text style={{ padding: 10, fontSize: 13, marginBottom: 3, color: 'white', textAlign: 'center', opacity: 0.5 }}>Ultimos gastos</Text>
+              <Pressable style={{ padding: 10, borderRadius: 10, }} onPress={() => {
+                setModalAllExpensesVisible(true)
+              }}><Text style={{ fontSize: 13, marginBottom: 3, color: 'white', textAlign: 'center', opacity: 0.5 }}>Ver mas <FontAwesome name="angle-right" size={14} color="white" /></Text></Pressable>
+            </View>
+            <View >
+              {expensesPeriodSelected && expensesPeriodSelected.sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).slice(0, 4).map((expense) => {
                 return (
-                  <ExpensesSmallCard key={expense.id} expense={expense} onPress={() => {
+                  <ExpensesSmallCard key={expense.id} minimalStyle={true} expense={expense} onPress={() => {
                     setExpenseSelect(expense)
                     setDetailExpenseVisible(true)
                   }} />
                 )
               })}
             </View>
-            <View style={{ gap: 10 }}>
+            {/* <View style={{ gap: 10 }}>
               <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={() => {
                 setModalAllExpensesVisible(true)
               }}>
                 <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Listado de gastos</Text>
               </Pressable>
-              {/* <GatosTabla /> */}
-            </View>
-          </ContainerWidget>
+              <GatosTabla />
+            </View> */}
+          </View>
+          {/* </ContainerWidget> */}
         </ContainerScreen>
       </ScrollView >
       <ButtonAddExpense />

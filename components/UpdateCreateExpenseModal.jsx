@@ -11,6 +11,7 @@ import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
 import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
 import { expensesDataSanitization } from '@/utils/expensesDataSanitization'
+
 export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
   const { modalUpdateCreateExpense, paymentMethods, categories, addExpense, updateExpense, expensesWithRelations } = useExpensesStore(state => state)
   const categoryDefault = categories.find(category => !category.disabled)
@@ -118,11 +119,6 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
       <UpdateCreateOptionExpense modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} />
       <ModalConfirmOptionDelete optionId={optionIdDelete} setVisible={setModalDeleteOptionVisible} visible={modalDeleteOptionVisible} />
       <ModalDisabledOption optionName={optionNameDisabled} visible={modalDisabledOptionsVisible} setVisible={setModalDisabledOptionsVisible} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
-      >
-        <ScrollView keyboardShouldPersistTaps='handled' >
           <View style={{ gap: 5, paddingHorizontal: 20, marginTop: 10, marginBottom: 70 }}>
             <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, marginBottom: 10 }}>{modalUpdateCreateExpense.type === 'create' ? 'Nuevo gasto 💸' : 'Editar gasto 💸'}</Text>
             <Animated.View style={[styles.input, animatedStyle]} >
@@ -160,8 +156,6 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
                 setpaymentMethod={setpaymentMethod} />
             </View>
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
       <Pressable style={{ position: 'absolute', bottom: 20, right: 20, width: '90%', backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={createNewExpense}>
         <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>{modalUpdateCreateExpense.type === 'create' ? 'Añadir nuevo gasto' : 'Aceptar'}</Text>
       </Pressable>

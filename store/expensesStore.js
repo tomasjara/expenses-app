@@ -58,8 +58,21 @@ export const useExpensesStore = create(
       cleanAllData: () =>
         set((prevState) => ({
           expenses: [],
-          categories: [],
-          paymentMethods: [],
+          paymentMethods: [
+            {
+              id: "f739c40d-3545-40e4-aaf7-83b875c122bb",
+              name: "Sin especificar",
+              description: "",
+              color: "#4897d8",
+            },
+          ],
+          categories: [
+            {
+              id: "18a9a02a-fc75-4766-a7f2-2359267a69a0",
+              name: "Sin categoría",
+              color: "#f25c00",
+            },
+          ],
         })),
       expensesDataSanitizationStore: () =>
         set((prevState) => ({
@@ -99,8 +112,8 @@ export const useExpensesStore = create(
       categories: [
         {
           id: "18a9a02a-fc75-4766-a7f2-2359267a69a0",
-          name: "Otros",
-          color: "#2ecc71",
+          name: "Sin categoría",
+          color: "#f25c00",
         },
       ],
       updateCategory: (newObject) =>
@@ -143,9 +156,9 @@ export const useExpensesStore = create(
       paymentMethods: [
         {
           id: "f739c40d-3545-40e4-aaf7-83b875c122bb",
-          name: "Principal",
+          name: "Sin especificar",
           description: "",
-          color: "#3498db",
+          color: "#4897d8",
         },
       ],
       addPaymentMethod: (newPaymentMethod) =>

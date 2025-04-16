@@ -5,6 +5,7 @@ import { useExpensesStore } from './../../store/expensesStore';
 import { ContainerWidget } from '../../components/ContainerWidget';
 import ButtonBase from '@/components/ButtonBase';
 import { ModalComponent } from '../../components/modals/ModalComponent';
+import { ModalConfigMetodoDePago } from '../../components/modals/ModalConfigMetodoDePago';
 import { useState } from 'react';
 
 export default function SettingsScreen() {
@@ -38,6 +39,10 @@ export default function SettingsScreen() {
           <ExportImportFiles />
         </View>
       </ContainerWidget> */}
+      <ContainerWidget>
+        <ModalConfigMetodoDePago />
+
+      </ContainerWidget>
 
       <ContainerWidget>
         <ModalComponent modalVisible={modalVisibleDeleteData} setModalVisible={setModalVisibleDeleteData} >
@@ -52,7 +57,6 @@ export default function SettingsScreen() {
         </ModalComponent>
         <ButtonBase title={'Eliminar datos'} customStyleContainer={{ backgroundColor: 'red' }} customStyleText={{ textAlign: 'center' }} onPress={() => { setModalVisibleDeleteData(true) }} />
       </ContainerWidget>
-
       {/* <Button
         title='Limpiar state de expenses'
         color={'red'}

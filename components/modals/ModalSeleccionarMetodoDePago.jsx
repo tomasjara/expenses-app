@@ -26,36 +26,36 @@ export const ModalSeleccionarMetodoDePago = ({ setModalNewOptionVisible, setModa
                         </View>
                         <View>
 
-                        <ScrollView style={{ backgroundColor: 'red' }} keyboardShouldPersistTaps="handled">
-                            <View style={{ gap: 20, paddingHorizontal: 20, paddingBottom: 20 }}>
-                                {paymentMethods && paymentMethods.map(paymentMethod => {
-                                    if (paymentMethod.disabled) return
-                                    return (
-                                        <View style={{ flexDirection: 'row', paddingVertical: 10, borderWidth: 0.5, borderRadius: 10, alignItems: 'center' }} key={paymentMethod.id}>
-                                            <View style={{ flex: 1, marginStart: 6 }}>
-                                                <Pressable style={{ flexDirection: 'row', gap: 6, flex: 1, alignItems: 'center' }} onPress={() => {
-                                                    setpaymentMethod(paymentMethod)
-                                                    setModalPaymentMethodVisible(false)
-                                                }}>
-                                                    <View style={{ backgroundColor: paymentMethod.color || '', height: 20, width: 8 }}></View>
-                                                    <Text>{paymentMethod.name || ''}</Text>
-                                                </Pressable>
-                                            </View>
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 10 }}>
-                                                <Pressable style={{ borderRadius: 10, padding: 10, backgroundColor: 'black' }} onPress={() => {
-                                                    setModalNewOptionVisible(state => ({ ...state, type: 'edit', optionName: 'paymentMethod', show: true, optionSelect: paymentMethod }))
-                                                }} >
-                                                    <Feather name="edit" size={24} color="white" />
-                                                </Pressable>
-                                                <Pressable style={{ borderRadius: 10, padding: 10, backgroundColor: 'red' }} onPress={() => {
-                                                    // removePaymentMethod(paymentMethod.id)
-                                                    setModalDeleteOptionVisible(true)
-                                                    setOptionIdDelete(paymentMethod.id)
-                                                }} >
-                                                    <MaterialIcons name="delete-outline" size={24} color="white" />
-                                                </Pressable>
-                                            </View>
-                                            {/* <View style={{ flexDirection: 'row', gap: 6 }}>
+                            <ScrollView keyboardShouldPersistTaps="handled">
+                                <View style={{ gap: 20, paddingHorizontal: 20, paddingBottom: 20 }}>
+                                    {paymentMethods && paymentMethods.map(paymentMethod => {
+                                        if (paymentMethod.disabled) return
+                                        return (
+                                            <View style={{ flexDirection: 'row', paddingVertical: 10, borderWidth: 0.5, borderRadius: 10, alignItems: 'center' }} key={paymentMethod.id}>
+                                                <View style={{ flex: 1, marginStart: 6 }}>
+                                                    <Pressable style={{ flexDirection: 'row', gap: 6, flex: 1, alignItems: 'center' }} onPress={() => {
+                                                        setpaymentMethod(paymentMethod)
+                                                        setModalPaymentMethodVisible(false)
+                                                    }}>
+                                                        <View style={{ backgroundColor: paymentMethod.color || '', height: 20, width: 8 }}></View>
+                                                        <Text>{paymentMethod.name || ''}</Text>
+                                                    </Pressable>
+                                                </View>
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 10 }}>
+                                                    <Pressable style={{ borderRadius: 10, padding: 10, backgroundColor: 'black' }} onPress={() => {
+                                                        setModalNewOptionVisible(state => ({ ...state, type: 'edit', optionName: 'paymentMethod', show: true, optionSelect: paymentMethod }))
+                                                    }} >
+                                                        <Feather name="edit" size={24} color="white" />
+                                                    </Pressable>
+                                                    <Pressable style={{ borderRadius: 10, padding: 10, backgroundColor: 'red' }} onPress={() => {
+                                                        // removePaymentMethod(paymentMethod.id)
+                                                        setModalDeleteOptionVisible(true)
+                                                        setOptionIdDelete(paymentMethod.id)
+                                                    }} >
+                                                        <MaterialIcons name="delete-outline" size={24} color="white" />
+                                                    </Pressable>
+                                                </View>
+                                                {/* <View style={{ flexDirection: 'row', gap: 6 }}>
                                                 <Button
                                                     title={'Editar'}
                                                     color={'blue'}
@@ -71,7 +71,7 @@ export const ModalSeleccionarMetodoDePago = ({ setModalNewOptionVisible, setModa
                                                         setOptionIdDelete(paymentMethod.id)
                                                     }} />
                                             </View> */}
-                                            {/* <View style={{ flex: 1, marginStart: 6 }}>
+                                                {/* <View style={{ flex: 1, marginStart: 6 }}>
                                                 <Button
                                                     title={paymentMethod.name || ''}
                                                     color={paymentMethod.color || ''}
@@ -80,28 +80,28 @@ export const ModalSeleccionarMetodoDePago = ({ setModalNewOptionVisible, setModa
                                                         setModalPaymentMethodVisible(false)
                                                     }} />
                                             </View> */}
-                                        </View>
-                                    )
-                                })}
-                                <ButtonBase title={'Añadir un nuevo método de pago'} onPress={() => setModalNewOptionVisible(state => ({ ...state, type: 'create', optionName: 'paymentMethod', show: true }))} />
-                                <ButtonBase title={'Ver métodos de pagos desactivados'} onPress={() => {
-                                    setOptionNameDisabled('paymentMethods')
-                                    setModalDisabledOptionsVisible(true)
-                                }} />
-                                {/* <Button title='Cerrar' color={'red'} onPress={() => setModalPaymentMethodVisible(false)} /> */}
-                                {/* <Button title='Ver metodos de pago desactivados' color={'blue'} onPress={() => {
+                                            </View>
+                                        )
+                                    })}
+                                    <ButtonBase title={'Añadir un nuevo método de pago'} onPress={() => setModalNewOptionVisible(state => ({ ...state, type: 'create', optionName: 'paymentMethod', show: true }))} />
+                                    <ButtonBase title={'Ver métodos de pagos desactivados'} onPress={() => {
+                                        setOptionNameDisabled('paymentMethods')
+                                        setModalDisabledOptionsVisible(true)
+                                    }} />
+                                    {/* <Button title='Cerrar' color={'red'} onPress={() => setModalPaymentMethodVisible(false)} /> */}
+                                    {/* <Button title='Ver metodos de pago desactivados' color={'blue'} onPress={() => {
                                     setOptionNameDisabled('paymentMethods')
                                     setModalDisabledOptionsVisible(true)
                                 }} /> */}
-                            </View>
-                        </ScrollView>
+                                </View>
+                            </ScrollView>
                         </View>
 
                     </Pressable>
                 </Pressable>
             </Modal>
-            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, opacity: 0.6 }} onPress={() => setModalPaymentMethodVisible(true)}>
-                <Text>Metodo de pago:</Text>
+            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, opacity: 0.6, alignItems: 'center' }} onPress={() => setModalPaymentMethodVisible(true)}>
+                <Text style={{ fontSize: 14 }}>Metodo de pago:</Text>
                 <Ionicons name="settings-outline" size={24} color="black" />
             </Pressable>
             <View style={{ flexWrap: 'wrap', gap: 10, paddingHorizontal: 10, marginTop: 10 }}>
@@ -113,18 +113,17 @@ export const ModalSeleccionarMetodoDePago = ({ setModalNewOptionVisible, setModa
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'start',
-                                borderWidth: 0.5,
+                                borderWidth: paymentMethodSelected.id == paymentMethod.id ? 1.5 : 0.5,
                                 borderRadius: 10,
                                 padding: 5,
                                 gap: 5,
-                                backgroundColor: paymentMethodSelected.id == paymentMethod.id ? '#f9f9f9' : 'white'
+                                backgroundColor: paymentMethodSelected.id == paymentMethod.id ? '#eaf4fc' : 'transparent'
                             }} onPress={() => {
                                 setpaymentMethod(paymentMethod)
                             }} >
                                 <View style={{ height: 20, width: 20, borderRadius: 20, backgroundColor: paymentMethod.color || '' }}></View>
                                 <Text >{paymentMethod.name || ''}</Text>
                             </Pressable>
-                            {paymentMethodSelected.id == paymentMethod.id ? <View style={{ backgroundColor: 'black', width: 20, height: 20, borderRadius: 10 }}></View> : null}
                         </View>
                     )
                 })}

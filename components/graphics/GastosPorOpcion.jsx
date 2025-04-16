@@ -10,7 +10,6 @@ export const GastosPorOpcion = () => {
     const { expensesWithRelations, categories, paymentMethods } = useExpensesStore(state => state)
     const [expensesCategory, setExpensesCategory] = useState()
     const [expensesPaymentMethod, setExpensesPaymentMethod] = useState()
-    console.log({ expensesCategory });
 
     useEffect(() => {
         const expensesCategoryTransformed = categories.map(category => {

@@ -1,6 +1,6 @@
 import { useExpensesStore } from '@/store/expensesStore'
 import dayjs from 'dayjs'
-import { View, Text, Button } from 'react-native'
+import { View, Text, Button, Pressable, ScrollView } from 'react-native'
 import Toast from 'react-native-toast-message'
 import { UpdateCreateExpenseModal } from './UpdateCreateExpenseModal';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from 'react';
 import { ModalConfirmExpenseDelete } from './modals/ModalConfirmExpenseDelete';
 import ButtonBase from './ButtonBase';
 import { formatFirstLetterString } from '@/utils/formatFirstLetterString';
+import { AntDesign } from '@expo/vector-icons';
+import { formatMoney } from '@/utils/formatMoney';
 
 function ButtonEditExpense({ expense }) {
     const refRBSheet = useRef();
@@ -20,8 +22,11 @@ function ButtonEditExpense({ expense }) {
                 draggable
                 height={600}
                 customModalProps={{
-                    animationType: 'fade',
-                    statusBarTranslucent: true,
+                    statusBarTranslucent: false,
+                }}
+                closeOnPressBack
+                customAvoidingViewProps={{
+                    enabled: true,
                 }}
                 customStyles={{
                     container: {
@@ -29,7 +34,7 @@ function ButtonEditExpense({ expense }) {
                         borderTopRightRadius: 10,
                     },
                     draggableIcon: {
-                        width: 80,
+                        width: 50,
                     },
                 }}>
                 <UpdateCreateExpenseModal refRBSheet={refRBSheet} />
@@ -68,28 +73,42 @@ export const DetailExpense = ({ expenseSelect, setDetailExpenseVisible }) => {
     }
 
     return (
-        <View style={{ padding: 30 }}>
-            <Text style={{ fontSize: 20 }}>Detalles de gasto</Text>
-            <View style={{ gap: 5, marginVertical: 40 }}>
-                <KeyValue keyValue={'id:'} value={id} />
-                <KeyValue keyValue={'value:'} value={value} />
-                <KeyValue keyValue={'description:'} value={description} />
-                <KeyValue keyValue={'category:'} value={category?.name} />
-                <KeyValue keyValue={'metodo de pago:'} value={paymentMethod?.name} />
-                <KeyValue keyValue={'payment date:'} value={dayjs(paymentDate).format('DD/MM/YYYY')} />
-                <KeyValue keyValue={'creation date:'} value={dayjs(creationDate).format('DD/MM/YYYY')} />
-                <KeyValue keyValue={'last modification date:'} value={dayjs(lastModificationDate).format('DD/MM/YYYY')} />
-                {color && <>
-                    <KeyValue keyValue={'Color:'} value={color} />
-                    <View style={{ backgroundColor: color, width: 300, height: 100, borderRadius: 10 }}></View>
-                </>}
-                <View style={{ gap: 15, marginTop: 20 }}>
-                    <ButtonEditExpense expense={expense} />
-                    <ModalConfirmExpenseDelete onDeleteOption={onDelete} />
-                    <Button title='Cerrar' onPress={() => setDetailExpenseVisible(false)} />
-                </View>
+        <View style={{ backgroundColor: 'white' }}>
+            <View style={{ flexDirection: 'row', gap: 19, padding: 20, justifyContent: 'start', alignItems: 'center', }}>
+                <Pressable onPress={() => setDetailExpenseVisible(false)}>
+                    <AntDesign name="leftcircleo" size={30} color="black" />
+                </Pressable>
             </View>
-            <Toast />
-        </View>
+            <ScrollView >
+                <View style={{ gap: 10, marginTop: 10, marginBottom: 25 }}>
+                    <Text style={{ textAlign: 'center', fontSize: 50 }}>💸</Text>
+                    <Text style={{ textAlign: 'center', fontSize: 50 }}>{formatMoney(value)}</Text>
+                    {description && <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+                        <Text style={{ textAlign: 'center', fontSize: 14, opacity: 0.5, maxWidth: 230 }}>{description}</Text></View>}
+                    <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'center', alignItems: 'center', padding: 10, flexWrap: 'wrap' }}>
+                        <View style={{ borderRadius: 50, borderColor: 'black', paddingHorizontal: 20, paddingVertical: 8, borderWidth: 0, elevation: 2, backgroundColor: 'white' }}><Text style={{ color: 'black', fontSize: 15 }}>{category?.name}</Text></View>
+                        <View style={{ borderRadius: 50, borderColor: 'black', paddingHorizontal: 20, paddingVertical: 8, borderWidth: 0, elevation: 2, backgroundColor: 'white' }}><Text style={{ color: 'black', fontSize: 15 }}>{paymentMethod?.name}</Text></View>
+                    </View>
+                </View>
+                <View style={{ borderTopWidth: 0.3, marginTop: 20, borderColor: 'black', paddingVertical: 10, paddingHorizontal: 20 }}>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 20 }}>Detalle de gasto</Text>
+                    <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
+                        <Text style={{ fontSize: 16, opacity: 0.5 }}>Fecha de pago</Text>
+                        <Text style={{ fontSize: 16 }}>{dayjs(paymentDate).format('DD/MM/YYYY')}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
+                        <Text style={{ fontSize: 16, opacity: 0.5 }}>Fecha de registro</Text>
+                        <Text style={{ fontSize: 16 }}>{dayjs(creationDate).format('DD/MM/YYYY')}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'space-between', alignItems: 'center', padding: 10 }}>
+                        <Text style={{ fontSize: 16, opacity: 0.5 }}>Ultima modificación</Text>
+                        <Text style={{ fontSize: 16 }}>{dayjs(lastModificationDate).format('DD/MM/YYYY')}</Text>
+                    </View>
+                    <View style={{ paddingVertical: 25 }}>
+                        <ButtonEditExpense expense={expense} />
+                    </View>
+                </View>
+            </ScrollView>
+        </View >
     )
 }

@@ -19,7 +19,7 @@ export const ModalSeleccionarCatergoria = ({ setModalNewOptionVisible, setModalD
                 }}>
                 <Pressable style={{ alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.6)' }} onPress={() => setModalCategoriesVisible(false)}>
                     <Pressable style={{ backgroundColor: 'white', borderRadius: 10, height: '80%', width: '95%' }} onPress={() => { }}>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20}}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20 }}>
                             <Text style={{ fontWeight: 'bold', fontSize: 20 }}>Configuración de categorias</Text>
                             <Pressable onPress={() => setModalCategoriesVisible(false)}>
                                 <MaterialCommunityIcons name="window-close" size={24} color="black" />
@@ -67,8 +67,8 @@ export const ModalSeleccionarCatergoria = ({ setModalNewOptionVisible, setModalD
                     </Pressable>
                 </Pressable>
             </Modal>
-            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, opacity: 0.6 }} onPress={() => setModalCategoriesVisible(true)}>
-                <Text>Categoria:</Text>
+            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10, opacity: 0.6, alignItems: 'center'}} onPress={() => setModalCategoriesVisible(true)}>
+                <Text style={{fontSize: 14}}> Categoria:</Text>
                 <Ionicons name="settings-outline" size={24} color="black" />
             </Pressable>
             <View style={{ flexWrap: 'wrap', gap: 10, paddingHorizontal: 10, marginTop: 10 }}>
@@ -80,18 +80,18 @@ export const ModalSeleccionarCatergoria = ({ setModalNewOptionVisible, setModalD
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'start',
-                                borderWidth: 0.5,
+                                // borderWidth: 0.5,
+                                borderWidth: categorySelected.id == category.id ? 1.5 : 0.5,
                                 borderRadius: 10,
                                 padding: 5,
                                 gap: 5,
-                                backgroundColor: categorySelected.id == category.id ? '#f9f9f9' : 'white'
+                                backgroundColor: categorySelected.id == category.id ? '#eaf4fc' : 'transparent'
                             }} onPress={() => {
                                 setCategory(category)
                             }} >
-                                <View style={{ height: 20, width: 20, borderRadius: 20, backgroundColor: category.color || '' }}></View>
+                                <View style={{ height: 15, width: 15, borderRadius: 20, backgroundColor: category.color || '' }}></View>
                                 <Text >{category.name || ''}</Text>
                             </Pressable>
-                            {categorySelected.id == category.id ? <View style={{ backgroundColor: 'black', width: 20, height: 20, borderRadius: 10 }}></View> : null}
                         </View>
                     )
                 })}

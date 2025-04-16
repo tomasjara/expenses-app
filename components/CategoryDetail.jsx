@@ -383,8 +383,8 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
                 }
             </Modal >
             <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: categoryColor }} onPress={() => { setVisible(true) }}>
-                <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}><AntDesign name="right" size={16} color="white" /> {categoryName}</Text>
-                <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>{formatMoney(categoryTotalValue)}</Text>
+                <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>{categoryName}</Text>
+                <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>{formatMoney(categoryTotalValue)} <AntDesign name="right" size={16} color="white" /> </Text>
             </Pressable>
         </>
     )

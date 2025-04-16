@@ -13,7 +13,8 @@ export const ContainerScreen = ({ children }) => {
 const styles = StyleSheet.create({
     container: {
         paddingTop: Constants.statusBarHeight,
-        margin: 20,
+        marginTop: 20,
+        marginHorizontal: 20,
         gap: 20,
     }
 })

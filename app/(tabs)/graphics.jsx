@@ -92,13 +92,13 @@ export default function GraphicsScreen() {
   return (
     <ScrollView>
       <ContainerScreen>
-        <Text style={{ color: 'white', fontSize: 30 }}>Graficos</Text>
-        <ContainerWidget>
+        <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>Información</Text>
+        {/* <ContainerWidget>
           <TitleSections title={'Periodo de tiempo seleccionado'} />
           <YearAndMonthSelect dateValue={dateValue} expensesMonthWithYear={expensesMonthWithYear} setDateValue={setDateValue} />
-        </ContainerWidget>
+        </ContainerWidget> */}
         <GastosPorOpcion />
-        <ContainerWidget>
+        {/* <ContainerWidget>
           <TitleSections title={'Todos los gastos durante el tiempo'} />
           <View style={{ alignItems: 'center' }}>
             <ContributionGraph
@@ -116,9 +116,9 @@ export default function GraphicsScreen() {
             />
           </View>
 
-        </ContainerWidget>
+        </ContainerWidget> */}
 
-        {expensesPieChart.length != 0 && <ContainerWidget customStyle={{ alignItems: 'center' }}>
+        {/* {expensesPieChart.length != 0 && <ContainerWidget customStyle={{ alignItems: 'center' }}>
           <TitleSections title={'Todos los gastos por categorías'} />
           <ScrollView horizontal>
             <PieChart
@@ -131,7 +131,8 @@ export default function GraphicsScreen() {
               center={[0, 0]}
             />
           </ScrollView>
-        </ContainerWidget>}
+        </ContainerWidget>} */}
+
         {/* <ContainerWidget>
           <TitleSections title={'Gastos en los meses de 2024'} />
           <GastosPorMesBarChart />

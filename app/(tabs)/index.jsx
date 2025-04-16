@@ -115,15 +115,13 @@ export default function HomeScreen() {
       <ScrollView>
         <ContainerScreen>
           <AllExpenses modalAllExpensesVisible={modalAllExpensesVisible} setModalAllExpensesVisible={setModalAllExpensesVisible} />
-          <ContainerWidget >
             <YearAndMonthSelect dateValue={dateValue} expensesMonthWithYear={expensesMonthWithYear} setDateValue={setDateValue} />
-          </ContainerWidget>
           <ContainerWidget >
             <TotalExpenseValue expensesPeriodSelected={expensesPeriodSelected} dateValue={dateValue} />
-            <Text style={{ fontSize: 12, opacity: 0.5 }}>Gastos registrados: {totalCountExpensesPeriodSelected}</Text>
+            <Text style={{ fontSize: 12, opacity: 0.5 }}>Cantidad de registros PRUEBA2: {totalCountExpensesPeriodSelected}</Text>
           </ContainerWidget>
           <ContainerWidget>
-            <Text style={{ fontSize: 17, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text>
+            <Text style={{ fontSize: 14, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text>
             <View>
               {expensesPeriodSelected && expensesPeriodSelected.sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).slice(0, 3).map((expense) => {
                 return (
@@ -138,9 +136,9 @@ export default function HomeScreen() {
               <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={() => {
                 setModalAllExpensesVisible(true)
               }}>
-                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Lista de todos los gastos</Text>
+                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Listado de gastos</Text>
               </Pressable>
-              <GatosTabla />
+              {/* <GatosTabla /> */}
             </View>
           </ContainerWidget>
         </ContainerScreen>

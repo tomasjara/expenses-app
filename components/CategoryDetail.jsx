@@ -158,6 +158,7 @@ const example = {
     "value": "2000"
 }
 const getMaxExpenseMonth = (data) => {
+    // if(!data) return
     // Convertir los valores a números y agrupar por mes y año
     const monthlyTotals = data.reduce((acc, item) => {
         const date = new Date(item.paymentDate);
@@ -174,9 +175,8 @@ const getMaxExpenseMonth = (data) => {
         (max, [key, value]) => (value > max.value ? { key, value } : max),
         { key: null, value: 0 }
     );
-
     // Separar el mes y el año
-    const [year, month] = maxExpenseMonth.key.split("-").map(Number);
+    // const [year, month] = maxExpenseMonth.key.split("-").map(Number);
 
     return {
         year,
@@ -211,7 +211,7 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
         const categoryActually = categories.find(category => category.id === categoryId)
         setCategory(categoryActually)
         setExpensesTotalAcutallyMonth(expensesWithRelations.filter(expense => expense.categoryId === categoryId && dayjs(expense.paymentDate).month() === dayjs().month()).reduce((acc, expense) => acc + parseFloat(expense.value), 0))
-        setMonthMaxExpenses(getMaxExpenseMonth(expensesWithRelations.filter(expense => expense.categoryId === categoryId)))
+        // setMonthMaxExpenses(getMaxExpenseMonth(expensesWithRelations.filter(expense => expense.categoryId === categoryId)))
     }, [expensesWithRelations])
 
     useEffect(() => {
@@ -270,22 +270,22 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
                             <View style={{ gap: 20, marginTop: 10 }}>
                                 <View style={{ flexDirection: 'row', marginHorizontal: 20, alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
                                     <View style={{ justifyContent: 'space-around', alignItems: 'center', maxWidth: 130, height: 70, borderWidth: 1, borderRadius: 10, padding: 10 }}>
-                                        <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Gastos</Text>
-                                        <Text style={{ fontSize: 12 }}> {formatMoney(category.value)}</Text>
+                                        <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Total gastos</Text>
+                                        <Text style={{ fontSize: 12 }}> {formatMoney(categoryTotalValue)}</Text>
                                     </View>
                                     <View style={{ justifyContent: 'space-around', alignItems: 'center', maxWidth: 150, height: 70, borderWidth: 1, borderRadius: 10, padding: 10 }}>
                                         <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Registros</Text>
                                         <Text style={{ fontSize: 12, }}>{expensesWithRelations ? expensesWithRelations.filter(expense => expense.categoryId === category.id).length : 0}</Text>
                                     </View>
-                                    <View style={{ justifyContent: 'space-around', alignItems: 'center', width: 160, height: 70, borderWidth: 1, borderRadius: 10, padding: 10 }}>
+                                    {/* <View style={{ justifyContent: 'space-around', alignItems: 'center', width: 160, height: 70, borderWidth: 1, borderRadius: 10, padding: 10 }}>
                                         <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Mes con mayor gasto</Text>
                                         {monthMaxExpenses && <View style={{ alignItems: 'center' }}>
                                             <Text style={{ fontSize: 12, }}>{MONTHS_MAYUS[monthMaxExpenses.month]} - {monthMaxExpenses.year}</Text>
                                             <Text style={{ fontSize: 12, }}>{formatMoney(monthMaxExpenses.value)}</Text>
                                         </View>}
-                                    </View>
+                                    </View> */}
                                 </View>
-                                <InfoContainer >
+                                {/* <InfoContainer >
                                     <View style={{ gap: 10 }}>
                                         <Text style={{ fontSize: 25, textAlign: 'center' }}>Limite mensual</Text>
                                         <Modal
@@ -338,7 +338,7 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
                                         }
 
                                     </View>
-                                </InfoContainer>
+                                </InfoContainer> */}
                                 <InfoContainer>
                                     <View style={{}}>
                                         <Text style={{ fontSize: 25, textAlign: 'center' }}>Frecuencia de gastos</Text>
@@ -383,7 +383,7 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
                 }
             </Modal >
             <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: categoryColor }} onPress={() => { setVisible(true) }}>
-                <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>{categoryName}</Text>
+                <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}><AntDesign name="right" size={16} color="white" /> {categoryName}</Text>
                 <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>{formatMoney(categoryTotalValue)}</Text>
             </Pressable>
         </>

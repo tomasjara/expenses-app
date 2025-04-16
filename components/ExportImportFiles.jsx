@@ -17,18 +17,22 @@ export const ExportImportFiles = () => {
 
     const importExcel = async () => {
         try {
+
+            // Leer archivo
             const fileData = await readExcelFile()
             if (!fileData) {
                 Alert.alert("Error", "No se seleccionó ningún archivo.");
                 return
             }
-
             const workbook = XLSX.read(fileData, { type: "base64" });
 
             const expensesWs = workbook.Sheets[NAMES_WS.expenses];
             const categoriesWs = workbook.Sheets[NAMES_WS.categories];
             const paymentMethodsWs = workbook.Sheets[NAMES_WS.paymentMethods];
 
+            // TODO: Validaciones
+
+            //1. Validar que las hojas existan
             if (!expensesWs || !categoriesWs || !paymentMethodsWs) {
                 Alert.alert("Error", "La plantilla no tiene todas las hojas necesarioas (" + NAMES_WS.expenses + ", " + NAMES_WS.categories + ", " + NAMES_WS.paymentMethods + ")");
                 return;
@@ -38,9 +42,23 @@ export const ExportImportFiles = () => {
             const categoriesJsonData = XLSX.utils.sheet_to_json(categoriesWs);
             const paymentMethodsJsonData = XLSX.utils.sheet_to_json(paymentMethodsWs);
 
+            // TODO: 2. Validar los encabezados necesarios en las hojas
+            // 4. Validar propiedades requeridas
+            const dataPropetiesValidate = validateImport_RequiredProperties(expensesJsonData, categoriesJsonData, paymentMethodsJsonData)
+
+            if (dataPropetiesValidate.totalErrors > 0) {
+                Alert.alert("Error", `${dataPropetiesValidate.errorDetails.map((error, index) => `${index + 1}. ${error}`).join('\n')} ${
+                   dataPropetiesValidate.totalWarnings > 0 ? dataPropetiesValidate.warningDetails.map((warning, index) => `${index + 1}. ${warning}`).join('\n') : '' 
+                }`);
+                return
+            }
+
+            // 3 Validar duplicidad de datos por id
             const dataImportProcessing = validateImport_Ids(expensesJsonData, categoriesJsonData, paymentMethodsJsonData)
 
-            // const dataPropetiesValidate = validateImport_RequiredProperties(dataImportProcessing)
+
+            // TODO: 5. Validar datos (Formatos o tipo)
+            // TODO: 6. Confirmacion para importar, mostrar errores encontrados y cantidad de registros a importar
 
             importData(dataImportProcessing)
 
@@ -90,9 +108,26 @@ export const ExportImportFiles = () => {
 
     const ExportExcel = async () => {
         try {
-            const expensesWs = XLSX.utils.json_to_sheet(expenses);
-            const categoriesWs = XLSX.utils.json_to_sheet(categories);
-            const paymentMethodsWs = XLSX.utils.json_to_sheet(paymentMethods);
+            const expensesWs = XLSX.utils.json_to_sheet(expenses.map(item => {
+                return {
+                    id: item.id,
+                    value: item.value,
+                    description: item.description,
+                    paymentDate: item.paymentDate,
+                    categoryId: item.categoryId,
+                    paymentMethodId: item.paymentMethodId,
+                }
+            }));
+            const categoriesWs = XLSX.utils.json_to_sheet(categories.map(item => ({
+                id: item.id,
+                name: item.name,
+                description: item.description,
+            })));
+            const paymentMethodsWs = XLSX.utils.json_to_sheet(paymentMethods.map(item => ({
+                id: item.id,
+                name: item.name,
+                description: item.description,
+            })));
 
             const wb = XLSX.utils.book_new();
 

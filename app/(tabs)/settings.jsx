@@ -20,19 +20,24 @@ export default function SettingsScreen() {
 
   return (
     <ContainerScreen>
-      <Text style={{ color: 'white', fontSize: 30 }}>Configuraciones</Text>
-      <ContainerWidget>
+      <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>Configuraciones</Text>
+      {/* <ContainerWidget>
         <View style={{ gap: 15 }}>
-          {/* <Pressable style={{ backgroundColor: 'red', padding: 10, borderRadius: 10 }}
+          <Pressable style={{ backgroundColor: 'red', padding: 10, borderRadius: 10 }}
           // onPress={() => { cleanExpensesState() }}
           >
             <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Eliminar expenses</Text>
-          </Pressable> */}
-          {/* <ButtonBase title={'Configurar categorías'} customStyleText={{ textAlign: 'start' }} onPress={() => { }} /> */}
-          {/* <ButtonBase title={'Configurar métodos de pagos'} customStyleText={{ textAlign: 'start' }} onPress={() => { }} /> */}
+          </Pressable>
+          <ButtonBase title={'Configurar categorías'} customStyleText={{ textAlign: 'start' }} onPress={() => { }} />
+          <ButtonBase title={'Configurar métodos de pagos'} customStyleText={{ textAlign: 'start' }} onPress={() => { }} />
+        </View>
+      </ContainerWidget> */}
+
+      {/* <ContainerWidget>
+        <View style={{ gap: 15 }}>
           <ExportImportFiles />
         </View>
-      </ContainerWidget>
+      </ContainerWidget> */}
 
       <ContainerWidget>
         <ModalComponent modalVisible={modalVisibleDeleteData} setModalVisible={setModalVisibleDeleteData} >

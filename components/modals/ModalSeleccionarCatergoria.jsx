@@ -7,7 +7,6 @@ import ButtonBase from '../ButtonBase'
 export const ModalSeleccionarCatergoria = ({ setModalNewOptionVisible, setModalDeleteOptionVisible, setCategory, categorySelected, setModalDisabledOptionsVisible, setOptionNameDisabled, setOptionIdDelete }) => {
     const [modalCategoriesVisible, setModalCategoriesVisible] = useState(false)
     const { categories } = useExpensesStore(state => state)
-
     return (
         <View>
             {/* Modal SELECCIONAR CATEGORIA: modalCategoriesVisible */}

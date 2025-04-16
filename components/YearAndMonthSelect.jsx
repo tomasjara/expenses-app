@@ -23,7 +23,7 @@ export default function YearAndMonthSelect({ dateValue, setDateValue, expensesMo
   }
 
   const onActuallyMonth = () => {
-    setDateValue(prevState => ({ ...prevState, month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) } }))
+    setDateValue(prevState => ({ ...prevState, year: dayjs().get('y'), month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) } }))
     setModalVisible(false)
   }
 
@@ -76,24 +76,30 @@ export default function YearAndMonthSelect({ dateValue, setDateValue, expensesMo
                   <Text style={{ color: 'white' }}>Mes actual</Text>
                 </Pressable>
               </View>
-              <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 10 }}>
+              {/* <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 10 }}>
                 <Pressable style={{ backgroundColor: '#2282e3', padding: 10, borderRadius: 10 }} onPress={onAllTime} >
                   <Text style={{ color: 'white' }}>Todo el tiempo</Text>
                 </Pressable>
-              </View>
+              </View> */}
             </View>
           </Pressable>
         </Pressable>
       </Modal>
-      <View style={{ gap: 10 }}>
-        <Text style={{ fontSize: 12, marginBottom: 3, opacity: 0.5 }}>Periodo seleccionado {dateValue.year}</Text>
-        <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }} onPress={() => setModalVisible(true)}>
-          <View style={{ borderWidth: 0.5, padding: 5, borderRadius: 5 }}>
-            <Ionicons name="calendar-number-outline" size={18} color="black" />
-          </View>
-          <Text style={{ fontSize: 20 }}>{dateValue.month.name}</Text>
-        </Pressable>
-      </View>
+      {/* <View style={{ gap: 10 }}> */}
+      {/* <Text style={{ fontSize: 12, marginBottom: 3, opacity: 0.5 }}>Periodo seleccionado {dateValue.year}</Text> */}
+      {/* borderRadius: 10,
+    backgroundColor: 'white',
+    // height: 150,
+    gap: 10,
+    // alignItems: 'center',
+    padding: 15, */}
+      <Pressable style={{ backgroundColor: 'white', borderRadius: 10, padding: 15, flexDirection: 'row', alignItems: 'center', gap: 10 }} onPress={() => setModalVisible(true)}>
+        <View style={{ borderWidth: 0.5, padding: 5, borderRadius: 5 }}>
+          <Ionicons name="calendar-number-outline" size={18} color="black" />
+        </View>
+        <Text style={{ fontSize: 20 }}>{dateValue.month.name} - {dateValue.year}</Text>
+      </Pressable>
+      {/* </View> */}
     </>
   );
 }

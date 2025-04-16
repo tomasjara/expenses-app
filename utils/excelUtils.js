@@ -113,19 +113,125 @@ export const validateImport_Ids = (
   };
 };
 
-export const validateImport_RequiredProperties = (data) => {
-  // Todo
-  // validacion de que esten todas las propiedades necesarias
-  // let errorCount = 0
-  // expensesSanitization.forEach(expense => {
-  //     if (!expense.value || !expense.paymentDate || !expense.creationDate || !expense.lastModificationDate || !expense.categoryId || !expense.paymentMethodId) {
-  //         errorCount++
-  //         return;
-  //     }
-  // })
-  // if (errorCount > 0) {
-  //     Alert.alert("Error", "Los datos importados no tienen todas las propiedades necesarias, numero de lineas erroneas: " + errorCount);
-  //     console.log(expensesSanitization);
-  //     return
-  // }
+export const validateImport_RequiredProperties = (
+  newExpenses,
+  newCategories,
+  newPaymentMethod
+) => {
+  let errors = [];
+  let missingFieldsExpenses = new Set();
+  let missingFieldsCategories = new Set();
+  let missingFieldsPaymentMethods = new Set();
+  let individualErrors = [];
+  let unknownFieldsDetected = false;
+
+  // Lista de campos permitidos
+  const allowedExpenseFields = [
+    "id",
+    "value",
+    "paymentDate",
+    "categoryId",
+    "paymentMethodId",
+  ];
+  const allowedCategoryFields = ["id", "name"];
+  const allowedPaymentMethodFields = ["id", "name"];
+
+  // Validar gastos
+  newExpenses.forEach((expense, index) => {
+    let missingFields = [];
+
+    if (!expense.id) missingFields.push("id");
+    if (!expense.value) missingFields.push("value");
+    if (!expense.paymentDate) missingFields.push("paymentDate");
+    if (!expense.categoryId) missingFields.push("categoryId");
+    if (!expense.paymentMethodId) missingFields.push("paymentMethodId");
+
+    // Detectar campos no permitidos
+    Object.keys(expense).forEach((field) => {
+      if (!allowedExpenseFields.includes(field)) unknownFieldsDetected = true;
+    });
+
+    missingFields.forEach((field) => missingFieldsExpenses.add(field));
+
+    if (missingFields.length > 0) {
+      individualErrors.push(
+        `Gasto ${index + 1} tiene errores: Faltan ${missingFields.join(", ")}`
+      );
+    }
+  });
+
+  // Validar categorías
+  newCategories.forEach((item, index) => {
+    let missingFields = [];
+
+    if (!item.id) missingFields.push("id");
+    if (!item.name) missingFields.push("name");
+
+    // Detectar campos no permitidos
+    Object.keys(item).forEach((field) => {
+      if (!allowedCategoryFields.includes(field)) unknownFieldsDetected = true;
+    });
+
+    missingFields.forEach((field) => missingFieldsCategories.add(field));
+
+    if (missingFields.length > 0) {
+      individualErrors.push(
+        `Categoría ${index + 1} tiene errores: Faltan ${missingFields.join(", ")}`
+      );
+    }
+  });
+
+  // Validar métodos de pago
+  newPaymentMethod.forEach((item, index) => {
+    let missingFields = [];
+
+    if (!item.id) missingFields.push("id");
+    if (!item.name) missingFields.push("name");
+
+    // Detectar campos no permitidos
+    Object.keys(item).forEach((field) => {
+      if (!allowedPaymentMethodFields.includes(field))
+        unknownFieldsDetected = true;
+    });
+
+    missingFields.forEach((field) => missingFieldsPaymentMethods.add(field));
+
+    if (missingFields.length > 0) {
+      individualErrors.push(
+        `Método de pago ${index + 1} tiene errores: Faltan ${missingFields.join(", ")}`
+      );
+    }
+  });
+
+  // Agregar errores de encabezado si faltan en todos los objetos
+  if (missingFieldsExpenses.size > 0) {
+    errors.push(
+      `Faltan encabezados en gastos: ${[...missingFieldsExpenses].join(", ")}`
+    );
+  }
+  if (missingFieldsCategories.size > 0) {
+    errors.push(
+      `Faltan encabezados en categorías: ${[...missingFieldsCategories].join(", ")}`
+    );
+  }
+  if (missingFieldsPaymentMethods.size > 0) {
+    errors.push(
+      `Faltan encabezados en métodos de pago: ${[...missingFieldsPaymentMethods].join(", ")}`
+    );
+  }
+
+  // Agregar advertencia si hay campos desconocidos
+  if (unknownFieldsDetected) {
+    errors.push(
+      `Se detectaron campos no reconocidos en los datos importados. Estos campos no serán importados. Para más detalles, revisa la plantilla de importación y sus instrucciones.`
+    );
+  }
+
+  // Unir los errores de encabezados con los individuales
+  errors = errors.concat(individualErrors);
+
+  return {
+    totalErrors: errors.length,
+    errorDetails: errors,
+  };
 };

@@ -12,6 +12,8 @@ import YearAndMonthSelect from '@/components/YearAndMonthSelect';
 import { useEffect, useState } from 'react';
 import { formatFirstLetterString } from '@/utils/formatFirstLetterString';
 import { MONTHS, MONTHS_MAYUS } from '@/utils/constantes';
+import { ExpenseDistributionChart } from '@/components/graphics/ExpenseDistributionChart';
+import { formatExpensesForCalc } from '@/utils/expenses';
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -97,6 +99,9 @@ export default function GraphicsScreen() {
           <TitleSections title={'Periodo de tiempo seleccionado'} />
           <YearAndMonthSelect dateValue={dateValue} expensesMonthWithYear={expensesMonthWithYear} setDateValue={setDateValue} />
         </ContainerWidget> */}
+        <ContainerWidget>
+          <ExpenseDistributionChart expenses={formatExpensesForCalc(expensesWithRelations)} />
+        </ContainerWidget>
         <GastosPorOpcion />
         {/* <ContainerWidget>
           <TitleSections title={'Todos los gastos durante el tiempo'} />

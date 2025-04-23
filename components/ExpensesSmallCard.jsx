@@ -2,19 +2,13 @@ import dayjs from "dayjs"
 import { Modal, Pressable, Text, View } from "react-native"
 import { formatMoney } from '@/utils/formatMoney'
 import { dayOfWeek } from '@/utils/dayOfWeek'
-import { AntDesign, Entypo, FontAwesome, SimpleLineIcons } from "@expo/vector-icons"
+import { FontAwesome, SimpleLineIcons } from "@expo/vector-icons"
 import { useState } from "react"
 import { DetailExpense } from "./DetailExpense"
 
-const CategoryComponent = ({ name = '', color = 'blue' }) => (
-    <Text style={{ backgroundColor: color, width: 'auto', color: 'white', fontWeight: '600', padding: 4, borderRadius: 7, fontSize: 10 }}>{name}</Text>
-)
-
-export const ExpensesSmallCard = ({ expense, onPress = () => { }, minimalStyle = false }) => {
+export const ExpensesSmallCard = ({ expense, onPress = () => { }, minimalStyle = false, theme = 'dark' }) => {
     const { value, description, category, paymentMethod, paymentDate } = expense || {}
     const [visible, setVisible] = useState(false)
-    const dayWeek = dayOfWeek('small', dayjs(paymentDate).day() - 1)
-    const day = dayjs(paymentDate).date().toString().padStart(2, '0')
     const moneyFormatted = formatMoney(value)
 
     return (
@@ -46,37 +40,27 @@ export const ExpensesSmallCard = ({ expense, onPress = () => { }, minimalStyle =
                         </View>
                     </Pressable>
                 </>
-                : <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', borderWidth: 1, marginBottom: 10, borderColor: '#0000007a', paddingVertical: 9, paddingHorizontal: 12, borderRadius: 10 }} onPress={() => {
+                : <Pressable style={{ flexDirection: 'column', borderWidth: 0.5, borderColor: theme == 'dark' ? 'white' : 'black', borderRadius: 8, paddingVertical: 4, paddingHorizontal: 20, gap: 10 }} onPress={() => {
                     setVisible(true)
                 }}>
-                    <View style={{ gap: 5, maxWidth: 210 }}>
-                        <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
-                                <Text>{day}</Text>
-                                <Text style={{ fontSize: 11, opacity: 0.5 }}>{dayWeek}</Text>
-                            </View>
-                            <Text style={{ fontSize: 11, opacity: 0.5 }}>{dayjs(paymentDate).format('DD/MM/YYYY')}</Text>
+                    <Text style={{ alignSelf: 'center', fontSize: 13, opacity: 0.5, color: theme == 'dark' ? 'white' : 'black' }}>{dayjs(paymentDate).format('DD/MM/YYYY')}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, flexWrap: 'wrap' }}>
+                        <View style={{ flexDirection: 'row', borderWidth: 0.5, borderColor: theme == 'dark' ? 'white' : 'black', alignItems: 'center', gap: 6, padding: 4, borderRadius: 7, }}>
+                            <View style={{ backgroundColor: category?.color ? category.color : 'blue', width: 10, height: 10, borderRadius: 10 }}></View>
+                            <Text style={{ fontWeight: 'bold', color: theme == 'dark' ? 'white' : 'black', fontWeight: '600', fontSize: 10 }}>{category?.name ? category.name : ''}</Text>
                         </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <View style={{ flexDirection: 'row', gap: 5, flexWrap: 'wrap' }}>
-                                {/* <CategoryComponent name={'Texto largoooooooooooo000000000000000000000000000000000largoooooooooooo000000000000000000000000000000000'} /> */}
-                                {/* <CategoryComponent name={'Texto largoooooooooooo000000000000000000000000000000000largoooooooooooo000000000000000000000000000000000'} color='green' /> */}
-                                <CategoryComponent name={category?.name ? category.name : ''} color={category?.color ? category.color : 'blue'} />
-                                <CategoryComponent name={paymentMethod?.name ? paymentMethod.name : ''} color={paymentMethod?.color ? paymentMethod.color : 'green'} />
-                            </View>
+                        <View style={{ flexDirection: 'row', borderWidth: 0.5, borderColor: theme == 'dark' ? 'white' : 'black', alignItems: 'center', gap: 6, padding: 4, borderRadius: 7, }}>
+                            <View style={{ backgroundColor: paymentMethod?.color ? paymentMethod.color : 'green', width: 10, height: 10, borderRadius: 10 }}></View>
+                            <Text style={{ fontWeight: 'bold', color: theme == 'dark' ? 'white' : 'black', fontWeight: '600', fontSize: 10 }}>{paymentMethod?.name ? paymentMethod.name : ''}</Text>
                         </View>
-                        {description && <View style={{ flexDirection: 'row' }}>
-                            {/* <Text style={{ marginStart: 4, opacity: 0.8, fontSize: 13 }}>Texto largoooooooooooo000000000000000000000000000000000largoooooooooooo000000000000000000000000000000000</Text> */}
-                            <Text style={{ marginStart: 4, opacity: 0.8, fontSize: 13 }}>{description}</Text>
-                        </View>}
-                    </View>
-                    <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 15 }}>{moneyFormatted}</Text>
                     </View>
                     <View style={{ position: 'absolute', top: 6, right: 15 }}>
-                        <SimpleLineIcons name="options" size={12} color="black" />
+                        <SimpleLineIcons name="options" size={12} color={theme == 'dark' ? 'white' : 'black'} />
                     </View>
-                </Pressable>}
+                    {description && <Text style={{ marginStart: 4, opacity: 0.8, fontSize: 13, color: theme == 'dark' ? 'white' : 'black', textAlign: 'center' }}>{description}</Text>}
+                    <Text style={{ fontSize: 20, textAlign: 'center', color: theme == 'dark' ? 'white' : 'black' }}>{moneyFormatted}</Text>
+                </Pressable>
+            }
 
         </>
     )

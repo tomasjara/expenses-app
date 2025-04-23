@@ -82,7 +82,7 @@ export const DetailExpense = ({ expenseSelect, setDetailExpenseVisible }) => {
             <ScrollView >
                 <View style={{ gap: 10, marginTop: 10, marginBottom: 25 }}>
                     <Text style={{ textAlign: 'center', fontSize: 50 }}>💸</Text>
-                    <Text style={{ textAlign: 'center', fontSize: 50 }}>{formatMoney(value)}</Text>
+                    <Text style={{ textAlign: 'center', fontSize: 45 }}>{formatMoney(value)}</Text>
                     {description && <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                         <Text style={{ textAlign: 'center', fontSize: 14, opacity: 0.5, maxWidth: 230 }}>{description}</Text></View>}
                     <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'center', alignItems: 'center', padding: 10, flexWrap: 'wrap' }}>

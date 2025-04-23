@@ -1,7 +1,7 @@
 import { useExpensesStore } from '@/store/expensesStore'
 import { formatMoney } from '@/utils/formatMoney'
 import { useEffect, useState } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { ContainerWidget } from '../ContainerWidget'
 import { CategoryDetail } from '../CategoryDetail'
 
@@ -30,23 +30,6 @@ export const GastosPorOpcion = () => {
                 value: totalValue
             };
         });
-
-        // const expensesPaymentMethodTransformed = expensesWithRelations.reduce((acc, expense) => {
-        //     const paymentMethod = expense.paymentMethod.name;
-        //     const value = parseFloat(expense.value);
-        //     const existingPaymentMethod = acc.find(item => item.name === paymentMethod);
-        //     if (existingPaymentMethod) {
-        //         existingPaymentMethod.value += value;
-        //     } else {
-        //         acc.push({
-        //             name: paymentMethod,
-        //             value,
-        //             color: expense.paymentMethod.color,
-        //         });
-        //     }
-        //     return acc;
-        // }, [])
-
         setExpensesPaymentMethod(expensesPaymentMethodTransformed)
         setExpensesCategory(expensesCategoryTransformed)
     }, [expensesWithRelations])
@@ -55,7 +38,10 @@ export const GastosPorOpcion = () => {
         <>
             {expensesCategory &&
                 <ContainerWidget>
-                    <Text style={{ color: 'black', fontSize: 15, alignSelf: 'flex-start', opacity: 0.6, fontWeight: 'bold' }}>Lista de categorías</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={{ color: 'black', fontSize: 12, opacity: 0.6, fontWeight: 'bold' }}>Lista de categorías</Text>
+                        <Text style={{ color: 'black', fontSize: 12, opacity: 0.6, fontWeight: 'bold' }}>Valores totales </Text>
+                    </View>
                     <View style={styles.containerOptions}>
                         {expensesCategory.sort((a, b) => a.value > b.value ? -1 : 1).map((category, index) => (
                             <CategoryDetail key={index} categoryColor={category.color} categoryId={category.id} categoryName={category.name} categoryTotalValue={category.value} />
@@ -67,12 +53,20 @@ export const GastosPorOpcion = () => {
 
             {expensesPaymentMethod &&
                 <ContainerWidget>
-                    <Text style={{ color: 'black', fontSize: 15, alignSelf: 'flex-start', opacity: 0.6, fontWeight: 'bold' }}>Lista de metodos de pago</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Text style={{ color: 'black', fontSize: 12, opacity: 0.6, fontWeight: 'bold' }}>Lista de metodos de pago</Text>
+                        <Text style={{ color: 'black', fontSize: 12, opacity: 0.6, fontWeight: 'bold' }}>Valores totales </Text>
+                    </View>
                     <View style={styles.containerOptions}>
                         {expensesPaymentMethod.sort((a, b) => a.value > b.value ? -1 : 1).map((category, index) => (
-                            <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: category.color }}>
-                                <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>{category.name}</Text>
-                                <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>{formatMoney(category.value)}</Text>
+                            <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: 'white', borderWidth: 0.4, borderColor: 'black', }}>
+                                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                        <View style={{ width: 10, height: 10, backgroundColor: category.color, borderRadius: 10 }}></View>
+                                        <Text style={{ color: 'black', fontSize: 15, fontWeight: 'bold' }}>{category.name}</Text>
+                                    </View>
+                                    <Text style={{ color: 'black', fontSize: 15, fontWeight: 'bold', marginStart: 20 }}>{formatMoney(category.value)}  </Text>
+                                </View>
                             </View>
                         ))}
                     </View>

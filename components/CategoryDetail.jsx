@@ -1,31 +1,31 @@
-import { KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native"
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native"
 import { useEffect, useState } from "react"
 import { formatMoney } from "@/utils/formatMoney"
 import { AntDesign } from "@expo/vector-icons"
 import { useExpensesStore } from "@/store/expensesStore"
 import { ExpensesSmallCard } from "./ExpensesSmallCard"
-import { BarChart, LineChart } from "react-native-chart-kit"
+import { BarChart } from "react-native-chart-kit"
 import { Dropdown } from 'react-native-element-dropdown'
 import dayjs from "dayjs"
 import { MONTHS_MAYUS } from "@/utils/constantes"
-import ButtonBase from "./ButtonBase"
 
-const ORDER_VALUES = [
-    { id: 1, name: 'Fecha de pago ascendente', condition: (a, b) => a.paymentDate > b.paymentDate ? -1 : 1 },
-    { id: 2, name: 'Fecha de pago descendiente', condition: (a, b) => a.paymentDate < b.paymentDate ? -1 : 1 },
-    { id: 3, name: 'Mayor a menor valor', condition: (a, b) => a.value > b.value ? -1 : 1 },
-    { id: 4, name: 'Menor a mayor valor', condition: (a, b) => a.value < b.value ? -1 : 1 },
-    { id: 5, name: 'Fecha de creación ascendente', condition: (a, b) => a.creationDate > b.creationDate ? -1 : 1 },
-    { id: 6, name: 'Fecha de creación descendiente', condition: (a, b) => a.creationDate < b.creationDate ? -1 : 1 },
-]
+// const ORDER_VALUES1 = {
+//     1: (a, b) => a.paymentDate > b.paymentDate ? -1 : 1,
+//     2: (a, b) => a.paymentDate < b.paymentDate ? -1 : 1,
+//     3: (a, b) => Number(a.value) > Number(b.value) ? -1 : 1,
+//     4: (a, b) => Number(a.value) < Number(b.value) ? -1 : 1,
+//     5: (a, b) => a.creationDate > b.creationDate ? -1 : 1,
+//     6: (a, b) => a.creationDate < b.creationDate ? -1 : 1,
+// }
+
 const ORDER_VALUES1 = {
-    1: (a, b) => a.paymentDate > b.paymentDate ? -1 : 1,
-    2: (a, b) => a.paymentDate < b.paymentDate ? -1 : 1,
-    3: (a, b) => Number(a.value) > Number(b.value) ? -1 : 1,
-    4: (a, b) => Number(a.value) < Number(b.value) ? -1 : 1,
-    5: (a, b) => a.creationDate > b.creationDate ? -1 : 1,
-    6: (a, b) => a.creationDate < b.creationDate ? -1 : 1,
-}
+    1: (a, b) => dayjs(a.paymentDate).isAfter(dayjs(b.paymentDate)) ? -1 : 1, // Fecha de pago descendente
+    2: (a, b) => dayjs(a.paymentDate).isBefore(dayjs(b.paymentDate)) ? -1 : 1, // Fecha de pago ascendente
+    3: (a, b) => Number(a.value) > Number(b.value) ? -1 : 1, // Valor descendente
+    4: (a, b) => Number(a.value) < Number(b.value) ? -1 : 1, // Valor ascendente
+    5: (a, b) => dayjs(a.creationDate).isAfter(dayjs(b.creationDate)) ? -1 : 1, // Fecha de creación descendente
+    6: (a, b) => dayjs(a.creationDate).isBefore(dayjs(b.creationDate)) ? -1 : 1, // Fecha de creación ascendente
+  };
 
 const AllExpensesRegister = ({ category, orderValue }) => {
     const { expensesWithRelations } = useExpensesStore(state => state)
@@ -43,36 +43,23 @@ const AllExpensesRegister = ({ category, orderValue }) => {
     const expensesFilterUtilmosCincoMeses = ''
 
     return (
-        <View style={{}}>
-            {expensesFilter && expensesFilter.map(expense => (
-                <ExpensesSmallCard expense={expense} key={expense.id} />
-            ))}
-        </View>
+        expensesFilter && expensesFilter.map(expense => (
+            <ExpensesSmallCard expense={expense} key={expense.id} theme="ligth" />
+        ))
     )
 }
 
-const data = {
-    labels: ["En", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-    datasets: [
-        {
-            data: [0, 0, 1500, 52000, 15000, 0, 1450, 0, 0, 7500, 142000, 216.000]
-        }
-    ]
-};
-
 const dataDropdown = [
-    { label: 'Fecha de pago ascendente', id: 1 },
-    { label: 'Fecha de pago descendiente', id: 2 },
+    { label: 'Fecha de pago descendiente', id: 1 },
+    { label: 'Fecha de pago ascendente', id: 2 },
     { label: 'Mayor a menor valor', id: 3 },
     { label: 'Menor a mayor valor', id: 4 },
-    { label: 'Fecha de creación ascendente', id: 5 },
-    { label: 'Fecha de creación descendiente', id: 6 },
+    { label: 'Fecha de creación descendiente', id: 5 },
+    { label: 'Fecha de creación ascendente', id: 6 },
 ];
 
 const DropdownComponent = ({ value, setValue }) => {
-
     const [isFocus, setIsFocus] = useState(false);
-
     const renderLabel = () => {
         if (value || isFocus) {
             return (
@@ -146,44 +133,37 @@ function groupfrequencyExpensesByMonthAndYear(payments, year) {
     };
 }
 
-const example = {
-    "category": { "color": "#138d75", "description": "", "disabled": false, "id": "483fe888-5655-41e6-895c-59cf64313482", "name": "Sin categoria" },
-    "categoryId": "483fe888-5655-41e6-895c-59cf64313482",
-    "creationDate": "2024-11-14T16:46:38.597Z",
-    "description": "Rifa nilo", "id": "44e585a4-7f88-4c9d-b341-5e62940b5e77",
-    "lastModificationDate": "2024-11-14T16:46:55.578Z",
-    "paymentDate": "2024-11-14T16:45:36.898Z",
-    "paymentMethod": { "color": "#138d75", "description": "", "disabled": false, "id": "ca326445-68ce-4fa4-9176-cf22dd485d9c", "name": "Efectivo" },
-    "paymentMethodId": "ca326445-68ce-4fa4-9176-cf22dd485d9c",
-    "value": "2000"
-}
 const getMaxExpenseMonth = (data) => {
-    // if(!data) return
-    // Convertir los valores a números y agrupar por mes y año
+    if (!data || data.length === 0) return null;
+
     const monthlyTotals = data.reduce((acc, item) => {
         const date = new Date(item.paymentDate);
         const month = date.getMonth(); // 0 = Enero, 11 = Diciembre
         const year = date.getFullYear();
-        const key = `${year}-${month}`;
+        const key = `${year}-${month}`; // clave por año y mes
 
         acc[key] = (acc[key] || 0) + parseFloat(item.value);
         return acc;
     }, {});
 
-    // Encontrar el mes con el mayor gasto
     const maxExpenseMonth = Object.entries(monthlyTotals).reduce(
         (max, [key, value]) => (value > max.value ? { key, value } : max),
         { key: null, value: 0 }
     );
-    // Separar el mes y el año
-    // const [year, month] = maxExpenseMonth.key.split("-").map(Number);
+
+    if (!maxExpenseMonth.key) return null;
+
+    const [yearStr, monthStr] = maxExpenseMonth.key.split("-");
+    const year = Number(yearStr);
+    const month = Number(monthStr);
 
     return {
         year,
-        month: month + 1, // Ajustar porque getMonth() es 0-based
+        month: month, // Ajustar porque getMonth() es 0-based
         value: maxExpenseMonth.value,
     };
 };
+
 
 const InfoContainer = ({ children, customStyleContainer }) => {
     return (
@@ -199,19 +179,14 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
     const [frequencyExpenses, setFrequencyExpenses] = useState(null)
     const [yearToFrecuencyExpenses, setYearToFrecuencyExpenses] = useState(dayjs().year())
     const [monthMaxExpenses, setMonthMaxExpenses] = useState(null)
-    const [expensesTotalAcutallyMonth, setExpensesTotalAcutallyMonth] = useState(null)
-    const [modalAsignarLimiteVisible, setModalAsignarLimiteVisible] = useState({ show: false })
-    const [limitInputValue, setLimitInputValue] = useState('')
-    // TODO
     const [category, setCategory] = useState(null)
-    const { expensesWithRelations, updateCategory, categories } = useExpensesStore(state => state)
+    const { expensesWithRelations, categories } = useExpensesStore(state => state)
     const regexNumberInt = /^[0-9]+$/;
 
     useEffect(() => {
         const categoryActually = categories.find(category => category.id === categoryId)
         setCategory(categoryActually)
-        setExpensesTotalAcutallyMonth(expensesWithRelations.filter(expense => expense.categoryId === categoryId && dayjs(expense.paymentDate).month() === dayjs().month()).reduce((acc, expense) => acc + parseFloat(expense.value), 0))
-        // setMonthMaxExpenses(getMaxExpenseMonth(expensesWithRelations.filter(expense => expense.categoryId === categoryId)))
+        setMonthMaxExpenses(getMaxExpenseMonth(expensesWithRelations.filter(expense => expense.categoryId === categoryId)))
     }, [expensesWithRelations])
 
     useEffect(() => {
@@ -219,35 +194,6 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
         const expensesFrequencyResult = groupfrequencyExpensesByMonthAndYear(expensesFilterResult, yearToFrecuencyExpenses)
         setFrequencyExpenses(expensesFrequencyResult)
     }, [yearToFrecuencyExpenses])
-
-    useEffect(() => {
-        if (modalAsignarLimiteVisible.option === 'edit') {
-            setLimitInputValue(category.limit)
-        }
-        if (modalAsignarLimiteVisible.option === 'create') {
-            setLimitInputValue('')
-        }
-    }, [modalAsignarLimiteVisible])
-
-    const onAsignLimit = () => {
-        if (!limitInputValue) return
-        if (!regexNumberInt.test(limitInputValue)) return
-        if (limitInputValue <= 0) {
-            const categoryEdited = {
-                ...category,
-                limit: undefined
-            }
-            updateCategory(categoryEdited)
-            setModalAsignarLimiteVisible({ show: false })
-            return
-        }
-        const categoryEdited = {
-            ...category,
-            limit: limitInputValue
-        }
-        updateCategory(categoryEdited)
-        setModalAsignarLimiteVisible({ show: false })
-    }
 
     return (
         <>
@@ -259,90 +205,37 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
                     setVisible(false)
                 }}>
                 {category &&
-                    <View >
-                        <View style={{ flexDirection: 'row', gap: 19, padding: 15, justifyContent: 'start', alignItems: 'center', backgroundColor: category.color }}>
-                            <Pressable onPress={() => { setVisible(false) }}>
-                                <AntDesign name="left" size={24} color="white" />
+                    <View style={{ flex: 1 }}>
+                        <View style={{ flexDirection: 'row', gap: 19, padding: 20, justifyContent: 'start', alignItems: 'center', borderBottomWidth: 1, borderColor: 'black' }}>
+                            <Pressable onPress={() => setVisible(false)}>
+                                <AntDesign name="leftcircleo" size={30} color="black" />
                             </Pressable>
-                            <Text style={{ fontSize: 20, color: 'white' }}>{category.name}</Text>
+                            <Text style={{ fontSize: 20, color: 'black' }}>{category.name}</Text>
                         </View>
-                        <ScrollView>
-                            <View style={{ gap: 20, marginTop: 10 }}>
-                                <View style={{ flexDirection: 'row', marginHorizontal: 20, alignItems: 'flex-start', justifyContent: 'space-between', gap: 10 }}>
-                                    <View style={{ justifyContent: 'space-around', alignItems: 'center', maxWidth: 130, height: 70, borderWidth: 1, borderRadius: 10, padding: 10 }}>
-                                        <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Total gastos</Text>
+                        {expensesWithRelations.filter(expense => expense.categoryId === category.id).length > 0
+                            ? <ScrollView>
+                                <View style={{ flex: 1, flexDirection: 'column', gap: 10, gap: 15, paddingTop: 10, paddingHorizontal: 20 }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Total gastos:</Text>
                                         <Text style={{ fontSize: 12 }}> {formatMoney(categoryTotalValue)}</Text>
                                     </View>
-                                    <View style={{ justifyContent: 'space-around', alignItems: 'center', maxWidth: 150, height: 70, borderWidth: 1, borderRadius: 10, padding: 10 }}>
-                                        <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Registros</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold', }}>Cantidad de registros:</Text>
                                         <Text style={{ fontSize: 12, }}>{expensesWithRelations ? expensesWithRelations.filter(expense => expense.categoryId === category.id).length : 0}</Text>
                                     </View>
-                                    {/* <View style={{ justifyContent: 'space-around', alignItems: 'center', width: 160, height: 70, borderWidth: 1, borderRadius: 10, padding: 10 }}>
-                                        <Text style={{ fontSize: 12, fontWeight: 'bold' }}>Mes con mayor gasto</Text>
-                                        {monthMaxExpenses && <View style={{ alignItems: 'center' }}>
-                                            <Text style={{ fontSize: 12, }}>{MONTHS_MAYUS[monthMaxExpenses.month]} - {monthMaxExpenses.year}</Text>
+                                    <View style={{ flexDirection: 'column', alignItems: 'start' }}>
+                                        <Text style={{ fontSize: 15, fontWeight: 'bold' }}>Mes con mayor gasto:</Text>
+                                        {monthMaxExpenses && <View style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 1 }}>
+                                            <Text style={{ fontSize: 12, }}>{MONTHS_MAYUS[monthMaxExpenses.month]}/{monthMaxExpenses.year}</Text>
                                             <Text style={{ fontSize: 12, }}>{formatMoney(monthMaxExpenses.value)}</Text>
                                         </View>}
-                                    </View> */}
-                                </View>
-                                {/* <InfoContainer >
-                                    <View style={{ gap: 10 }}>
-                                        <Text style={{ fontSize: 25, textAlign: 'center' }}>Limite mensual</Text>
-                                        <Modal
-                                            animationType="fade"
-                                            transparent={true}
-                                            visible={modalAsignarLimiteVisible.show}
-                                            onRequestClose={() => {
-                                                setModalAsignarLimiteVisible({ show: false });
-                                            }}>
-                                            <Pressable style={{ alignItems: 'center', justifyContent: 'center', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.6)' }} onPress={() => { setModalAsignarLimiteVisible({ show: false }) }}>
-                                                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-                                                    <Pressable style={{ backgroundColor: 'white', padding: 25, borderRadius: 10, alignItems: 'center', gap: 15 }} onPress={() => { }}>
-                                                        {modalAsignarLimiteVisible.option === 'edit' ? <Text style={{ fontSize: 22, textAlign: 'center' }}>Editar límite mensual</Text> : <Text style={{ fontSize: 22, textAlign: 'center' }}>Asignar límite mensual</Text>}
-                                                        <TextInput style={{
-                                                            borderRadius: 10,
-                                                            padding: 10,
-                                                            borderWidth: 1,
-                                                            width: 200
-                                                        }}
-                                                            keyboardType="numeric"
-                                                            placeholder={'Limite mensual'}
-                                                            onChangeText={(e) => setLimitInputValue(e.replace(/[^0-9]/g, ""))}
-                                                            value={limitInputValue} />
-                                                        <ButtonBase customStyleContainer={{ width: 200, margin: 0 }} title={'Aceptar'} onPress={onAsignLimit} />
-                                                    </Pressable>
-                                                </KeyboardAvoidingView>
-                                            </Pressable>
-                                        </Modal>
-                                        {category.limit ?
-                                            <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                                                <View style={{ width: '60%', gap: 10 }}>
-                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                                        <Text style={{ fontSize: 14 }}>Límite mensual</Text>
-                                                        <Text style={{ fontSize: 14 }}>{formatMoney(category.limit)}</Text>
-                                                    </View>
-                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                                        <Text style={{ fontSize: 14 }}>Gasto actual</Text>
-                                                        <Text style={{ fontSize: 14 }}>{expensesTotalAcutallyMonth ? formatMoney(expensesTotalAcutallyMonth) : ''}</Text>
-                                                    </View>
-                                                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                                        <Text style={{ fontSize: 14 }}>Diferencia</Text>
-                                                        <Text style={{ fontSize: 14 }}>{expensesTotalAcutallyMonth ? formatMoney(category.limit - expensesTotalAcutallyMonth) : ''}</Text>
-                                                    </View>
-                                                    <ButtonBase title={'Editar límite mensual'} onPress={() => setModalAsignarLimiteVisible({ show: true, option: 'edit' })} />
-                                                </View>
-                                            </View>
-                                            : <View >
-                                                <ButtonBase title={'Asignar límite mensual'} onPress={() => setModalAsignarLimiteVisible({ show: true, option: 'create' })} />
-                                            </View>
-                                        }
-
                                     </View>
-                                </InfoContainer> */}
-                                <InfoContainer>
-                                    <View style={{}}>
-                                        <Text style={{ fontSize: 25, textAlign: 'center' }}>Frecuencia de gastos</Text>
-                                        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+                                </View>
+                                <View style={{ borderTopWidth: 0.2, marginVertical: 20 }}></View>
+                                <View style={{ flex: 1, flexDirection: 'column', gap: 10, marginBottom: 30 }}>
+                                    <View style={{ paddingHorizontal: 15, gap: 10 }}>
+                                        <Text style={{ fontSize: 20, textAlign: 'center' }}>Frecuencia de gastos</Text>
+                                        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center' }}>
                                             <Pressable onPress={() => setYearToFrecuencyExpenses(yearToFrecuencyExpenses - 1)}>
                                                 <AntDesign name="left" size={24} color="black" />
                                             </Pressable>
@@ -369,22 +262,35 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
                                             </ScrollView>
                                         </View>}
                                     </View>
-                                </InfoContainer>
-                                <InfoContainer customStyleContainer={{ marginBottom: 80, }}>
-                                    <View style={{ gap: 10, paddingHorizontal: 20 }}>
-                                        <Text style={{ fontSize: 25, textAlign: 'center' }}>Todos los gastos</Text>
-                                        <DropdownComponent setValue={setOrderValue} value={orderValue} />
-                                        <AllExpensesRegister category={category} orderValue={orderValue} />
+                                    <View style={{ borderTopWidth: 0.2, marginVertical: 20 }}></View>
+                                    <View style={{ flex: 1, flexDirection: 'column', gap: 10 }}>
+                                        <View style={{ gap: 15, paddingHorizontal: 20 }}>
+                                            <Text style={{ fontSize: 20, textAlign: 'center' }}>Todos los gastos de la categoría</Text>
+                                            <DropdownComponent setValue={setOrderValue} value={orderValue} />
+                                            <View style={{ gap: 10 }}>
+                                                <AllExpensesRegister category={category} orderValue={orderValue} />
+                                            </View>
+                                        </View>
                                     </View>
-                                </InfoContainer>
+                                </View>
+                            </ScrollView>
+                            : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ fontSize: 20, marginHorizontal: 10, textAlign: 'center', opacity:0.6 }}>Aún no registras gastos en esta categoría</Text>
                             </View>
-                        </ScrollView>
+                        }
                     </View >
                 }
             </Modal >
-            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: categoryColor }} onPress={() => { setVisible(true) }}>
-                <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>{categoryName}</Text>
-                <Text style={{ color: 'white', fontSize: 15, fontWeight: 'bold' }}>{formatMoney(categoryTotalValue)} <AntDesign name="right" size={16} color="white" /> </Text>
+
+            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: 'white', borderWidth: 0.4, borderColor: 'black', }} onPress={() => { setVisible(true) }}>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                        <View style={{ width: 10, height: 10, backgroundColor: categoryColor, borderRadius: 10 }}></View>
+                        <Text style={{ color: 'black', fontSize: 15, fontWeight: 'bold' }}>{categoryName}</Text>
+                    </View>
+                    <Text style={{ color: 'black', fontSize: 15, fontWeight: 'bold', marginStart: 20 }}>{formatMoney(categoryTotalValue)}  </Text>
+                </View>
+                <AntDesign name="right" size={16} color="black" />
             </Pressable>
         </>
     )

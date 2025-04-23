@@ -8,37 +8,32 @@ import ButtonBase from './ButtonBase';
 
 const COLORS8 = [
     "#486b00", // grass
-    // "#234600", // forest green SACAR
     "#a2c523", // lime
-    // "#07576b", // Ocean SACAR
     "#003b46", // deep aqua
-    // "#021c1e", // blue black SACAR
     "#ee693f", // carrot
     "#cf3721", // tomato
     "#c99e10", // gold
     "#E4B600", // sunflower
-    // "#fb6542", // sunset SACAR
     "#4d648d", // blueberry
     "#7d4427", // earth
-    // "#f25c00", // marmalade SACAR
     "#4897d8", // electric blue 
 
 ];
-const TitleModal = ({ modalNewOptionVisible, setModalNewOptionVisible }) => {
+const TitleModal = ({ modalNewOptionVisible, setModalNewOptionVisible, optionSingular }) => {
 
-    const title = modalNewOptionVisible.optionName === 'category' ? 'Edita tu categoría' : 'Edita tu método de pago'
+    const title = optionSingular === 'categoría' ? 'Edita tu categoría' : 'Edita tu método de pago'
 
     return (
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 15, paddingHorizontal: 10 }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{title}</Text>
+        <View style={{ flexDirection: 'row', gap: 19, padding: 20, justifyContent: 'start', alignItems: 'center', }}>
             <Pressable onPress={() => setModalNewOptionVisible(state => ({ ...state, show: false }))}>
-                <MaterialCommunityIcons name="window-close" size={24} color="black" />
+                <AntDesign name="leftcircleo" size={30} color="black" />
             </Pressable>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{title}</Text>
         </View>
     )
 }
 
-export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOptionVisible }) => {
+export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOptionVisible, optionSingular = '' }) => {
 
     const [newOption, setNewOption] = useState({ name: '', description: '', color: COLORS8[0] })
     const [modalColorPickerVisible, setModalColorPickerVisible] = useState(false)
@@ -114,7 +109,7 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
                             <Text style={{ marginStart: 28, color: 'black', fontWeight: 'bold', fontSize: 20 }}>Escoge un color</Text>
                             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                                 <View style={{ gap: 10, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', width: 250 }}>
-                                    {COLORS8.map((color,index) =>
+                                    {COLORS8.map((color, index) =>
                                         <Pressable key={index}
                                             onPress={() => setNewOption(prevState => ({ ...prevState, color: color }))}
                                             style={{ borderRadius: 10, width: 40, height: 40, backgroundColor: color, justifyContent: 'center', alignItems: 'center' }}>
@@ -125,31 +120,9 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
                             </View>
                         </Pressable>
                     </Pressable>
-                    {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 25, paddingHorizontal: 25 }}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Selecciona un color</Text>
-                        <Pressable onPress={() => setModalColorPickerVisible(false)}>
-                            <MaterialCommunityIcons name="window-close" size={24} color="black" />
-                        </Pressable>
-                    </View>
-
-                    <View style={{ paddingHorizontal: 20, gap: 20 }}>
-                        <View style={{ backgroundColor: newOption.color, height: 60, borderRadius: 10, borderWidth: 0.5 }}></View>
-                        <ColorPicker
-                            color={newOption.color}
-                            onColorChange={color => setNewOption(prevState => ({ ...prevState, color: color }))}
-                            thumbSize={40}
-                            sliderSize={40}
-                            noSnap={true}
-                            row={false}
-                            wheelLodingIndicator={<ActivityIndicator size={40} />}
-                            sliderLodingIndicator={<ActivityIndicator size={20} />}
-                            useNativeDriver={false}
-                            useNativeLayout={false}
-                        />
-                    </View> */}
                 </Modal>
                 <View style={{ padding: 20, gap: 10 }}>
-                    <TitleModal modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} />
+                    <TitleModal modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} optionSingular={optionSingular} />
                     <TextInput
                         keyboardType='default'
                         value={newOption.name}
@@ -157,16 +130,7 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
                         placeholder='Nombre'
                         style={styles.input}
                     />
-                    <TextInput
-                        keyboardType='default'
-                        value={newOption.description}
-                        onChangeText={(e) => onChangeOptionProp('description', e)}
-                        placeholder='Descripcion'
-                        style={styles.input}
-                    />
-
                     <View style={{ gap: 10, marginBottom: 20 }}>
-                        {/* <ButtonBase title={'Seleccionar color'} onPress={() => setModalColorPickerVisible(true)} /> */}
                         <Pressable
                             onPress={() => setModalColorPickerVisible(true)}
                             style={{ backgroundColor: newOption.color, height: 60, borderRadius: 10, justifyContent: 'center', alignItems: 'center' }}>

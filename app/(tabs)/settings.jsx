@@ -1,21 +1,18 @@
-import { Alert, Button, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, Button, Text, View } from 'react-native';
 import { ContainerScreen } from './../../components/ContainerScreen';
-import { ExportImportFiles } from '../../components/ExportImportFiles';
 import { useExpensesStore } from './../../store/expensesStore';
 import { ContainerWidget } from '../../components/ContainerWidget';
 import ButtonBase from '@/components/ButtonBase';
 import { ModalComponent } from '../../components/modals/ModalComponent';
 import { ModalConfigMetodoDePago } from '../../components/modals/ModalConfigMetodoDePago';
-import { ModalConfigOption } from '../../components/modals/ModalConfigOption'
+import { ModalConfigCategoria } from '../../components/modals/ModalConfigCategoria';
 import { useState } from 'react';
+import { exportBackup, importBackup } from '../../utils/backupService';
 
 export default function SettingsScreen() {
 
-  const { cleanAllData, categories, paymentMethods } = useExpensesStore(state => state)
   const [modalVisibleDeleteData, setModalVisibleDeleteData] = useState(false)
-
-  const [configCategoriesModalVisible, setConfigCategoriesModalVisible] = useState(false);
-  const [configPaymentMethodsModalVisible, setConfigPaymentMethodsModalVisible] = useState(false);
+  const { cleanAllData } = useExpensesStore(state => state)
 
   const onDeleteData = () => {
     setModalVisibleDeleteData(false)
@@ -26,32 +23,14 @@ export default function SettingsScreen() {
   return (
     <ContainerScreen>
       <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>Configuraciones</Text>
-
-      {/* <ContainerWidget>
-        <View style={{ gap: 15 }}>
-          <ExportImportFiles />
-        </View>
-      </ContainerWidget> */}
-
       <ContainerWidget>
-        <ModalConfigOption
-          title="Configuración de categorías"
-          optionName="categories"
-          options={categories}
-          modalVisible={configCategoriesModalVisible}
-          setModalVisible={setConfigCategoriesModalVisible}
-        />
-        <ButtonBase customStyleText={{ textAlign: 'start' }} title="Configurar categorías" onPress={() => setConfigCategoriesModalVisible(true)} />
-        <ModalConfigOption
-          title="Configuración de métodos de pago"
-          optionName="paymentMethods"
-          options={paymentMethods}
-          modalVisible={configPaymentMethodsModalVisible}
-          setModalVisible={setConfigPaymentMethodsModalVisible}
-        />
-        <ButtonBase customStyleText={{ textAlign: 'start' }} title="Configurar método de pago" onPress={() => setConfigPaymentMethodsModalVisible(true)} />
+        <ModalConfigMetodoDePago />
+        <ModalConfigCategoria />
       </ContainerWidget>
-
+      {/* <ContainerWidget>
+        <ButtonBase title="Exportar Backup" onPress={exportBackup} />
+        <ButtonBase title="Importar Backup" onPress={importBackup} />
+      </ContainerWidget> */}
       <ContainerWidget>
         <ModalComponent modalVisible={modalVisibleDeleteData} setModalVisible={setModalVisibleDeleteData} >
           <View style={{ gap: 10 }}>

@@ -32,11 +32,11 @@ export const ModalDisabledOption = ({ optionName, visible = false, setVisible })
                 setVisible(false)
             }}>
             <View style={{ padding: 30, gap: 10, backgroundColor: '#000', height: '100%' }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20 }}>
-                    <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>Opciones desactivadas</Text>
+                <View style={{ flexDirection: 'row', gap: 19, padding: 20, justifyContent: 'start', alignItems: 'center', }}>
                     <Pressable onPress={() => setVisible(false)}>
-                        <AntDesign name="close" size={24} color="white" />
+                        <AntDesign name="leftcircleo" size={30} color="white" />
                     </Pressable>
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Opciones desactivadas</Text>
                 </View>
                 <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 10, gap: 10 }}>
                     {optionNamesInExpenses && optionsFilter.length > 0 ? optionsFilter.map(option => (

@@ -17,12 +17,11 @@ import dayjs from 'dayjs';
 import { MONTHS, MONTHS_MAYUS } from '@/utils/constantes';
 import YearAndMonthSelect from '@/components/YearAndMonthSelect';
 import { DetailExpense } from '@/components/DetailExpense';
-import { expensesDataSanitization } from '@/utils/expensesDataSanitization';
 import { FontAwesome } from '@expo/vector-icons';
 
 function ButtonAddExpense({ }) {
   const refRBSheet = useRef();
-  const { setModalUpdateCreateExpense, expenses, expensesDataSanitizationStore } = useExpensesStore(state => state)
+  const { setModalUpdateCreateExpense, expenses } = useExpensesStore(state => state)
 
   return (
     <View style={{ flex: 1 }}>
@@ -39,6 +38,7 @@ function ButtonAddExpense({ }) {
         }}
         customStyles={{
           container: {
+            backgroundColor: 'white',
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
           },
@@ -48,13 +48,8 @@ function ButtonAddExpense({ }) {
         }}>
         <UpdateCreateExpenseModal refRBSheet={refRBSheet} />
       </RBSheet>
-
       <Pressable
         onPress={() => {
-          // !funcion temporal para sanitizar los datos
-          if (expenses && expenses[0]?.hasOwnProperty("paymentMethods") || expenses[0]?.hasOwnProperty("category")) {
-            expensesDataSanitizationStore()
-          }
           refRBSheet.current.open()
           setModalUpdateCreateExpense({
             // show: true, 
@@ -71,7 +66,7 @@ function ButtonAddExpense({ }) {
 export default function HomeScreen() {
   const initialValuesPeriod = { month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) }, year: dayjs().get('y') }
   const [dateValue, setDateValue] = useState(initialValuesPeriod)
-  const { expensesWithRelations, expenses } = useExpensesStore(state => state)
+  const { expensesWithRelations, expenses, categories, paymentMethods } = useExpensesStore(state => state)
   const [modalAllExpensesVisible, setModalAllExpensesVisible] = useState(false)
   const [expensesPeriodSelected, setExpensesPeriodSelected] = useState()
   const [totalCountExpensesPeriodSelected, setTotalCountExpensesPeriodSelected] = useState(0)

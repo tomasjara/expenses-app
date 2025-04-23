@@ -7,15 +7,17 @@ import ButtonBase from '../ButtonBase';
 import { UpdateCreateOptionExpense } from '../UpdateCreateOptionExpense';
 import { ModalConfirmOptionDelete } from '../modals/ModalConfirmOptionDelete';
 import { ModalDisabledOption } from '../modals/ModalDisabledOption';
+import { AntDesign } from '@expo/vector-icons';
 
 export const ModalConfigOption = ({
   title,
   optionName,
+  optionSingular = '',
+  textNewOption = '',
+  textShowDisablesOptions = '',
   options,
   colorKey = 'color',
   nameKey = 'name',
-  onEditOption,
-  onDeleteOption,
   modalVisible,
   setModalVisible,
 }) => {
@@ -43,30 +45,30 @@ export const ModalConfigOption = ({
   return (
     <>
       <ModalConfirmOptionDelete optionId={optionIdDelete} setVisible={setModalDeleteOptionVisible} visible={modalDeleteOptionVisible} />
-      <UpdateCreateOptionExpense modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} />
+      <UpdateCreateOptionExpense modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} optionSingular={optionSingular} />
       <ModalDisabledOption optionName={optionNameDisabled} visible={modalDisabledOptionsVisible} setVisible={setModalDisabledOptionsVisible} />
 
       <Modal
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}>
-        <Pressable style={styles.modalContainer} onPress={() => setModalVisible(false)}>
-          <Pressable style={styles.modalContent}>
-            <View style={styles.header}>
-              <Text style={styles.headerText}>{title}</Text>
+        <View style={styles.modalContainer} >
+          <View style={styles.modalContent}>
+            <View style={{ flexDirection: 'row', gap: 19, padding: 20, justifyContent: 'start', alignItems: 'center', }}>
               <Pressable onPress={() => setModalVisible(false)}>
-                <MaterialCommunityIcons name="window-close" size={24} color="black" />
+                <AntDesign name="leftcircleo" size={30} color="black" />
               </Pressable>
+              <Text style={styles.headerText}>{title}</Text>
             </View>
 
-            <ScrollView keyboardShouldPersistTaps="handled">
+            <ScrollView>
               <View style={styles.optionsList}>
                 {options?.filter(opt => !opt.disabled).map((opt) => (
                   <View style={styles.optionRow} key={opt.id}>
-                    <View style={{ flex: 1, marginStart: 6 }}>
-                      {opt[colorKey] && <View style={{ backgroundColor: opt[colorKey], height: 20, width: 8 }} />}
-                      <Text>{opt[nameKey]}</Text>
+                    <View style={{ flex: 1, marginStart: 6, flexDirection: 'row', alignItems: 'center', gap: 4, justifyContent: 'flex-start' }}>
+                      <View style={{ backgroundColor: opt[colorKey], height: 10, width: 10, borderRadius: 100 }} />
+                      <Text style={{ width: '120%' }}>{opt[nameKey]}</Text>
                     </View>
                     <View style={styles.actions}>
                       <Pressable style={[styles.buttonAction, { backgroundColor: 'black' }]} onPress={() => handleEdit(opt)}>
@@ -78,22 +80,24 @@ export const ModalConfigOption = ({
                     </View>
                   </View>
                 ))}
-                <ButtonBase title={`Añadir nueva ${optionName}`} onPress={() =>
-                  setModalNewOptionVisible(state => ({
-                    ...state,
-                    type: 'create',
-                    optionName,
-                    show: true,
-                  }))
-                } />
-                <ButtonBase title={`Ver ${optionName} desactivadas`} onPress={() => {
-                  setOptionNameDisabled(optionName)
-                  setModalDisabledOptionsVisible(true)
-                }} />
               </View>
             </ScrollView>
-          </Pressable>
-        </Pressable>
+            <View style={{ flexDirection: 'column', alignItems: 'center', paddingBottom: 50, gap: 10 }}>
+              <ButtonBase title={textNewOption} onPress={() =>
+                setModalNewOptionVisible(state => ({
+                  ...state,
+                  type: 'create',
+                  optionName,
+                  show: true,
+                }))
+              } />
+              <ButtonBase title={textShowDisablesOptions} onPress={() => {
+                setOptionNameDisabled(optionName)
+                setModalDisabledOptionsVisible(true)
+              }} />
+            </View>
+          </View>
+        </View>
       </Modal>
     </>
   );
@@ -110,8 +114,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     gap: 20,
     borderRadius: 10,
-    height: '80%',
-    width: '95%',
+    width: '100%',
+    height: '100%',
   },
   header: {
     flexDirection: 'row',
@@ -121,23 +125,26 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 20,
+    maxWidth: '90%',
     fontWeight: 'bold',
   },
   optionsList: {
     gap: 20,
-    paddingHorizontal: 20,
-    paddingBottom: 20,
+    padding: 20,
   },
   optionRow: {
     flexDirection: 'row',
     paddingVertical: 10,
+    paddingHorizontal: 10,
     borderWidth: 0.5,
     borderRadius: 10,
     alignItems: 'center',
   },
   actions: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-end',
     gap: 10,
     paddingHorizontal: 10,
   },

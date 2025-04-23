@@ -1,7 +1,5 @@
 import { Text, Modal, Button, View, ScrollView, Pressable } from 'react-native'
 import { useExpensesStore } from '@/store/expensesStore'
-import { useState } from 'react'
-import { DetailExpense } from '@/components/DetailExpense'
 import { ExpensesSmallCard } from './ExpensesSmallCard'
 import { AntDesign } from '@expo/vector-icons'
 
@@ -15,23 +13,23 @@ export const AllExpenses = ({ modalAllExpensesVisible, setModalAllExpensesVisibl
             visible={modalAllExpensesVisible}
             onRequestClose={() => {
                 setModalAllExpensesVisible((state) => !state);
-            }}>
-            <ScrollView >
-                <View style={{ padding: 30, gap: 20 }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20 }}>
-                        <Text style={{ fontSize: 20, color: 'black', fontWeight: 'bold' }}>Todos los gastos</Text>
-                        <Pressable onPress={() => setModalAllExpensesVisible(false)}>
-                            <AntDesign name="close" size={24} color="black" />
-                        </Pressable>
-                    </View>
-                    <View>
+            }}
+        >
+            <View style={{ height: '100%', backgroundColor: 'black' }}>
+                <View style={{ flexDirection: 'row', gap: 19, padding: 20, justifyContent: 'start', alignItems: 'center', }}>
+                    <Pressable onPress={() => setModalAllExpensesVisible(false)}>
+                        <AntDesign name="leftcircleo" size={30} color="white" />
+                    </Pressable>
+                    <Text style={{ fontSize: 20, color: 'white', fontWeight: 'bold' }}>Todos los gastos</Text>
+                </View>
+                <ScrollView >
+                    <View style={{ flex: 1, padding: 30, gap: 20 }}>
                         {expensesWithRelations && expensesWithRelations.map(expense => (
                             <ExpensesSmallCard key={expense.id} expense={expense} />
                         ))}
                     </View>
-                    <Button title='Cerrar' onPress={() => setModalAllExpensesVisible(false)} />
-                </View>
-            </ScrollView>
+                </ScrollView>
+            </View>
         </Modal>
     )
 }

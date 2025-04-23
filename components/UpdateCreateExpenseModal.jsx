@@ -10,7 +10,6 @@ import { ModalDatePicker } from '@/components/modals/ModalDatePicker'
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
 import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
-import { expensesDataSanitization } from '@/utils/expensesDataSanitization'
 
 export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
   const { modalUpdateCreateExpense, paymentMethods, categories, addExpense, updateExpense, expensesWithRelations } = useExpensesStore(state => state)
@@ -119,44 +118,46 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
       <UpdateCreateOptionExpense modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} />
       <ModalConfirmOptionDelete optionId={optionIdDelete} setVisible={setModalDeleteOptionVisible} visible={modalDeleteOptionVisible} />
       <ModalDisabledOption optionName={optionNameDisabled} visible={modalDisabledOptionsVisible} setVisible={setModalDisabledOptionsVisible} />
-          <View style={{ gap: 5, paddingHorizontal: 20, marginTop: 10, marginBottom: 70 }}>
-            <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, marginBottom: 10 }}>{modalUpdateCreateExpense.type === 'create' ? 'Nuevo gasto 💸' : 'Editar gasto 💸'}</Text>
-            <Animated.View style={[styles.input, animatedStyle]} >
-              <TextInput
-                keyboardType='numeric'
-                onChangeText={(e) => onChangeNewExpenseProp('value', e.replace(/[^0-9]/g, ""))}
-                value={newExpense.value}
-                placeholder='Valor'
-              />
-            </Animated.View>
+      <ScrollView>
+        <View style={{ gap: 5, paddingHorizontal: 20, margin: 10 }}>
+          <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, marginBottom: 10 }}>{modalUpdateCreateExpense.type === 'create' ? 'Nuevo gasto 💸' : 'Editar gasto 💸'}</Text>
+          <Animated.View style={[styles.input, animatedStyle]} >
             <TextInput
-              placeholder='Descripcion'
-              value={newExpense.description}
-              onChangeText={(e) => onChangeNewExpenseProp('description', e)}
-              style={styles.input}
+              keyboardType='numeric'
+              onChangeText={(e) => onChangeNewExpenseProp('value', e.replace(/[^0-9]/g, ""))}
+              value={newExpense.value}
+              placeholder='Valor'
             />
-            <ModalDatePicker dateValue={dateValue} setDateValue={setDateValue} />
-            <View style={{ marginBottom: 30, gap: 20 }}>
-              <ModalSeleccionarCatergoria
-                categorySelected={category}
-                setModalNewOptionVisible={setModalNewOptionVisible}
-                setModalDeleteOptionVisible={setModalDeleteOptionVisible}
-                setCategory={setCategory}
-                setModalDisabledOptionsVisible={setModalDisabledOptionsVisible}
-                setOptionNameDisabled={setOptionNameDisabled}
-                setOptionIdDelete={setOptionIdDelete} />
-              <ModalSeleccionarMetodoDePago
-                paymentMethodSelected={paymentMethod}
-                setModalNewOptionVisible={setModalNewOptionVisible}
-                setModalDeleteOptionVisible={setModalDeleteOptionVisible}
-                setModalDisabledOptionsVisible={setModalDisabledOptionsVisible}
-                setOptionNameDisabled={setOptionNameDisabled}
-                setOptionIdDelete={setOptionIdDelete}
-                paymentMethods={paymentMethods}
-                setpaymentMethod={setpaymentMethod} />
-            </View>
+          </Animated.View>
+          <TextInput
+            placeholder='Descripcion'
+            value={newExpense.description}
+            onChangeText={(e) => onChangeNewExpenseProp('description', e)}
+            style={styles.input}
+          />
+          <ModalDatePicker dateValue={dateValue} setDateValue={setDateValue} />
+          <View style={{ marginBottom: 30, gap: 20 }}>
+            <ModalSeleccionarCatergoria
+              categorySelected={category}
+              setModalNewOptionVisible={setModalNewOptionVisible}
+              setModalDeleteOptionVisible={setModalDeleteOptionVisible}
+              setCategory={setCategory}
+              setModalDisabledOptionsVisible={setModalDisabledOptionsVisible}
+              setOptionNameDisabled={setOptionNameDisabled}
+              setOptionIdDelete={setOptionIdDelete} />
+            <ModalSeleccionarMetodoDePago
+              paymentMethodSelected={paymentMethod}
+              setModalNewOptionVisible={setModalNewOptionVisible}
+              setModalDeleteOptionVisible={setModalDeleteOptionVisible}
+              setModalDisabledOptionsVisible={setModalDisabledOptionsVisible}
+              setOptionNameDisabled={setOptionNameDisabled}
+              setOptionIdDelete={setOptionIdDelete}
+              paymentMethods={paymentMethods}
+              setpaymentMethod={setpaymentMethod} />
           </View>
-      <Pressable style={{ position: 'absolute', bottom: 20, right: 20, width: '90%', backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={createNewExpense}>
+        </View>
+      </ScrollView>
+      <Pressable style={{ margin: 'auto', width: '90%', backgroundColor: 'black', padding: 10, borderRadius: 10, marginBottom: 13 }} onPress={createNewExpense}>
         <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>{modalUpdateCreateExpense.type === 'create' ? 'Añadir nuevo gasto' : 'Aceptar'}</Text>
       </Pressable>
     </>

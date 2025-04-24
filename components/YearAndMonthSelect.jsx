@@ -1,9 +1,4 @@
-import {
-  View,
-  Text,
-  Pressable,
-  Modal,
-} from "react-native";
+import { View, Text, Pressable, Modal } from "react-native";
 import { useState } from "react";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { MONTHS, MONTHS_LIST } from "@/utils/constantes";
@@ -11,87 +6,220 @@ import dayjs from "dayjs";
 import { formatFirstLetterString } from "@/utils/formatFirstLetterString";
 
 export default function YearAndMonthSelect({ dateValue, setDateValue, expensesMonthWithYear }) {
-  const [modalVisible, setModalVisible] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const onSelectMonth = (item) => {
-    setDateValue(prevState => ({ ...prevState, month: { id: item.id, name: item.month } }))
-    setModalVisible(false)
-  }
+  const setYear = (year) => setDateValue(prev => ({ ...prev, year }));
+  const setMonth = (month) => setDateValue(prev => ({ ...prev, month }));
 
-  const onActuallyYear = () => {
-    setDateValue(prevState => ({ ...prevState, year: dayjs().get('y') }))
-  }
+  const handleSelectMonth = (item) => {
+    setMonth({ id: item.id, name: item.month });
+    setModalVisible(false);
+  };
 
-  const onActuallyMonth = () => {
-    setDateValue(prevState => ({ ...prevState, year: dayjs().get('y'), month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) } }))
-    setModalVisible(false)
-  }
+  // const handleSetCurrentYear = () => setYear(dayjs().year());
 
-  const onAllTime = () => {
-    // setDateValue(prevState => ({ ...prevState, month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) } }))
-    setModalVisible(false)
-  }
+  const handleSetCurrentMonth = () => {
+    const currentMonth = dayjs().month();
+    setYear(dayjs().year())
+    setMonth({ id: currentMonth, name: formatFirstLetterString(MONTHS[currentMonth]) })
+    setModalVisible(false);
+  };
+
+  const handleAllTime = () => {
+    setDateValue(prev => ({ ...prev, "month": { "id": '', "name": "" } }))
+    setModalVisible(false);
+  };
+
+  const changeYear = (offset) => {
+    setYear(dateValue.year + offset);
+  };
+
+  const isSelectedMonth = (id) => dateValue.month.id === id;
 
   return (
     <>
+      {/* MODAL */}
       <Modal
         animationType="fade"
-        transparent={true}
+        transparent
         visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}
+        onRequestClose={() => setModalVisible(false)}
       >
-        <Pressable style={{ justifyContent: 'center', height: '100%', paddingHorizontal: 20, backgroundColor: 'rgba(0, 0, 0, 0.6)' }} onPress={() => setModalVisible(false)}>
-          <Pressable style={{ backgroundColor: 'white', paddingHorizontal: 20, paddingVertical: 30, borderRadius: 10, }} onPress={() => { }}>
-            <View style={{ padding: 10, gap: 20 }}>
-              
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10 }}>
-                <Pressable onPress={() => { setDateValue(prevState => ({ ...prevState, year: prevState.year - 1 })) }} style={{ padding: 10 }}>
-                  <MaterialIcons name="arrow-back-ios" size={20} color="black" />
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setModalVisible(false)}
+        >
+          <Pressable style={styles.modalContainer} onPress={() => { }}>
+            <View style={styles.modalContent}>
+
+              {/* Header Año */}
+              <View style={styles.yearSelector}>
+                <Pressable onPress={() => changeYear(-1)} style={styles.iconButton}>
+                  <MaterialIcons name="arrow-back-ios" size={24} color="black" />
                 </Pressable>
-                <Text style={{ fontSize: 18 }}>{dateValue.year}</Text>
-                <Pressable onPress={() => { setDateValue(prevState => ({ ...prevState, year: prevState.year + 1 })) }} style={{ padding: 10 }}>
-                  <MaterialIcons name="arrow-forward-ios" size={20} color="black" />
+                <Text style={styles.yearText}>{dateValue.year}</Text>
+                <Pressable onPress={() => { dayjs(dateValue.year) < dayjs().year() ? changeYear(1) : () => { } }} style={styles.iconButton}>
+                  <MaterialIcons name="arrow-forward-ios" size={24} color={dayjs(dateValue.year) < dayjs().year() ? "black" : 'gray'} />
                 </Pressable>
               </View>
 
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 10 }}>
+              {/* Meses */}
+              <View style={styles.monthsGrid}>
                 {MONTHS_LIST.map((item) => {
-                  const currentMonth = item.month
-                  const expensesCount = expensesMonthWithYear.find(item => item[currentMonth])
+                  const currentMonth = item.month;
+                  const expensesCount = expensesMonthWithYear.find(e => e[currentMonth]);
+                  const selected = isSelectedMonth(item.id);
+                  // Validar si el mes está en el futuro
+                  const monthIsFuture = dateValue.year > dayjs().year() || (dateValue.year === dayjs().year() && item.id > dayjs().month());
+
                   return (
-                    <Pressable key={item.month} onPress={() => onSelectMonth(item)} style={{ borderWidth: 1, borderRadius: 10, padding: 10, borderColor: dateValue.month.id === item.id ? 'blue' : 'black', backgroundColor: dateValue.month.id === item.id ? 'blue' : 'white', width: 90 }}>
-                      <Text style={{ fontSize: 12, textAlign: 'center', color: dateValue.month.id === item.id ? 'white' : 'black', }}>{item.month}</Text>
-                      {expensesCount && <View style={{ position: 'absolute', top: -5, right: -5, backgroundColor: 'black', borderRadius: 10, paddingVertical: 2, paddingHorizontal: 5, opacity: 0.8 }}>
-                        <Text style={{ fontSize: 10, textAlign: 'center', color: 'white' }}>{expensesCount[currentMonth]}</Text>
-                      </View>}
+                    <Pressable
+                      key={item.month}
+                      onPress={() => !monthIsFuture && handleSelectMonth(item)}
+                      style={[
+                        styles.monthButton,
+                        {
+                          borderColor: selected ? 'blue' : monthIsFuture ? 'gray' : 'black',
+                          backgroundColor: selected ? 'blue' : 'white',
+                        }
+                      ]}
+                    >
+                      {/* <Text style={[styles.monthText, { color: selected ? 'white' : 'black' }]}> */}
+                      <Text style={[styles.monthText, { color: selected ? 'white' : monthIsFuture ? 'gray' : 'black' }]}>
+                        {item.month}
+                      </Text>
+                      {/* {expensesCount && (
+                        <View style={styles.expenseBadge}>
+                          <Text style={styles.expenseBadgeText}>{expensesCount[currentMonth]}</Text>
+                        </View>
+                      )} */}
                     </Pressable>
-                  )
+                  );
                 })}
               </View>
 
-              <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', gap: 10 }}>
-                <Pressable style={{ backgroundColor: '#2282e3', padding: 10, borderRadius: 10 }} onPress={onAllTime} >
-                  <Text style={{ color: 'white' }}>Todo el tiempo</Text>
-                </Pressable>
-                <Pressable style={{ backgroundColor: '#2282e3', padding: 10, borderRadius: 10 }} onPress={onActuallyYear} >
-                  <Text style={{ color: 'white' }}>Año actual</Text>
-                </Pressable>
-                <Pressable style={{ backgroundColor: '#2282e3', padding: 10, borderRadius: 10 }} onPress={onActuallyMonth} >
-                  <Text style={{ color: 'white' }}>Mes actual</Text>
-                </Pressable>
+              {/* Acciones */}
+              <View style={styles.actions}>
+                <ActionButton label="Sin filtro" onPress={handleAllTime} />
+                {/* <ActionButton label="Año actual" onPress={handleSetCurrentYear} /> */}
+                <ActionButton label="Mes actual" onPress={handleSetCurrentMonth} />
               </View>
             </View>
           </Pressable>
         </Pressable>
       </Modal>
-      <Pressable style={{ backgroundColor: 'white', borderRadius: 10, padding: 15, flexDirection: 'row', alignItems: 'center', gap: 10 }} onPress={() => setModalVisible(true)}>
-        <View style={{ borderWidth: 0.5, padding: 5, borderRadius: 5 }}>
+
+      {/* BOTÓN PRINCIPAL */}
+      <Pressable style={styles.selectorButton} onPress={() => setModalVisible(true)}>
+        <View style={styles.iconWrapper}>
           <Ionicons name="calendar-number-outline" size={18} color="black" />
         </View>
-        <Text style={{ fontSize: 20 }}>{dateValue.month.name} - {dateValue.year}</Text>
+        {dateValue.month.id !== ''
+          ? <Text style={styles.selectorText}>{dateValue.month.name} - {dateValue.year}</Text>
+          : <Text style={styles.selectorText}>Sin filtro de fecha</Text>
+        }
+
       </Pressable>
     </>
   );
 }
+
+const ActionButton = ({ label, onPress }) => (
+  <Pressable style={styles.actionButton} onPress={onPress}>
+    <Text style={styles.actionButtonText}>{label}</Text>
+  </Pressable>
+);
+
+const styles = {
+  modalOverlay: {
+    justifyContent: 'center',
+    height: '100%',
+    paddingHorizontal: 11,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    borderRadius: 10,
+  },
+  modalContent: {
+    padding: 10,
+    gap: 20,
+  },
+  yearSelector: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+  },
+  iconButton: {
+    padding: 20,
+  },
+  yearText: {
+    fontWetight: 'bold',
+    fontSize: 26,
+  },
+  monthsGrid: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  monthButton: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    width: 90,
+    position: 'relative',
+  },
+  monthText: {
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  expenseBadge: {
+    position: 'absolute',
+    top: -5,
+    right: -5,
+    backgroundColor: 'black',
+    borderRadius: 10,
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+    opacity: 0.8,
+  },
+  expenseBadgeText: {
+    fontSize: 10,
+    color: 'white',
+    textAlign: 'center',
+  },
+  actions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 10,
+    gap: 10,
+  },
+  actionButton: {
+    backgroundColor: '#2282e3',
+    padding: 10,
+    borderRadius: 10,
+  },
+  actionButtonText: {
+    color: 'white',
+  },
+  selectorButton: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  iconWrapper: {
+    borderWidth: 0.5,
+    padding: 5,
+    borderRadius: 5,
+  },
+  selectorText: {
+    fontSize: 20,
+  },
+};

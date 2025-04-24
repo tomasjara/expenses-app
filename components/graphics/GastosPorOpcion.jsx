@@ -41,7 +41,7 @@ export const GastosPorOpcion = ({ expensesWithRelations, categories, paymentMeth
                     </View>
                     <View style={styles.containerOptions}>
                         {expensesCategory.sort((a, b) => a.value > b.value ? -1 : 1).map((category, index) => (
-                            <CategoryDetail key={index} categoryColor={category.color} categoryId={category.id} categoryName={category.name} categoryTotalValue={category.value} />
+                            <CategoryDetail key={index} expensesWithRelations={expensesWithRelations} categoryColor={category.color} categoryId={category.id} categoryName={category.name} categoryTotalValue={category.value} />
                         ))
                         }
                     </View>

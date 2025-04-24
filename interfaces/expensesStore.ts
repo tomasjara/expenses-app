@@ -22,6 +22,7 @@ export interface PaymentMethod {
   name: string;
   color: string;
   description?: string;
+  disabled: boolean;
 }
 
 const expensesWithRelations_MOCK = [

@@ -70,7 +70,7 @@ export const ExpenseDistributionChart = ({ expenses }) => {
                     </View>
                 </View>
             </ContainerWidget>
-            : <Text>HOLA</Text>
+            : <></>
     )
 
 };

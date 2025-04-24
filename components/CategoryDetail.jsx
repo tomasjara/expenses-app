@@ -25,7 +25,7 @@ const ORDER_VALUES1 = {
     4: (a, b) => Number(a.value) < Number(b.value) ? -1 : 1, // Valor ascendente
     5: (a, b) => dayjs(a.creationDate).isAfter(dayjs(b.creationDate)) ? -1 : 1, // Fecha de creación descendente
     6: (a, b) => dayjs(a.creationDate).isBefore(dayjs(b.creationDate)) ? -1 : 1, // Fecha de creación ascendente
-  };
+};
 
 const AllExpensesRegister = ({ category, orderValue }) => {
     const { expensesWithRelations } = useExpensesStore(state => state)
@@ -173,14 +173,14 @@ const InfoContainer = ({ children, customStyleContainer }) => {
     )
 }
 
-export const CategoryDetail = ({ categoryId, categoryName, categoryColor, categoryTotalValue }) => {
+export const CategoryDetail = ({ categoryId, categoryName, categoryColor, categoryTotalValue, expensesWithRelations }) => {
     const [visible, setVisible] = useState(false)
     const [orderValue, setOrderValue] = useState(dataDropdown[0]);
     const [frequencyExpenses, setFrequencyExpenses] = useState(null)
     const [yearToFrecuencyExpenses, setYearToFrecuencyExpenses] = useState(dayjs().year())
     const [monthMaxExpenses, setMonthMaxExpenses] = useState(null)
     const [category, setCategory] = useState(null)
-    const { expensesWithRelations, categories } = useExpensesStore(state => state)
+    const { categories } = useExpensesStore(state => state)
     const regexNumberInt = /^[0-9]+$/;
 
     useEffect(() => {
@@ -275,7 +275,7 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
                                 </View>
                             </ScrollView>
                             : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{ fontSize: 20, marginHorizontal: 10, textAlign: 'center', opacity:0.6 }}>Aún no registras gastos en esta categoría</Text>
+                                <Text style={{ fontSize: 20, marginHorizontal: 10, textAlign: 'center', opacity: 0.6 }}>Aún no registras gastos en esta categoría</Text>
                             </View>
                         }
                     </View >

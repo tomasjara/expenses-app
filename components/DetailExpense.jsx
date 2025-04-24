@@ -1,15 +1,13 @@
 import { useExpensesStore } from '@/store/expensesStore'
 import dayjs from 'dayjs'
-import { View, Text, Button, Pressable, ScrollView } from 'react-native'
-import Toast from 'react-native-toast-message'
+import { View, Text, Pressable, ScrollView } from 'react-native'
 import { UpdateCreateExpenseModal } from './UpdateCreateExpenseModal';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import { useEffect, useRef, useState } from 'react';
-import { ModalConfirmExpenseDelete } from './modals/ModalConfirmExpenseDelete';
 import ButtonBase from './ButtonBase';
-import { formatFirstLetterString } from '@/utils/formatFirstLetterString';
 import { AntDesign } from '@expo/vector-icons';
 import { formatMoney } from '@/utils/formatMoney';
+import { ModalConfirmExpenseDelete } from './modals/ModalConfirmExpenseDelete';
 
 function ButtonEditExpense({ expense }) {
     const refRBSheet = useRef();
@@ -30,6 +28,7 @@ function ButtonEditExpense({ expense }) {
                 }}
                 customStyles={{
                     container: {
+                        backgroundColor: 'white',
                         borderTopLeftRadius: 10,
                         borderTopRightRadius: 10,
                     },
@@ -46,15 +45,6 @@ function ButtonEditExpense({ expense }) {
             }} />
         </View>
     );
-}
-
-const KeyValue = ({ keyValue, value }) => {
-    return (
-        <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center' }}>
-            <Text style={{ fontSize: 15, fontWeight: 'bold' }}>{formatFirstLetterString(keyValue)}</Text>
-            <Text style={{ fontSize: 15 }}>{value}</Text>
-        </View>
-    )
 }
 
 export const DetailExpense = ({ expenseSelect, setDetailExpenseVisible }) => {
@@ -104,8 +94,9 @@ export const DetailExpense = ({ expenseSelect, setDetailExpenseVisible }) => {
                         <Text style={{ fontSize: 16, opacity: 0.5 }}>Ultima modificación</Text>
                         <Text style={{ fontSize: 16 }}>{dayjs(lastModificationDate).format('DD/MM/YYYY')}</Text>
                     </View>
-                    <View style={{ paddingVertical: 25 }}>
+                    <View style={{ paddingVertical: 25, gap:15 }}>
                         <ButtonEditExpense expense={expense} />
+                        <ModalConfirmExpenseDelete onDeleteOption={onDelete}/>
                     </View>
                 </View>
             </ScrollView>

@@ -1,13 +1,10 @@
-import { useExpensesStore } from '@/store/expensesStore'
 import { formatMoney } from '@/utils/formatMoney'
 import { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { ContainerWidget } from '../ContainerWidget'
 import { CategoryDetail } from '../CategoryDetail'
 
-export const GastosPorOpcion = () => {
-
-    const { expensesWithRelations, categories, paymentMethods } = useExpensesStore(state => state)
+export const GastosPorOpcion = ({ expensesWithRelations, categories, paymentMethods }) => {
     const [expensesCategory, setExpensesCategory] = useState()
     const [expensesPaymentMethod, setExpensesPaymentMethod] = useState()
 

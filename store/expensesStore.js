@@ -16,6 +16,17 @@ export const useExpensesStore = create(
           ...prevState,
           _hasHydrated: state,
         })),
+      // Import backup
+      importBackup: (backup) => {
+        set((state) => {
+          const { expenses, categories, paymentMethods } = backup;
+          return {
+            expenses: [...state.expenses, ...expenses],
+            categories: [...state.categories, ...categories],
+            paymentMethods: [...state.paymentMethods, ...paymentMethods],
+          };
+        });
+      },
       // Expenses
       expenses: [],
       addExpense: (newExpense) =>
@@ -48,8 +59,8 @@ export const useExpensesStore = create(
             {
               id: "f739c40d-3545-40e4-aaf7-83b875c122bb",
               name: "Sin especificar",
-              description: "",
               color: "#4897d8",
+              disabled: false,
             },
           ],
           categories: [
@@ -57,6 +68,7 @@ export const useExpensesStore = create(
               id: "18a9a02a-fc75-4766-a7f2-2359267a69a0",
               name: "Sin categoría",
               color: "#f25c00",
+              disabled: false,
             },
           ],
         })),

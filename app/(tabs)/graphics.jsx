@@ -23,20 +23,6 @@ export default function GraphicsScreen() {
     setExpensesFilterMonthAndYear(dateValue.month.id === '' ? expensesWithRelations : expensesFilterMonthAndYearResult)
   }, [dateValue, expensesWithRelations])
 
-  useEffect(() => {
-    console.log();
-    console.log('----------- dateValue -----------');
-    console.log(dateValue);
-    console.log();
-  }, [dateValue, expensesWithRelations])
-
-  useEffect(() => {
-    console.log();
-    console.log('----------- expensesFilterMonthAndYear -----------');
-    console.log(expensesFilterMonthAndYear);
-    console.log();
-  }, [expensesFilterMonthAndYear])
-
   return (
     <ScrollView>
       <ContainerScreen>

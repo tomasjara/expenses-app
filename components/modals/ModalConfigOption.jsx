@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Text, Modal, Pressable, ScrollView, StyleSheet } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import ButtonBase from '../ButtonBase';
@@ -26,13 +25,15 @@ export const ModalConfigOption = ({
   const [optionIdDelete, setOptionIdDelete] = useState();
   const [optionNameDisabled, setOptionNameDisabled] = useState();
   const [modalDisabledOptionsVisible, setModalDisabledOptionsVisible] = useState(false);
+  const refRBSheet = useRef();
 
   const handleEdit = (option) => {
+    refRBSheet.current.open()
     setModalNewOptionVisible(state => ({
       ...state,
       type: 'edit',
       optionName,
-      show: true,
+      // show: true,
       optionSelect: option,
     }));
   };
@@ -45,7 +46,7 @@ export const ModalConfigOption = ({
   return (
     <>
       <ModalConfirmOptionDelete optionId={optionIdDelete} setVisible={setModalDeleteOptionVisible} visible={modalDeleteOptionVisible} />
-      <UpdateCreateOptionExpense modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} optionSingular={optionSingular} />
+      <UpdateCreateOptionExpense textNewOption={textNewOption} refRBSheet={refRBSheet} modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} optionSingular={optionSingular} />
       <ModalDisabledOption optionName={optionNameDisabled} visible={modalDisabledOptionsVisible} setVisible={setModalDisabledOptionsVisible} />
 
       <Modal
@@ -83,13 +84,15 @@ export const ModalConfigOption = ({
               </View>
             </ScrollView>
             <View style={{ flexDirection: 'column', alignItems: 'center', paddingBottom: 50, gap: 10 }}>
-              <ButtonBase title={textNewOption} onPress={() =>
+              <ButtonBase title={textNewOption} onPress={() => {
+                refRBSheet.current.open()
                 setModalNewOptionVisible(state => ({
                   ...state,
                   type: 'create',
                   optionName,
-                  show: true,
+                  // show: true,
                 }))
+              }
               } />
               <ButtonBase title={textShowDisablesOptions} onPress={() => {
                 setOptionNameDisabled(optionName)

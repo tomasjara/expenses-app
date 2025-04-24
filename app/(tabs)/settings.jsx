@@ -12,7 +12,7 @@ import { exportBackup, importBackup } from '../../utils/backupService';
 export default function SettingsScreen() {
 
   const [modalVisibleDeleteData, setModalVisibleDeleteData] = useState(false)
-  const { cleanAllData } = useExpensesStore(state => state)
+  const { cleanAllData, expenses, categories, paymentMethods } = useExpensesStore(state => state)
 
   const onDeleteData = () => {
     setModalVisibleDeleteData(false)
@@ -27,10 +27,10 @@ export default function SettingsScreen() {
         <ModalConfigMetodoDePago />
         <ModalConfigCategoria />
       </ContainerWidget>
-      {/* <ContainerWidget>
-        <ButtonBase title="Exportar Backup" onPress={exportBackup} />
-        <ButtonBase title="Importar Backup" onPress={importBackup} />
-      </ContainerWidget> */}
+      <ContainerWidget>
+        <ButtonBase customStyleText={{ textAlign: 'start' }} title="Exportar copia de seguridad" onPress={() => exportBackup({ expenses, categories, paymentMethods })} />
+        <ButtonBase customStyleText={{ textAlign: 'start' }} title="Importar copia de seguridad" onPress={importBackup} />
+      </ContainerWidget>
       <ContainerWidget>
         <ModalComponent modalVisible={modalVisibleDeleteData} setModalVisible={setModalVisibleDeleteData} >
           <View style={{ gap: 10 }}>

@@ -275,7 +275,7 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
                                 </View>
                             </ScrollView>
                             : <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{ fontSize: 20, marginHorizontal: 10, textAlign: 'center', opacity: 0.6 }}>Aún no registras gastos en esta categoría</Text>
+                                <Text style={{ fontSize: 20, marginHorizontal: 10, textAlign: 'center', opacity: 0.6 }}>No hay registros en esta categoría</Text>
                             </View>
                         }
                     </View >

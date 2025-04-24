@@ -5,7 +5,7 @@
   "scripts": {
     "start:dev": "cross-env APP_ENV=development expo start",
     "android:dev": "cross-env APP_ENV=development expo run:android",
-    "android:prod": "cross-env APP_ENV=production expo run:android",
+    "build_android:prod": "eas build -p android --profile production",
     "android_device": "emulator -avd Pixel_4_API_35",
     "ios": "expo run:ios",
     "web": "expo start --web",

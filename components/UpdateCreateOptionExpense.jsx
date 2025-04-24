@@ -1,10 +1,55 @@
 import { ActivityIndicator, Button, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import uuid from 'react-native-uuid';
 import { useExpensesStore } from '@/store/expensesStore';
 import ColorPicker from 'react-native-wheel-color-picker';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import ButtonBase from './ButtonBase';
+import RBSheet from 'react-native-raw-bottom-sheet';
+
+function ButtonAddExpense({ }) {
+    const refRBSheet = useRef();
+    const { setModalUpdateCreateExpense, expenses } = useExpensesStore(state => state)
+
+    return (
+        <View style={{ flex: 1 }}>
+            <RBSheet
+                ref={refRBSheet}
+                draggable
+                height={600}
+                customModalProps={{
+                    statusBarTranslucent: false,
+                }}
+                closeOnPressBack
+                customAvoidingViewProps={{
+                    enabled: true,
+                }}
+                customStyles={{
+                    container: {
+                        backgroundColor: 'white',
+                        borderTopLeftRadius: 10,
+                        borderTopRightRadius: 10,
+                    },
+                    draggableIcon: {
+                        width: 50,
+                    },
+                }}>
+                <UpdateCreateExpenseModal refRBSheet={refRBSheet} />
+            </RBSheet>
+            <Pressable
+                onPress={() => {
+                    refRBSheet.current.open()
+                    setModalUpdateCreateExpense({
+                        // show: true, 
+                        type: 'create'
+                    })
+                }}
+                style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 15, borderRadius: 20, shadowRadius: 10, elevation: 5, borderColor: 'black', borderWidth: 1 }}>
+                <Ionicons name="add-circle-sharp" size={45} color="black" />
+            </Pressable>
+        </View>
+    );
+}
 
 const COLORS8 = [
     "#486b00", // grass
@@ -19,21 +64,8 @@ const COLORS8 = [
     "#4897d8", // electric blue 
 
 ];
-const TitleModal = ({ modalNewOptionVisible, setModalNewOptionVisible, optionSingular }) => {
 
-    const title = optionSingular === 'categoría' ? 'Edita tu categoría' : 'Edita tu método de pago'
-
-    return (
-        <View style={{ flexDirection: 'row', gap: 19, padding: 20, justifyContent: 'start', alignItems: 'center', }}>
-            <Pressable onPress={() => setModalNewOptionVisible(state => ({ ...state, show: false }))}>
-                <AntDesign name="leftcircleo" size={30} color="black" />
-            </Pressable>
-            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{title}</Text>
-        </View>
-    )
-}
-
-export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOptionVisible, optionSingular = '' }) => {
+export const UpdateCreateOptionExpense = ({ textNewOption, refRBSheet, modalNewOptionVisible, setModalNewOptionVisible, optionSingular = '' }) => {
 
     const [newOption, setNewOption] = useState({ name: '', description: '', color: COLORS8[0] })
     const [modalColorPickerVisible, setModalColorPickerVisible] = useState(false)
@@ -45,7 +77,7 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
 
     useEffect(() => {
         if (modalNewOptionVisible && modalNewOptionVisible.type === 'create') {
-            setNewOption(prevState => ({ ...prevState, color: COLORS8[0] }))
+            setNewOption(prevState => ({ name: '', description: '', color: COLORS8[0] }))
         }
         if (modalNewOptionVisible && modalNewOptionVisible.type === 'edit') {
             setNewOption(modalNewOptionVisible.optionSelect)
@@ -57,7 +89,8 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
 
     const onPress = () => {
         if (!newOption || !newOption.name) {
-            console.error('newOption requiered and name is required');
+            // TODO
+            // console.log('newOption requiered and name is required');
             return
         }
         const newOptionyObj = {
@@ -89,14 +122,27 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
 
     return (
         <>
-            <Modal
-                animationType="fade"
-                transparent={false}
-                visible={modalNewOptionVisible.show}
-                onRequestClose={() => {
-                    setModalNewOptionVisible(state => ({ ...state, show: false }));
+            <RBSheet
+                ref={refRBSheet}
+                draggable
+                height={340}
+                customModalProps={{
+                    statusBarTranslucent: false,
+                }}
+                closeOnPressBack
+                customAvoidingViewProps={{
+                    enabled: true,
+                }}
+                customStyles={{
+                    container: {
+                        backgroundColor: 'white',
+                        borderTopLeftRadius: 10,
+                        borderTopRightRadius: 10,
+                    },
+                    draggableIcon: {
+                        width: 50,
+                    },
                 }}>
-                {/* Selecto de color */}
                 <Modal
                     animationType="fade"
                     transparent={true}
@@ -122,7 +168,7 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
                     </Pressable>
                 </Modal>
                 <View style={{ padding: 20, gap: 10 }}>
-                    <TitleModal modalNewOptionVisible={modalNewOptionVisible} setModalNewOptionVisible={setModalNewOptionVisible} optionSingular={optionSingular} />
+                    <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 }}>{optionSingular === 'categoría' ? modalNewOptionVisible.type === 'edit' ? 'Edita tu categoría' : 'Crea una nueva categoría' : modalNewOptionVisible.type === 'edit' ? 'Edita tu método de pago' : 'Crea un nuevo método de pago'}</Text>
                     <TextInput
                         keyboardType='default'
                         value={newOption.name}
@@ -139,7 +185,7 @@ export const UpdateCreateOptionExpense = ({ modalNewOptionVisible, setModalNewOp
                     </View>
                     <ButtonBase title={'Aceptar'} onPress={onPress} />
                 </View>
-            </Modal>
+            </RBSheet>
         </>
     )
 }

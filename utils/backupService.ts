@@ -1,92 +1,172 @@
-// import * as FileSystem from "expo-file-system";
-// import * as DocumentPicker from "expo-document-picker";
-// import { useExpensesStore } from "./../store/expensesStore"; // ajusta la ruta según tu proyecto
-// import * as MediaLibrary from "expo-media-library";
-// import * as Sharing from "expo-sharing";
-// import { Alert, PermissionsAndroid, Platform } from "react-native";
-// import RNFS from "react-native-fs";
+import * as FileSystem from "expo-file-system";
+import * as DocumentPicker from "expo-document-picker";
+import { Alert } from "react-native";
+import dayjs from "dayjs";
+import { useExpensesStore } from "@/store/expensesStore";
 
-/**
- * Exporta los datos a un archivo JSON y permite compartirlo.
- */
-export const exportBackup = async () => {
-//   try {
-//     const state = useExpensesStore.getState();
+export const exportBackup = async (
+  jsonData: any,
+  successMessage: string = "Archivo JSON guardado correctamente"
+) => {
+  try {
+    const permissions =
+      await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
-//     const data = {
-//       expenses: state.expenses,
-//       categories: state.categories,
-//       paymentMethods: state.paymentMethods,
-//     };
+    if (!permissions.granted) {
+      Alert.alert("Permiso denegado", "No se pudo acceder a la carpeta.");
+      return;
+    }
 
-//     const json = JSON.stringify(data, null, 2);
-//     const fileName = `gastos-backup-${Date.now()}.json`;
+    const FILE_NAME = dayjs().format("DD_MM_YYYY") + "expenses_app_export.json";
 
-//     // 📁 Ruta de descarga en Android
-//     const downloadPath = `${RNFS.DownloadDirectoryPath}/${fileName}`;
+    const uri = await FileSystem.StorageAccessFramework.createFileAsync(
+      permissions.directoryUri,
+      FILE_NAME,
+      "application/json"
+    );
 
-//     // 🛡️ Pedir permisos
-//     if (Platform.OS === "android") {
-//       const granted = await PermissionsAndroid.request(
-//         PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-//         {
-//           title: "Permiso para guardar",
-//           message:
-//             "La app necesita guardar archivos en tu carpeta de Descargas.",
-//           buttonNeutral: "Preguntar luego",
-//           buttonNegative: "Cancelar",
-//           buttonPositive: "Permitir",
-//         }
-//       );
+    const jsonString = JSON.stringify(jsonData, null, 2);
 
-//       if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-//         Alert.alert(
-//           "Permiso denegado",
-//           "No se puede guardar el backup sin permiso."
-//         );
-//         return;
-//       }
-//     }
+    await FileSystem.writeAsStringAsync(uri, jsonString, {
+      encoding: FileSystem.EncodingType.UTF8,
+    });
 
-//     // 💾 Guardar archivo
-//     await RNFS.writeFile(downloadPath, json, "utf8");
-
-//     Alert.alert("Backup guardado", `Se guardó en Descargas:\n${fileName}`);
-//   } catch (error) {
-//     console.error("Error exportando backup:", error);
-//     Alert.alert("Error", "No se pudo guardar el backup en Descargas.");
-//   }
+    Alert.alert("Éxito", successMessage);
+  } catch (error) {
+    console.error("Error al crear y guardar el archivo JSON", error);
+    Alert.alert("Error", "No se pudo crear o guardar el archivo JSON.");
+  }
 };
+
 /**
  * Importa datos desde un archivo JSON y los carga al store.
  */
-export const importBackup = async () => {
-//   try {
-//     const result = await DocumentPicker.getDocumentAsync({
-//       type: "application/json",
-//     });
 
-//     if (result.type === "success") {
-//       const content = await FileSystem.readAsStringAsync(result.uri);
-//       const data = JSON.parse(content);
+export const importBackup = async (
+  onImport: (data: any) => void,
+  successMessage: string = "Datos importados correctamente"
+) => {
+  const importBackupStore = useExpensesStore.getState().importBackup;
+  const expensesStore = useExpensesStore.getState().expenses;
+  const paymentMethodsStore = useExpensesStore.getState().paymentMethods;
+  const categoriesStore = useExpensesStore.getState().categories;
 
-//       if (data.expenses && data.categories && data.paymentMethods) {
-//         const store = useExpensesStore.getState();
+  try {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: "application/json",
+      copyToCacheDirectory: true,
+    });
 
-//         store.setExpenses(data.expenses);
-//         // Limpia primero para evitar duplicados o conflictos
-//         store.cleanAllData();
-//         // Luego agrega las categorías y métodos
-//         data.categories.forEach((cat) => store.addCategory(cat));
-//         data.paymentMethods.forEach((method) => store.addPaymentMethod(method));
-//         data.expenses.forEach((exp) => store.addExpense(exp));
+    if (result.canceled || !result.assets?.length) {
+      Alert.alert("Importación cancelada", "No se seleccionó ningún archivo.");
+      return;
+    }
 
-//         console.log("Backup importado con éxito");
-//       } else {
-//         console.warn("El archivo no tiene el formato correcto");
-//       }
-//     }
-//   } catch (error) {
-//     console.error("Error importando backup:", error);
-//   }
+    const fileUri = result.assets[0].uri;
+    const jsonString = await FileSystem.readAsStringAsync(fileUri);
+    const parsedData = JSON.parse(jsonString);
+    const { categories, expenses, paymentMethods } = parsedData;
+
+    // Validaciones básicas de tipo
+    if (
+      !Array.isArray(categories) ||
+      !Array.isArray(expenses) ||
+      !Array.isArray(paymentMethods)
+    ) {
+      Alert.alert(
+        "Archivo inválido",
+        "Faltan categorías, gastos o métodos de pago."
+      );
+      return;
+    }
+
+    if (
+      !categories.every(isValidCategory) ||
+      !expenses.every(isValidExpense) ||
+      !paymentMethods.every(isValidPaymentMethod)
+    ) {
+      Alert.alert(
+        "Archivo inválido",
+        "El archivo tiene campos inválidos o estructuras incorrectas."
+      );
+      return;
+    }
+
+    // Validación de referencias
+    const categoryIds = new Set(categories.map((c) => c.id));
+    const paymentMethodIds = new Set(paymentMethods.map((p) => p.id));
+
+    if (!validateExpenseReferences(expenses, categoryIds, paymentMethodIds))
+      Alert.alert(
+        "Referencias inválidas",
+        "Uno o más gastos hacen referencia a categorías o métodos de pago inexistentes."
+      );
+
+    const newCategories = filterNewItems(
+      parsedData.categories,
+      categoriesStore
+    );
+    const newExpenses = filterNewItems(parsedData.expenses, expensesStore);
+    const newPaymentMethods = filterNewItems(
+      parsedData.paymentMethods,
+      paymentMethodsStore
+    );
+
+    const finalDataImport = {
+      expenses: newExpenses,
+      categories: newCategories,
+      paymentMethods: newPaymentMethods,
+    };
+    
+    importBackupStore(finalDataImport);
+    Alert.alert("Éxito", successMessage);
+  } catch (error) {
+    console.error("Error al importar el archivo JSON", error);
+    Alert.alert("Error", "No se pudo importar el archivo JSON.");
+  }
+};
+
+/**
+ * Filtra los elementos importados y devuelve solo los que no estén ya en la lista existente.
+ *
+ * @param imported - Lista de elementos nuevos (desde el archivo de respaldo).
+ * @param existing - Lista actual de elementos ya almacenados.
+ * @returns Un array con solo los elementos nuevos que no están repetidos por ID.
+ */
+const filterNewItems = (imported: any[], existing: any[]) => {
+  // Crea un Set con los IDs de los elementos existentes para búsqueda rápida
+  const existingIds = new Set(existing.map((item) => item.id));
+  // Devuelve solo los elementos cuyo ID no está ya en los existentes
+  return imported.filter((item) => !existingIds.has(item.id));
+};
+
+const isValidCategory = (cat: any): boolean =>
+  typeof cat.id === "string" &&
+  typeof cat.name === "string" &&
+  typeof cat.color === "string";
+
+const isValidPaymentMethod = (pm: any): boolean =>
+  typeof pm.id === "string" &&
+  typeof pm.name === "string" &&
+  typeof pm.color === "string";
+
+const isValidExpense = (exp: any): boolean =>
+  typeof exp.id === "string" &&
+  typeof exp.categoryId === "string" &&
+  typeof exp.paymentMethodId === "string" &&
+  typeof exp.creationDate === "string" &&
+  typeof exp.paymentDate === "string" &&
+  typeof exp.lastModificationDate === "string" &&
+  typeof exp.value === "string"; // Puedes cambiar a number si es necesario
+
+const validateExpenseReferences = (
+  expenses: any[],
+  categoryIds: Set<string>,
+  paymentMethodIds: Set<string>
+): boolean => {
+  return expenses.every(
+    (exp) =>
+      categoryIds.has(exp.categoryId) &&
+      paymentMethodIds.has(exp.paymentMethodId)
+  );
 };

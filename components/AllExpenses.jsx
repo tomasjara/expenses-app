@@ -2,9 +2,21 @@ import { Text, Modal, Button, View, ScrollView, Pressable } from 'react-native'
 import { useExpensesStore } from '@/store/expensesStore'
 import { ExpensesSmallCard } from './ExpensesSmallCard'
 import { AntDesign } from '@expo/vector-icons'
+import { useEffect, useState } from 'react'
+import dayjs from 'dayjs'
 
 export const AllExpenses = ({ modalAllExpensesVisible, setModalAllExpensesVisible }) => {
     const { expensesWithRelations } = useExpensesStore(state => state)
+    const [sortedExpenses, setSortedExpenses] = useState([])
+
+    useEffect(() => {
+        const sortedExpensesResult = expensesWithRelations
+        ? expensesWithRelations
+            .sort((a, b) => dayjs(b.paymentDate).diff(dayjs(a.paymentDate)))
+        : [];
+        setSortedExpenses(sortedExpensesResult);
+    }, [expensesWithRelations])
+    
 
     return (
         <Modal
@@ -24,7 +36,7 @@ export const AllExpenses = ({ modalAllExpensesVisible, setModalAllExpensesVisibl
                 </View>
                 <ScrollView >
                     <View style={{ flex: 1, padding: 30, gap: 20 }}>
-                        {expensesWithRelations && expensesWithRelations.map(expense => (
+                        {sortedExpenses && sortedExpenses.map(expense => (
                             <ExpensesSmallCard key={expense.id} expense={expense} />
                         ))}
                     </View>

@@ -30,7 +30,7 @@ export const ExpenseDistributionChart = ({ expenses }) => {
         population: item.total,
         color: item.color,
     }));
-    
+
     return (
         chartData.length > 0 ?
             <ContainerWidget>
@@ -61,9 +61,12 @@ export const ExpenseDistributionChart = ({ expenses }) => {
                         {chartData.map((item, index) => {
                             const percentage = ((item.population / total) * 100).toFixed(1);
                             return (
-                                <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 6 }}>
-                                    <View style={{ width: 12, height: 12, backgroundColor: item.color, marginRight: 8, borderRadius: 6 }} />
-                                    <Text style={{ fontSize: 14 }}>{percentage}% {item.name}</Text>
+                                <View key={index} style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                        <View style={{ width: 12, height: 12, backgroundColor: item.color, marginRight: 8, borderRadius: 6 }} />
+                                        <Text style={{ fontSize: 14, maxWidth: '85%' }}>{item.name}</Text>
+                                    </View>
+                                    <Text style={{ fontSize: 14, fontWeight: 'bold' }}>{percentage}%</Text>
                                 </View>
                             );
                         })}
@@ -72,5 +75,4 @@ export const ExpenseDistributionChart = ({ expenses }) => {
             </ContainerWidget>
             : <></>
     )
-
 };

@@ -36,7 +36,7 @@ const AllExpensesRegister = ({ category, orderValue }) => {
         if (!orderValue) return
         const expensesFilterResult = expensesWithRelations.filter(expense => expense.categoryId === category.id).sort(ORDER_VALUES1[orderValue.id])
         setExpensesFilter(expensesFilterResult)
-    }, [orderValue])
+    }, [orderValue,expensesWithRelations])
 
     // Grafico para grafico de lineas de ultimos 6 meses
     const UltimosCincoMeses = ''
@@ -193,7 +193,7 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
         const expensesFilterResult = expensesWithRelations.filter(expense => expense.categoryId === categoryId)
         const expensesFrequencyResult = groupfrequencyExpensesByMonthAndYear(expensesFilterResult, yearToFrecuencyExpenses)
         setFrequencyExpenses(expensesFrequencyResult)
-    }, [yearToFrecuencyExpenses])
+    }, [yearToFrecuencyExpenses, expensesWithRelations])
 
     return (
         <>

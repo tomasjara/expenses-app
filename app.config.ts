@@ -2,9 +2,9 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: process.env.APP_ENV === 'development' ? 'Expenses App [Debug]' : 'Expenses App',
+  name: process.env.APP_ENV === 'development' ? 'Mis gastos[Dev]' : 'Mis gastos',
   slug: process.env.APP_ENV === 'development' ? 'expenses-app-debug' : 'expenses-app',
-  version: process.env.APP_ENV === 'development' ? '1.0.0-dev' : '1.0.0',
+  version: process.env.APP_ENV === 'development' ? '1.0.0-dev' : '2.0.0',
   scheme: process.env.APP_ENV === 'development' ? 'expensesdebug' : 'myapp',
   icon:  './assets/images/icon.png',
   ios: {

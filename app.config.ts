@@ -23,7 +23,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     package: process.env.APP_ENV === 'development'
       ? 'com.tomasjd.expensesapp.debug'
       : 'com.tomasjd.expensesapp',
-      versionCode: 1
+      versionCode: 2
   },
   web: {
     bundler: 'metro',

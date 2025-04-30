@@ -43,7 +43,6 @@ export const exportBackup = async (
  */
 
 export const importBackup = async (
-  onImport: (data: any) => void,
   successMessage: string = "Datos importados correctamente"
 ) => {
   const importBackupStore = useExpensesStore.getState().importBackup;
@@ -106,7 +105,30 @@ export const importBackup = async (
       parsedData.categories,
       categoriesStore
     );
-    const newExpenses = filterNewItems(parsedData.expenses, expensesStore);
+    const newExpenses = filterNewItems(parsedData.expenses, expensesStore).map(
+      (expense) => {
+        const {
+          value,
+          description,
+          id,
+          paymentDate,
+          creationDate,
+          lastModificationDate,
+          paymentMethodId,
+          categoryId,
+        } = expense;
+        return {
+          value,
+          description,
+          id,
+          paymentDate,
+          creationDate,
+          lastModificationDate,
+          paymentMethodId,
+          categoryId,
+        };
+      }
+    );
     const newPaymentMethods = filterNewItems(
       parsedData.paymentMethods,
       paymentMethodsStore
@@ -117,7 +139,8 @@ export const importBackup = async (
       categories: newCategories,
       paymentMethods: newPaymentMethods,
     };
-    
+
+    // console.log(finalDataImport);
     importBackupStore(finalDataImport);
     Alert.alert("Éxito", successMessage);
   } catch (error) {

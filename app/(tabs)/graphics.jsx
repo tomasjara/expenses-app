@@ -1,4 +1,4 @@
-import { ScrollView, Text } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { ContainerScreen } from '@/components/ContainerScreen';
 import { useExpensesStore } from '@/store/expensesStore';
 import { GastosPorOpcion } from '@/components/graphics/GastosPorOpcion';
@@ -24,13 +24,15 @@ export default function GraphicsScreen() {
   }, [dateValue, expensesWithRelations])
 
   return (
-    <ScrollView>
-      <ContainerScreen>
-        <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>Información</Text>
-        <YearAndMonthSelect dateValue={dateValue} expensesMonthWithYear={[]} setDateValue={setDateValue} />
-        <ExpenseDistributionChart expenses={formatExpensesForCalc(expensesFilterMonthAndYear)} />
-        <GastosPorOpcion categories={categories} expensesWithRelations={expensesFilterMonthAndYear} paymentMethods={paymentMethods} />
-      </ContainerScreen>
-    </ScrollView>
+    <View style={{ height: '100%', backgroundColor: 'black' }}>
+      <ScrollView>
+        <ContainerScreen>
+          <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>Información</Text>
+          <YearAndMonthSelect dateValue={dateValue} expensesMonthWithYear={[]} setDateValue={setDateValue} />
+          <GastosPorOpcion categories={categories} expensesWithRelations={expensesFilterMonthAndYear} paymentMethods={paymentMethods} />
+          <ExpenseDistributionChart expenses={formatExpensesForCalc(expensesFilterMonthAndYear)} />
+        </ContainerScreen>
+      </ScrollView>
+    </View>
   );
 }

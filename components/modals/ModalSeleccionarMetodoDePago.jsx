@@ -14,15 +14,17 @@ export const ModalSeleccionarMetodoDePago = ({ paymentMethods, setpaymentMethod,
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'start',
-                                borderWidth: paymentMethodSelected.id == paymentMethod.id ? 1.5 : 0.5,
+                                borderWidth: 1,
                                 borderRadius: 10,
-                                padding: 5,
+                                paddingVertical: 6,
+                                paddingHorizontal: 10,
                                 gap: 5,
-                                backgroundColor: paymentMethodSelected.id == paymentMethod.id ? '#eaf4fc' : 'transparent'
+                                borderColor: paymentMethodSelected.id == paymentMethod.id ? '#000' : 'gray',
+                                backgroundColor: paymentMethodSelected.id == paymentMethod.id ? '#c9e4fa' : 'transparent'
                             }} onPress={() => {
                                 setpaymentMethod(paymentMethod)
                             }} >
-                                <View style={{ height: 20, width: 20, borderRadius: 20, backgroundColor: paymentMethod.color || '' }}></View>
+                                <View style={{ height: 10, width: 10, borderRadius: 10, backgroundColor: paymentMethod.color || '' }}></View>
                                 <Text >{paymentMethod.name || ''}</Text>
                             </Pressable>
                         </View>

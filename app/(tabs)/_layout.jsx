@@ -1,20 +1,17 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: '#111', 
+          borderTopColor: 'transparent', 
+        },
       }}>
       <Tabs.Screen
         name="graphics"
@@ -33,7 +30,7 @@ export default function TabLayout() {
           title: 'Inicio',
           tabBarItemStyle: { paddingBottom: 5 },
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon size={20} name={focused ? 'home' : 'home-outline'} color={color} />
+            <Ionicons name={focused ? 'home' : 'home-outline'} size={20} color={color} />
           ),
         }}
       />
@@ -44,6 +41,7 @@ export default function TabLayout() {
           tabBarItemStyle: { paddingBottom: 5 },
           tabBarIcon: ({ color, focused }) => (
             <Ionicons name={focused ? 'settings' : 'settings-outline'} size={20} color={color} />
+
           ),
         }}
       />

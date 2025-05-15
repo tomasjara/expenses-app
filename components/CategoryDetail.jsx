@@ -36,7 +36,7 @@ const AllExpensesRegister = ({ category, orderValue }) => {
         if (!orderValue) return
         const expensesFilterResult = expensesWithRelations.filter(expense => expense.categoryId === category.id).sort(ORDER_VALUES1[orderValue.id])
         setExpensesFilter(expensesFilterResult)
-    }, [orderValue,expensesWithRelations])
+    }, [orderValue, expensesWithRelations])
 
     // Grafico para grafico de lineas de ultimos 6 meses
     const UltimosCincoMeses = ''
@@ -282,13 +282,16 @@ export const CategoryDetail = ({ categoryId, categoryName, categoryColor, catego
                 }
             </Modal >
 
-            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: 'white', borderWidth: 0.4, borderColor: 'black', }} onPress={() => { setVisible(true) }}>
-                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Pressable style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 10, borderRadius: 10, backgroundColor: 'white', borderWidth: 0.4, borderColor: 'black' }} onPress={() => { setVisible(true) }}>
+                <View style={{ flex: 1, flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap: 5 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
                         <View style={{ width: 10, height: 10, backgroundColor: categoryColor, borderRadius: 10 }}></View>
-                        <Text style={{ color: 'black', fontSize: 15, fontWeight: 'bold' }}>{categoryName}</Text>
+                        <Text style={{ color: 'black', fontSize: 15, fontWeight: 'normal' }}>{categoryName}</Text>
                     </View>
-                    <Text style={{ color: 'black', fontSize: 15, fontWeight: 'bold', marginStart: 20 }}>{formatMoney(categoryTotalValue)}  </Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, }}>
+                        <Text style={{ color: 'gray', fontSize: 12, }}>Total:</Text>
+                        <Text style={{ color: 'black', fontSize: 15, fontWeight: 'bold' }}>{formatMoney(categoryTotalValue)}  </Text>
+                    </View>
                 </View>
                 <AntDesign name="right" size={16} color="black" />
             </Pressable>

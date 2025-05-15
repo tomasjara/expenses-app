@@ -12,7 +12,6 @@ import Toast from 'react-native-toast-message';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { formatFirstLetterString } from '@/utils/formatFirstLetterString';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import { GatosTabla } from '@/components/graphics/GatosTabla';
 import dayjs from 'dayjs';
 import { MONTHS, MONTHS_MAYUS } from '@/utils/constantes';
 import YearAndMonthSelect from '@/components/YearAndMonthSelect';
@@ -105,23 +104,14 @@ export default function HomeScreen() {
           {expenseSelect && <DetailExpense key={expenseSelect.id} expenseSelect={expenseSelect} setDetailExpenseVisible={setDetailExpenseVisible} />}
         </View>
       </Modal>
-
-      <ScrollView>
+      <View style={{ height: '100%', backgroundColor: 'black' }}>
         <ContainerScreen>
           <AllExpenses modalAllExpensesVisible={modalAllExpensesVisible} setModalAllExpensesVisible={setModalAllExpensesVisible} />
-          {/* <YearAndMonthSelect dateValue={dateValue} expensesMonthWithYear={expensesMonthWithYear} setDateValue={setDateValue} /> */}
           <TotalExpenseValue expensesPeriodSelected={expensesPeriodSelected} dateValue={dateValue} />
-          {/* <ContainerWidget >
-            <TotalExpenseValue expensesPeriodSelected={expensesPeriodSelected} dateValue={dateValue} />
-            <Text style={{ fontSize: 12, opacity: 0.5 }}>Cantidad de registros: {totalCountExpensesPeriodSelected}</Text>
-          </ContainerWidget> */}
-          {/* <ContainerWidget> */}
           <View style={{
-            // backgroundColor: 'white',
             gap: 10,
             padding: 15,
           }}>
-            {/* <Text style={{ fontSize: 14, marginBottom: 10, opacity: 0.6 }}>Ultimos gastos</Text> */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
               <Text style={{ padding: 10, fontSize: 13, marginBottom: 3, color: 'white', textAlign: 'center', opacity: 0.5 }}>Ultimos gastos</Text>
               <Pressable style={{ padding: 10, borderRadius: 10, }} onPress={() => {
@@ -129,27 +119,20 @@ export default function HomeScreen() {
               }}><Text style={{ fontSize: 13, marginBottom: 3, color: 'white', textAlign: 'center', opacity: 0.5 }}>Ver mas <FontAwesome name="angle-right" size={14} color="white" /></Text></Pressable>
             </View>
             <View >
-              {expensesPeriodSelected && expensesPeriodSelected.sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).slice(0, 4).map((expense) => {
+              {expensesPeriodSelected && expensesPeriodSelected.length > 0 ? expensesPeriodSelected.sort((a, b) => dayjs(b.paymentDate) - dayjs(a.paymentDate)).slice(0, 4).map((expense) => {
                 return (
                   <ExpensesSmallCard key={expense.id} minimalStyle={true} expense={expense} onPress={() => {
                     setExpenseSelect(expense)
                     setDetailExpenseVisible(true)
                   }} />
                 )
-              })}
+              })
+                : <Text style={{ color: 'white', textAlign: 'center' }}>No has registrado ningún gasto este mes</Text>
+              }
             </View>
-            {/* <View style={{ gap: 10 }}>
-              <Pressable style={{ backgroundColor: 'black', padding: 10, borderRadius: 10, }} onPress={() => {
-                setModalAllExpensesVisible(true)
-              }}>
-                <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>Listado de gastos</Text>
-              </Pressable>
-              <GatosTabla />
-            </View> */}
           </View>
-          {/* </ContainerWidget> */}
         </ContainerScreen>
-      </ScrollView >
+      </View>
       <ButtonAddExpense />
       <Toast />
     </>

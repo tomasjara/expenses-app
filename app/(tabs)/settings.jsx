@@ -21,29 +21,31 @@ export default function SettingsScreen() {
   }
 
   return (
-    <ContainerScreen>
-      <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>Configuraciones</Text>
-      <ContainerWidget>
-        <ModalConfigMetodoDePago />
-        <ModalConfigCategoria />
-      </ContainerWidget>
-      <ContainerWidget>
-        <ButtonBase customStyleText={{ textAlign: 'start' }} title="Exportar copia de seguridad" onPress={() => exportBackup({ expenses, categories, paymentMethods })} />
-        <ButtonBase customStyleText={{ textAlign: 'start' }} title="Importar copia de seguridad" onPress={importBackup} />
-      </ContainerWidget>
-      <ContainerWidget>
-        <ModalComponent modalVisible={modalVisibleDeleteData} setModalVisible={setModalVisibleDeleteData} >
-          <View style={{ gap: 10 }}>
-            <Text style={{ fontSize: 19, fontWeight: 'semibold', textAlign: 'center' }}>¿Estas seguro de eliminar todos sus datos registrados?</Text>
-            <Text style={{ fontSize: 12, textAlign: 'center' }}>Incluye gastos, categorias y metodos de pago</Text>
-            <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center' }}>
-              <Button onPress={onDeleteData} title='Confirmar' color={'green'} />
-              <Button onPress={() => setModalVisibleDeleteData(false)} title='Cencelar' color={'red'} />
+    <View style={{ height: '100%', backgroundColor: 'black' }}>
+      <ContainerScreen>
+        <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>Configuraciones</Text>
+        <ContainerWidget>
+          <ModalConfigMetodoDePago />
+          <ModalConfigCategoria />
+        </ContainerWidget>
+        <ContainerWidget>
+          <ButtonBase customStyleText={{ textAlign: 'start' }} title="Exportar copia de seguridad" onPress={() => exportBackup({ expenses, categories, paymentMethods })} />
+          <ButtonBase customStyleText={{ textAlign: 'start' }} title="Importar copia de seguridad" onPress={() => importBackup()} />
+        </ContainerWidget>
+        <ContainerWidget>
+          <ModalComponent modalVisible={modalVisibleDeleteData} setModalVisible={setModalVisibleDeleteData} >
+            <View style={{ gap: 10 }}>
+              <Text style={{ fontSize: 19, fontWeight: 'semibold', textAlign: 'center' }}>¿Estas seguro de eliminar todos sus datos registrados?</Text>
+              <Text style={{ fontSize: 12, textAlign: 'center' }}>Incluye gastos, categorias y metodos de pago</Text>
+              <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center' }}>
+                <Button onPress={onDeleteData} title='Confirmar' color={'green'} />
+                <Button onPress={() => setModalVisibleDeleteData(false)} title='Cencelar' color={'red'} />
+              </View>
             </View>
-          </View>
-        </ModalComponent>
-        <ButtonBase title={'Eliminar datos'} customStyleContainer={{ backgroundColor: 'red' }} customStyleText={{ textAlign: 'center' }} onPress={() => { setModalVisibleDeleteData(true) }} />
-      </ContainerWidget>
-    </ContainerScreen>
+          </ModalComponent>
+          <ButtonBase title={'Eliminar datos'} customStyleContainer={{ backgroundColor: 'red' }} customStyleText={{ textAlign: 'center' }} onPress={() => { setModalVisibleDeleteData(true) }} />
+        </ContainerWidget>
+      </ContainerScreen>
+    </View>
   );
 }

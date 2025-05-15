@@ -1,6 +1,6 @@
 import { View, Text, Pressable, Modal } from "react-native";
 import { useState } from "react";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { MONTHS, MONTHS_LIST } from "@/utils/constantes";
 import dayjs from "dayjs";
 import { formatFirstLetterString } from "@/utils/formatFirstLetterString";
@@ -110,15 +110,18 @@ export default function YearAndMonthSelect({ dateValue, setDateValue, expensesMo
       </Modal>
 
       {/* BOTÓN PRINCIPAL */}
-      <Pressable style={styles.selectorButton} onPress={() => setModalVisible(true)}>
-        <View style={styles.iconWrapper}>
-          <Ionicons name="calendar-number-outline" size={18} color="black" />
-        </View>
-        {dateValue.month.id !== ''
-          ? <Text style={styles.selectorText}>{dateValue.month.name} - {dateValue.year}</Text>
-          : <Text style={styles.selectorText}>Sin filtro de fecha</Text>
-        }
 
+      <Pressable style={{ flexDirection: 'column', alignItems: 'flex-start', gap: 10, backgroundColor: 'white', borderRadius: 10, padding: 15, }} onPress={() => setModalVisible(true)}>
+        <Text style={{ color: 'black', fontSize: 12, opacity: 0.6, fontWeight: 'bold' }}>Filtro de periodo</Text>
+        <View style={styles.selectorButton}>
+          <View style={styles.iconWrapper}>
+            <Ionicons name="calendar-number-outline" size={18} color="black" />
+          </View>
+          {dateValue.month.id !== ''
+            ? <Text style={styles.selectorText}>{dateValue.month.name} - {dateValue.year}</Text>
+            : <Text style={styles.selectorText}>Sin filtro de fecha</Text>
+          }
+        </View>
       </Pressable>
     </>
   );
@@ -207,9 +210,7 @@ const styles = {
     color: 'white',
   },
   selectorButton: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 15,
+
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,

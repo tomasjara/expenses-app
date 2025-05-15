@@ -40,11 +40,11 @@ export const ExpensesSmallCard = ({ expense, onPress = () => { }, minimalStyle =
                         </View>
                     </Pressable>
                 </>
-                : <Pressable style={{ flexDirection: 'column', borderWidth: 0.5, borderColor: theme == 'dark' ? 'white' : 'black', borderRadius: 8, paddingVertical: 4, paddingHorizontal: 20, gap: 10 }} onPress={() => {
+                : <Pressable style={{ flexDirection: 'column', borderWidth: 0.5, borderColor: theme == 'dark' ? 'white' : 'black', borderRadius: 8, paddingVertical: 6, paddingHorizontal: 20, gap: 5, backgroundColor: theme == 'dark' ? 'black' : 'white' }} onPress={() => {
                     setVisible(true)
                 }}>
-                    <Text style={{ alignSelf: 'center', fontSize: 13, opacity: 0.5, color: theme == 'dark' ? 'white' : 'black' }}>{dayjs(paymentDate).format('DD/MM/YYYY')}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10, flexWrap: 'wrap' }}>
+                    <Text style={{ alignSelf: 'flex-start', fontSize: 13, opacity: 0.5, color: theme == 'dark' ? 'white' : 'black' }}>{dayjs(paymentDate).format('DD/MM/YYYY')}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', gap: 10, flexWrap: 'wrap' }}>
                         <View style={{ flexDirection: 'row', borderWidth: 0.5, borderColor: theme == 'dark' ? 'white' : 'black', alignItems: 'center', gap: 6, padding: 4, borderRadius: 7, }}>
                             <View style={{ backgroundColor: category?.color ? category.color : 'blue', width: 10, height: 10, borderRadius: 10 }}></View>
                             <Text style={{ fontWeight: 'bold', color: theme == 'dark' ? 'white' : 'black', fontWeight: '600', fontSize: 10 }}>{category?.name ? category.name : ''}</Text>
@@ -57,8 +57,8 @@ export const ExpensesSmallCard = ({ expense, onPress = () => { }, minimalStyle =
                     <View style={{ position: 'absolute', top: 6, right: 15 }}>
                         <SimpleLineIcons name="options" size={12} color={theme == 'dark' ? 'white' : 'black'} />
                     </View>
-                    {description && <Text style={{ marginStart: 4, opacity: 0.8, fontSize: 13, color: theme == 'dark' ? 'white' : 'black', textAlign: 'center' }}>{description}</Text>}
-                    <Text style={{ fontSize: 20, textAlign: 'center', color: theme == 'dark' ? 'white' : 'black' }}>{moneyFormatted}</Text>
+                    {description && <Text style={{ marginStart: 4, opacity: 0.8, fontSize: 13, color: theme == 'dark' ? 'white' : 'black', textAlign: 'left' }}>{description}</Text>}
+                    <Text style={{ fontSize: 20, textAlign: 'right', color: theme == 'dark' ? 'white' : 'black' }}>{moneyFormatted}</Text>
                 </Pressable>
             }
 

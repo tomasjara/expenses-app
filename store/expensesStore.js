@@ -5,6 +5,7 @@ import {
   persist,
   subscribeWithSelector,
 } from "zustand/middleware";
+import uuid from 'react-native-uuid';
 
 export const useExpensesStore = create(
   persist(
@@ -57,7 +58,7 @@ export const useExpensesStore = create(
           expenses: [],
           paymentMethods: [
             {
-              id: "f739c40d-3545-40e4-aaf7-83b875c122bb",
+              id: uuid.v4(),
               name: "Sin especificar",
               color: "#4897d8",
               disabled: false,
@@ -65,7 +66,7 @@ export const useExpensesStore = create(
           ],
           categories: [
             {
-              id: "18a9a02a-fc75-4766-a7f2-2359267a69a0",
+              id: uuid.v4(),
               name: "Sin categoría",
               color: "#f25c00",
               disabled: false,
@@ -105,9 +106,10 @@ export const useExpensesStore = create(
       // Categories
       categories: [
         {
-          id: "18a9a02a-fc75-4766-a7f2-2359267a69a0",
+          id: uuid.v4(),
           name: "Sin categoría",
           color: "#f25c00",
+          disabled: false,
         },
       ],
       updateCategory: (newObject) =>
@@ -149,10 +151,10 @@ export const useExpensesStore = create(
       // PaymentMethods
       paymentMethods: [
         {
-          id: "f739c40d-3545-40e4-aaf7-83b875c122bb",
+          id: uuid.v4(),
           name: "Sin especificar",
-          description: "",
           color: "#4897d8",
+          disabled: false,
         },
       ],
       addPaymentMethod: (newPaymentMethod) =>
@@ -186,6 +188,10 @@ export const useExpensesStore = create(
     {
       name: "expenses-storage",
       storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => (state) => {
+        // Este callback se ejecuta cuando los datos se han cargado correctamente
+        state.setHasHydrated(true);
+      },
     }
   )
 );

@@ -37,7 +37,7 @@ export const AllExpenses = ({ modalAllExpensesVisible, setModalAllExpensesVisibl
                 <ScrollView >
                     <View style={{ flex: 1, padding: 30, gap: 20 }}>
                         {sortedExpenses && sortedExpenses.map(expense => (
-                            <ExpensesSmallCard key={expense.id} expense={expense} />
+                            <ExpensesSmallCard key={expense.id} expense={expense} theme='ligth'/>
                         ))}
                     </View>
                 </ScrollView>

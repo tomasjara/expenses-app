@@ -3,17 +3,17 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: process.env.APP_ENV === 'development' ? 'Mis gastos[Dev]' : 'Mis gastos',
-  slug: process.env.APP_ENV === 'development' ? 'expenses-app-debug' : 'expenses-app',
-  version: process.env.APP_ENV === 'development' ? '1.0.0-dev' : '2.0.0',
+  slug: 'expenses-app',
+  version: process.env.APP_ENV === 'development' ? '2.0.1-dev' : '2.0.1',
   scheme: process.env.APP_ENV === 'development' ? 'expensesdebug' : 'myapp',
-  icon:  './assets/images/icon.png',
+  icon:  './assets/images/icon.jpg',
   ios: {
     supportsTablet: true,
   },
   splash: {
     image: './assets/images/splash.png',
     resizeMode: 'contain',
-    backgroundColor: '#E4E4E4',
+    backgroundColor: '#000000',
   },
   android: {
     adaptiveIcon: {
@@ -23,7 +23,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     package: process.env.APP_ENV === 'development'
       ? 'com.tomasjd.expensesapp.debug'
       : 'com.tomasjd.expensesapp',
-      versionCode: 2
+      versionCode: 3
   },
   web: {
     bundler: 'metro',

@@ -16,15 +16,17 @@ export const ModalSeleccionarCatergoria = ({ setCategory, categorySelected }) =>
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 justifyContent: 'start',
-                                borderWidth: categorySelected.id == category.id ? 1.5 : 0.5,
+                                borderWidth: 1,
                                 borderRadius: 10,
-                                padding: 5,
+                                paddingVertical: 6,
+                                paddingHorizontal: 10,
                                 gap: 5,
-                                backgroundColor: categorySelected.id == category.id ? '#eaf4fc' : 'transparent'
+                                borderColor: categorySelected.id == category.id ? '#000' : 'gray',
+                                backgroundColor: categorySelected.id == category.id ? '#c9e4fa' : 'transparent'
                             }} onPress={() => {
                                 setCategory(category)
                             }} >
-                                <View style={{ height: 15, width: 15, borderRadius: 20, backgroundColor: category.color || '' }}></View>
+                                <View style={{ height: 10, width: 10, borderRadius: 10, backgroundColor: category.color || '' }}></View>
                                 <Text >{category.name || ''}</Text>
                             </Pressable>
                         </View>

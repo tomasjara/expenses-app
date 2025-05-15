@@ -107,7 +107,6 @@ export const UpdateCreateOptionExpense = ({ textNewOption, refRBSheet, modalNewO
             if (modalNewOptionVisible.optionName === 'paymentMethods') {
                 updatePaymentMethod(newOption);
                 refRBSheet.current.close()
-
                 closeModal()
             }
         }
@@ -115,13 +114,11 @@ export const UpdateCreateOptionExpense = ({ textNewOption, refRBSheet, modalNewO
             if (modalNewOptionVisible.optionName === 'categories') {
                 addCategory(newOptionyObj)
                 refRBSheet.current.close()
-
                 closeModal()
             }
             if (modalNewOptionVisible.optionName === 'paymentMethods') {
                 addPaymentMethod(newOptionyObj)
                 refRBSheet.current.close()
-
                 closeModal()
             }
         }

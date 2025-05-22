@@ -4,7 +4,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: process.env.APP_ENV === 'development' ? 'Mis gastos[Dev]' : 'Mis gastos',
   slug: 'expenses-app',
-  version: process.env.APP_ENV === 'development' ? '4.0.0-dev' : '4.0.0',
+  version: process.env.APP_ENV === 'development' ? '5.0.0-dev' : '5.0.0',
   scheme: process.env.APP_ENV === 'development' ? 'expensesdebug' : 'myapp',
   icon:  './assets/images/icon.jpg',
   ios: {
@@ -23,7 +23,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     package: process.env.APP_ENV === 'development'
       ? 'com.tomasjd.expensesapp.debug'
       : 'com.tomasjd.expensesapp',
-      versionCode: 4
+      versionCode: 5
   },
   web: {
     bundler: 'metro',

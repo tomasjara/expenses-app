@@ -14,8 +14,12 @@ export default function GraphicsScreen() {
   const { expensesWithRelations, categories, paymentMethods } = useExpensesStore(state => state)
   const [dateValue, setDateValue] = useState({ month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) }, year: dayjs().get('y') })
   const [expensesFilterMonthAndYear, setExpensesFilterMonthAndYear] = useState([])
+  const [paymentMethodsFilterDisabled, setPaymentMethodsFilterDisabled] = useState([])
+  const [categoriesFilterDisabled, setCategoriesFilterDisabled] = useState([])
 
   useEffect(() => {
+    setPaymentMethodsFilterDisabled(paymentMethods.filter(paymentMethod => !paymentMethod.disabled))
+    setCategoriesFilterDisabled(categories.filter(category => !category.disabled))
     const expensesFilterMonthAndYearResult = expensesWithRelations.filter((expense) => {
       const paymentDate = dayjs(expense.paymentDate);
       return paymentDate.month() === dateValue.month.id && paymentDate.year() === dateValue.year;
@@ -24,12 +28,12 @@ export default function GraphicsScreen() {
   }, [dateValue, expensesWithRelations])
 
   return (
-    <View style={{ height: '100%', backgroundColor: 'black' }}>
+    <View style={{ height: '100%', backgroundColor: 'black'  }}>
       <ScrollView>
         <ContainerScreen>
           <Text style={{ color: 'white', fontSize: 30, textAlign: 'center' }}>Información</Text>
           <YearAndMonthSelect dateValue={dateValue} expensesMonthWithYear={[]} setDateValue={setDateValue} />
-          <GastosPorOpcion categories={categories} expensesWithRelations={expensesFilterMonthAndYear} paymentMethods={paymentMethods} />
+          <GastosPorOpcion categories={categoriesFilterDisabled} expensesWithRelations={expensesFilterMonthAndYear} paymentMethods={paymentMethodsFilterDisabled} />
           <ExpenseDistributionChart expenses={formatExpensesForCalc(expensesFilterMonthAndYear)} />
         </ContainerScreen>
       </ScrollView>

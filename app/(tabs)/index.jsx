@@ -1,6 +1,5 @@
-import { Modal, Pressable } from 'react-native';
-import { Button, ScrollView, Text, View } from 'react-native';
-import { ContainerWidget } from './../../components/ContainerWidget'
+import { Animated, Modal, Pressable, StyleSheet } from 'react-native';
+import { Text, View } from 'react-native';
 import { ContainerScreen } from './../../components/ContainerScreen'
 import { AllExpenses } from './../../components/AllExpenses'
 import { useEffect, useRef, useState } from 'react';
@@ -8,25 +7,63 @@ import { useExpensesStore } from '@/store/expensesStore'
 import { ExpensesSmallCard } from '@/components/ExpensesSmallCard'
 import { TotalExpenseValue } from '@/components/TotalExpenseValue'
 import { UpdateCreateExpenseModal } from './../../components/UpdateCreateExpenseModal';
-import Toast from 'react-native-toast-message';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { formatFirstLetterString } from '@/utils/formatFirstLetterString';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import dayjs from 'dayjs';
 import { MONTHS, MONTHS_MAYUS } from '@/utils/constantes';
-import YearAndMonthSelect from '@/components/YearAndMonthSelect';
 import { DetailExpense } from '@/components/DetailExpense';
 import { FontAwesome } from '@expo/vector-icons';
+import ButtonBase from '@/components/ButtonBase';
 
 function ButtonAddExpense({ }) {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const opacityAnim = useRef(new Animated.Value(0.95)).current;
+
+  const handlePressIn = () => {
+    Animated.parallel([
+      Animated.spring(scaleAnim, {
+        toValue: 0.93,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 0.8,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.parallel([
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        useNativeDriver: true,
+      }),
+      Animated.timing(opacityAnim, {
+        toValue: 0.95,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handlePress = () => {
+    refRBSheet.current?.open();
+    setModalUpdateCreateExpense({
+      type: 'create',
+    });
+  };
+
   const refRBSheet = useRef();
   const { setModalUpdateCreateExpense, expenses } = useExpensesStore(state => state)
 
   return (
     <View style={{ flex: 1 }}>
-      <RBSheet
+        <RBSheet
         ref={refRBSheet}
         draggable
+        useNativeDriver={false}
         height={600}
         customModalProps={{
           statusBarTranslucent: false,
@@ -48,47 +85,51 @@ function ButtonAddExpense({ }) {
         <UpdateCreateExpenseModal refRBSheet={refRBSheet} />
       </RBSheet>
       <Pressable
-        onPress={() => {
-          refRBSheet.current.open()
-          setModalUpdateCreateExpense({
-            // show: true, 
-            type: 'create'
-          })
-        }}
-        style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 15, borderRadius: 20, shadowRadius: 10, elevation: 5, borderColor: 'black', borderWidth: 1 }}>
-        <Ionicons name="add-circle-sharp" size={45} color="black" />
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={handlePress}
+        style={styles.wrapper}
+      >
+        <Animated.View style={[styles.button, {
+          transform: [{ scale: scaleAnim }],
+          opacity: opacityAnim,
+        }]}>
+          <Ionicons name="add-circle-sharp" size={45} color="black" />
+        </Animated.View>
       </Pressable>
     </View>
   );
 }
 
+const styles = StyleSheet.create({
+  wrapper: {
+    position: 'absolute',
+    bottom: 100,
+    right: 15,
+  },
+  button: {
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 20,
+    borderColor: 'black',
+    borderWidth: 1,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+});
+
 export default function HomeScreen() {
   const initialValuesPeriod = { month: { id: dayjs().get('M'), name: formatFirstLetterString(MONTHS[dayjs().get('M')]) }, year: dayjs().get('y') }
   const [dateValue, setDateValue] = useState(initialValuesPeriod)
-  const { expensesWithRelations, expenses, categories, paymentMethods } = useExpensesStore(state => state)
+  const { expensesWithRelations } = useExpensesStore(state => state)
   const [modalAllExpensesVisible, setModalAllExpensesVisible] = useState(false)
   const [expensesPeriodSelected, setExpensesPeriodSelected] = useState()
-  const [totalCountExpensesPeriodSelected, setTotalCountExpensesPeriodSelected] = useState(0)
-  const [expensesMonthWithYear, setExpensesMonthWithYear] = useState([])
   const [detailExpenseVisible, setDetailExpenseVisible] = useState(false)
   const [expenseSelect, setExpenseSelect] = useState()
 
   useEffect(() => {
-    const expensesFilterYear = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).year() === dateValue.year)
     const expensesPeriod = expensesWithRelations.filter((expense) => dayjs(expense.paymentDate).month() === dateValue.month.id && dayjs(expense.paymentDate).year() === dateValue.year)
-    const expensesMonthWithYearTransformed = expensesFilterYear ? expensesFilterYear.reduce((total, expense) => {
-      const currentMonth = MONTHS_MAYUS[dayjs(expense.paymentDate).month()]
-      const ifMesExistente = total.find(item => item[currentMonth])
-      if (ifMesExistente) {
-        ifMesExistente[currentMonth] += 1;
-      } else {
-        total.push({ [MONTHS_MAYUS[dayjs(expense.paymentDate).month()]]: 1 })
-      }
-      return total
-    }, []) : []
-    setExpensesMonthWithYear(expensesMonthWithYearTransformed)
     setExpensesPeriodSelected(expensesPeriod)
-    setTotalCountExpensesPeriodSelected(expensesPeriod.length)
   }, [dateValue, expensesWithRelations])
 
   return (
@@ -134,7 +175,6 @@ export default function HomeScreen() {
         </ContainerScreen>
       </View>
       <ButtonAddExpense />
-      <Toast />
     </>
   );
 }

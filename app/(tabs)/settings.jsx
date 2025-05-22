@@ -1,23 +1,28 @@
-import { Alert, Button, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { ContainerScreen } from './../../components/ContainerScreen';
 import { useExpensesStore } from './../../store/expensesStore';
 import { ContainerWidget } from '../../components/ContainerWidget';
 import ButtonBase from '@/components/ButtonBase';
-import { ModalComponent } from '../../components/modals/ModalComponent';
 import { ModalConfigMetodoDePago } from '../../components/modals/ModalConfigMetodoDePago';
 import { ModalConfigCategoria } from '../../components/modals/ModalConfigCategoria';
-import { useState } from 'react';
+import { useRef } from 'react';
 import { exportBackup, importBackup } from '../../utils/backupService';
+import RBSheet from 'react-native-raw-bottom-sheet';
+import Toast from 'react-native-toast-message';
 
 export default function SettingsScreen() {
 
-  const [modalVisibleDeleteData, setModalVisibleDeleteData] = useState(false)
   const { cleanAllData, expenses, categories, paymentMethods } = useExpensesStore(state => state)
 
+  const refRBSheet = useRef()
+
   const onDeleteData = () => {
-    setModalVisibleDeleteData(false)
     cleanAllData()
-    Alert.alert("Datos eliminados", "Todos los datos han sido eliminados correctamente")
+    refRBSheet.current.close()
+    Toast.show({
+      type: 'success',
+      text1: 'Todos los datos han sido eliminados correctamente',
+    })
   }
 
   return (
@@ -32,20 +37,46 @@ export default function SettingsScreen() {
           <ButtonBase customStyleText={{ textAlign: 'start' }} title="Exportar copia de seguridad" onPress={() => exportBackup({ expenses, categories, paymentMethods })} />
           <ButtonBase customStyleText={{ textAlign: 'start' }} title="Importar copia de seguridad" onPress={() => importBackup()} />
         </ContainerWidget>
+        {/* delete data */}
         <ContainerWidget>
-          <ModalComponent modalVisible={modalVisibleDeleteData} setModalVisible={setModalVisibleDeleteData} >
-            <View style={{ gap: 10 }}>
-              <Text style={{ fontSize: 19, fontWeight: 'semibold', textAlign: 'center' }}>¿Estas seguro de eliminar todos sus datos registrados?</Text>
-              <Text style={{ fontSize: 12, textAlign: 'center' }}>Incluye gastos, categorias y metodos de pago</Text>
-              <View style={{ flexDirection: 'row', gap: 10, alignItems: 'center', justifyContent: 'center' }}>
-                <Button onPress={onDeleteData} title='Confirmar' color={'green'} />
-                <Button onPress={() => setModalVisibleDeleteData(false)} title='Cencelar' color={'red'} />
+          <RBSheet
+            ref={refRBSheet}
+            draggable
+            height={320}
+            customModalProps={{
+              statusBarTranslucent: false,
+            }}
+            closeOnPressBack
+            customAvoidingViewProps={{
+              enabled: true,
+            }}
+            customStyles={{
+              container: {
+                backgroundColor: 'white',
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+              },
+              draggableIcon: {
+                width: 50,
+              },
+            }}>
+            <View style={{ paddingHorizontal: 10 }}>
+              <Text style={{ fontSize: 19, fontWeight: 'bold', textAlign: 'center', marginBottom: 15 }}>¿Estás seguro de que deseas eliminar todos los datos de la aplicación?</Text>
+              <Text style={{ fontSize: 12, textAlign: 'center', marginBottom: 15 }}>Esta acción eliminará permanentemente todos tus gastos, categorías y métodos de pago.</Text>
+              <Text style={{ fontSize: 12, textAlign: 'start', paddingHorizontal: 20 }}>Se crearán valores por defecto:</Text>
+              <Text style={{ fontSize: 12, textAlign: 'start', paddingHorizontal: 20 }}>Categoría: Sin categoría</Text>
+              <Text style={{ fontSize: 12, textAlign: 'start', paddingHorizontal: 20 }}>Método de pago: Sin especificar</Text>
+              <Text style={{ fontSize: 12, textAlign: 'start', color: 'red', paddingHorizontal: 20, marginBottom: 25 }}>Esta acción no se puede deshacer.</Text>
+              <View style={{ flexDirection: 'row', gap: 25, alignItems: 'center', justifyContent: 'center' }}>
+                <ButtonBase onPress={() => refRBSheet.current.close()} title='Cancelar' color={'red'} />
+                <ButtonBase onPress={onDeleteData} title='Eliminar datos' color={'green'} />
               </View>
             </View>
-          </ModalComponent>
-          <ButtonBase title={'Eliminar datos'} customStyleContainer={{ backgroundColor: 'red' }} customStyleText={{ textAlign: 'center' }} onPress={() => { setModalVisibleDeleteData(true) }} />
+          </RBSheet>
+          <ButtonBase title={'Eliminar datos'} customStyleContainer={{ backgroundColor: 'red' }} customStyleText={{ textAlign: 'center' }} onPress={() => { refRBSheet.current.open() }} />
         </ContainerWidget>
       </ContainerScreen>
+      <Toast />
     </View>
   );
 }

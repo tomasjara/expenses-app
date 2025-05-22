@@ -3,6 +3,7 @@ import * as DocumentPicker from "expo-document-picker";
 import { Alert } from "react-native";
 import dayjs from "dayjs";
 import { useExpensesStore } from "@/store/expensesStore";
+import Toast from "react-native-toast-message";
 
 export const exportBackup = async (
   jsonData: any,
@@ -13,7 +14,7 @@ export const exportBackup = async (
       await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
 
     if (!permissions.granted) {
-      Alert.alert("Permiso denegado", "No se pudo acceder a la carpeta.");
+      // Alert.alert("Permiso denegado", "No se pudo acceder a la carpeta.");
       return;
     }
 
@@ -31,10 +32,19 @@ export const exportBackup = async (
       encoding: FileSystem.EncodingType.UTF8,
     });
 
-    Alert.alert("Éxito", successMessage);
+    // Alert.alert("Éxito", successMessage);
+    Toast.show({
+      type: "success",
+      text1: "Copia de seguridad exportada correctamente 👋",
+    });
   } catch (error) {
-    console.error("Error al crear y guardar el archivo JSON", error);
-    Alert.alert("Error", "No se pudo crear o guardar el archivo JSON.");
+    Toast.show({
+      type: "error",
+      text1: "Error al exportar la copia de seguridad",
+    });
+    // console.error("Error al crear y guardar el archivo JSON", error);
+    // Alert.alert("Error", "No se pudo crear o guardar el archivo JSON.");
+    return false;
   }
 };
 
@@ -56,10 +66,7 @@ export const importBackup = async (
       copyToCacheDirectory: true,
     });
 
-    if (result.canceled || !result.assets?.length) {
-      Alert.alert("Importación cancelada", "No se seleccionó ningún archivo.");
-      return;
-    }
+    if (result.canceled || !result.assets?.length) return;
 
     const fileUri = result.assets[0].uri;
     const jsonString = await FileSystem.readAsStringAsync(fileUri);
@@ -72,10 +79,10 @@ export const importBackup = async (
       !Array.isArray(expenses) ||
       !Array.isArray(paymentMethods)
     ) {
-      Alert.alert(
-        "Archivo inválido",
-        "Faltan categorías, gastos o métodos de pago."
-      );
+      Toast.show({
+        type: "error",
+        text1: "Archivo inválido, Faltan categorías, gastos o métodos de pago.",
+      });
       return;
     }
 
@@ -84,10 +91,11 @@ export const importBackup = async (
       !expenses.every(isValidExpense) ||
       !paymentMethods.every(isValidPaymentMethod)
     ) {
-      Alert.alert(
-        "Archivo inválido",
-        "El archivo tiene campos inválidos o estructuras incorrectas."
-      );
+      Toast.show({
+        type: "error",
+        text1:
+          "Archivo inválido, El archivo tiene campos inválidos o estructuras incorrectas.",
+      });
       return;
     }
 
@@ -96,39 +104,32 @@ export const importBackup = async (
     const paymentMethodIds = new Set(paymentMethods.map((p) => p.id));
 
     if (!validateExpenseReferences(expenses, categoryIds, paymentMethodIds))
-      Alert.alert(
-        "Referencias inválidas",
-        "Uno o más gastos hacen referencia a categorías o métodos de pago inexistentes."
-      );
+      Toast.show({
+        type: "error",
+        text1:
+          "Uno o más gastos hacen referencia a categorías o métodos de pago inexistentes.",
+      });
 
     const newCategories = filterNewItems(
       parsedData.categories,
       categoriesStore
     );
+
     const newExpenses = filterNewItems(parsedData.expenses, expensesStore).map(
       (expense) => {
-        const {
-          value,
-          description,
-          id,
-          paymentDate,
-          creationDate,
-          lastModificationDate,
-          paymentMethodId,
-          categoryId,
-        } = expense;
         return {
-          value,
-          description,
-          id,
-          paymentDate,
-          creationDate,
-          lastModificationDate,
-          paymentMethodId,
-          categoryId,
+          value: expense.value,
+          description: expense.description,
+          id: expense.id,
+          paymentDate: expense.paymentDate,
+          creationDate: expense.creationDate,
+          lastModificationDate: expense.lastModificationDate,
+          paymentMethodId: expense.paymentMethodId,
+          categoryId: expense.categoryId,
         };
       }
     );
+
     const newPaymentMethods = filterNewItems(
       parsedData.paymentMethods,
       paymentMethodsStore
@@ -140,12 +141,62 @@ export const importBackup = async (
       paymentMethods: newPaymentMethods,
     };
 
-    // console.log(finalDataImport);
+    // Si ya existe una categoría "Sin categoría" en los datos antes de importar y se quiere importar una categoría "Sin categoría", se unirán ambas en una misma categoría con el mismo nombre, debe pasar lo mismo con el método de pago "Sin especificar"
+
+    // Unificar categoría "Sin categoría"
+    const existingUncategorized = categoriesStore.find(
+      (cat) => cat.name === "Sin categoría"
+    );
+    const importedUncategorized = newCategories.find(
+      (cat) => cat.name === "Sin categoría"
+    );
+
+    if (existingUncategorized && importedUncategorized) {
+      // Cambiar los gastos importados que tengan la categoría importada a la existente
+      newExpenses.forEach((expense) => {
+        if (expense.categoryId === importedUncategorized.id) {
+          expense.categoryId = existingUncategorized.id;
+        }
+      });
+      // Eliminar la categoría importada "Sin categoría" para no duplicar
+      finalDataImport.categories = newCategories.filter(
+        (cat) => cat.id !== importedUncategorized.id
+      );
+    }
+
+    // Unificar método de pago "Sin especificar"
+    const existingUnspecified = paymentMethodsStore.find(
+      (pm) => pm.name === "Sin especificar"
+    );
+    const importedUnspecified = newPaymentMethods.find(
+      (pm) => pm.name === "Sin especificar"
+    );
+
+    if (existingUnspecified && importedUnspecified) {
+      // Cambiar los gastos importados que tengan el método de pago importado al existente
+      newExpenses.forEach((expense) => {
+        if (expense.paymentMethodId === importedUnspecified.id) {
+          expense.paymentMethodId = existingUnspecified.id;
+        }
+      });
+      // Eliminar el método de pago importado "Sin especificar" para no duplicar
+      finalDataImport.paymentMethods = newPaymentMethods.filter(
+        (pm) => pm.id !== importedUnspecified.id
+      );
+    }
+
     importBackupStore(finalDataImport);
-    Alert.alert("Éxito", successMessage);
+    Toast.show({
+      type: "success",
+      text1: "Copia de seguridad importada correctamente 👋",
+    });
   } catch (error) {
-    console.error("Error al importar el archivo JSON", error);
-    Alert.alert("Error", "No se pudo importar el archivo JSON.");
+    Toast.show({
+      type: "error",
+      text1: "Error al importar la copia de seguridad",
+    });
+    // console.error("Error al importar el archivo JSON", error);
+    // Alert.alert("Error", "No se pudo importar el archivo JSON.");
   }
 };
 

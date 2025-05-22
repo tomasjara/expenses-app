@@ -1,55 +1,10 @@
-import { ActivityIndicator, Button, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import uuid from 'react-native-uuid';
 import { useExpensesStore } from '@/store/expensesStore';
-import ColorPicker from 'react-native-wheel-color-picker';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign} from '@expo/vector-icons';
 import ButtonBase from './ButtonBase';
 import RBSheet from 'react-native-raw-bottom-sheet';
-
-function ButtonAddExpense({ }) {
-    const refRBSheet = useRef();
-    const { setModalUpdateCreateExpense, expenses } = useExpensesStore(state => state)
-
-    return (
-        <View style={{ flex: 1 }}>
-            <RBSheet
-                ref={refRBSheet}
-                draggable
-                height={600}
-                customModalProps={{
-                    statusBarTranslucent: false,
-                }}
-                closeOnPressBack
-                customAvoidingViewProps={{
-                    enabled: true,
-                }}
-                customStyles={{
-                    container: {
-                        backgroundColor: 'white',
-                        borderTopLeftRadius: 10,
-                        borderTopRightRadius: 10,
-                    },
-                    draggableIcon: {
-                        width: 50,
-                    },
-                }}>
-                <UpdateCreateExpenseModal refRBSheet={refRBSheet} />
-            </RBSheet>
-            <Pressable
-                onPress={() => {
-                    refRBSheet.current.open()
-                    setModalUpdateCreateExpense({
-                        // show: true, 
-                        type: 'create'
-                    })
-                }}
-                style={{ backgroundColor: 'white', opacity: 0.95, position: 'absolute', padding: 10, bottom: 20, right: 15, borderRadius: 20, shadowRadius: 10, elevation: 5, borderColor: 'black', borderWidth: 1 }}>
-                <Ionicons name="add-circle-sharp" size={45} color="black" />
-            </Pressable>
-        </View>
-    );
-}
 
 const COLORS8 = [
     "#486b00", // grass

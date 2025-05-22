@@ -1,5 +1,5 @@
-import { View, Text, TextInput, ScrollView, StyleSheet, Pressable, KeyboardAvoidingView, Platform } from 'react-native'
-import { useEffect, useRef, useState } from 'react'
+import { View, Text, TextInput, ScrollView, StyleSheet, Pressable } from 'react-native'
+import { useEffect, useState } from 'react'
 import { useExpensesStore } from '@/store/expensesStore'
 import { UpdateCreateOptionExpense } from '@/components/UpdateCreateOptionExpense'
 import { ModalSeleccionarCatergoria } from '@/components/modals/ModalSeleccionarCatergoria'
@@ -10,6 +10,7 @@ import { ModalDatePicker } from '@/components/modals/ModalDatePicker'
 import uuid from 'react-native-uuid';
 import Toast from 'react-native-toast-message'
 import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated'
+import ButtonBase from './ButtonBase'
 
 export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
   const { modalUpdateCreateExpense, paymentMethods, categories, addExpense, updateExpense, expensesWithRelations } = useExpensesStore(state => state)
@@ -68,10 +69,10 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
         offsetAnimation.value = 0; // Restablecer a la posición inicial
       }, 1000); // Tiempo configurado en milisegundos
 
-      Toast.show({
-        type: 'error',
-        text1: 'Valor de gasto no valido 😭'
-      });
+      // Toast.show({
+      //   type: 'error',
+      //   text1: 'Valor de gasto no valido'
+      // });
       return
     }
 
@@ -120,7 +121,7 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
       <ModalDisabledOption optionName={optionNameDisabled} visible={modalDisabledOptionsVisible} setVisible={setModalDisabledOptionsVisible} />
       <ScrollView>
         <View style={{ gap: 5, paddingHorizontal: 20, margin: 10 }}>
-          <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, marginBottom: 10 }}>{modalUpdateCreateExpense.type === 'create' ? 'Nuevo gasto 💸' : 'Editar gasto 💸'}</Text>
+          <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 20, marginBottom: 15 }}>{modalUpdateCreateExpense.type === 'create' ? 'Nuevo gasto 💸' : 'Editar gasto 💸'}</Text>
           <Animated.View style={[styles.input, animatedStyle]} >
             <TextInput
               keyboardType='numeric'
@@ -157,8 +158,9 @@ export const UpdateCreateExpenseModal = ({ refRBSheet }) => {
           </View>
         </View>
       </ScrollView>
-      <Pressable style={{ margin: 'auto', width: '90%', backgroundColor: 'black', padding: 10, borderRadius: 10, marginBottom: 13 }} onPress={createNewExpense}>
-        <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>{modalUpdateCreateExpense.type === 'create' ? 'Añadir nuevo gasto' : 'Aceptar'}</Text>
+      <Pressable style={{ margin: 'auto', width: '90%', paddingBottom: 20 }} onPress={createNewExpense}>
+      <ButtonBase title={modalUpdateCreateExpense.type === 'create' ? 'Añadir nuevo gasto' : 'Aceptar'} onPress={createNewExpense}/>
+        {/* <Text style={{ color: 'white', textAlign: 'center', fontWeight: '700', fontSize: 17 }}>{modalUpdateCreateExpense.type === 'create' ? 'Añadir nuevo gasto' : 'Aceptar'}</Text> */}
       </Pressable>
     </>
   )

@@ -188,9 +188,10 @@ export const useExpensesStore = create(
     {
       name: "expenses-storage",
       storage: createJSONStorage(() => AsyncStorage),
-      onRehydrateStorage: () => (state) => {
-        // Este callback se ejecuta cuando los datos se han cargado correctamente
-        state.setHasHydrated(true);
+      skipHydration: typeof window === "undefined",
+      onRehydrateStorage: () => (state, error) => {
+        if (error) return;
+        useExpensesStore.getState().setHasHydrated(true);
       },
     }
   )
